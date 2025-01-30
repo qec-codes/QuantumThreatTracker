@@ -88,7 +88,19 @@ class QuantumAlgorithm(ABC):
         NotImplementedError
             If the method has not been implemented.
         """
-        raise NotImplementedError
+        subroutine = self.create_subroutine()
+        bloq = subroutine[0]
+        reps = subroutine[1]
+
+        complexity = bloq.t_complexity()
+        return LogicalCounts(
+            {
+                "numQubits": bloq.signature.n_qubits(),
+                "tCount": complexity.t * reps,
+                "rotationCount": complexity.rotations * reps,
+                "rotationDepth": complexity.rotations * reps,
+            }
+        )
 
     @abstractmethod
     def estimate_resources(
