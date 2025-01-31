@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import List, Union
 
 from qsharp.estimator import EstimatorParams, EstimatorResult, LogicalCounts
-from qualtran import Bloq
+from qualtran.surface_code import AlgorithmSummary
 
 
 @dataclass
@@ -58,14 +58,13 @@ class QuantumAlgorithm(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def create_subroutine(self) -> tuple[Bloq, int]:
-        """Construct the subroutine which dominates the resource cost of the algorithm.
+    def get_algorithm_summary(self) -> AlgorithmSummary:
+        """Compute logical resource estimates for the circuit.
 
         Returns
         -------
-        tuple[Bloq, int]
-            Qualtran Bloq, together with the number of sequential repetitions needed in
-            the circuit.
+        AlgorithmSummary
+            Logical resource estimates.
 
         Raises
         ------
@@ -75,38 +74,10 @@ class QuantumAlgorithm(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_logical_counts(self) -> LogicalCounts:
-        """Create the logical counts to pass to the Azure Quantum Resource Estimator.
-
-        Returns
-        -------
-        LogicalCounts
-            Logical counts derived from the Qualtran Bloqs.
-
-        Raises
-        ------
-        NotImplementedError
-            If the method has not been implemented.
-        """
-        subroutine = self.create_subroutine()
-        bloq = subroutine[0]
-        reps = subroutine[1]
-
-        complexity = bloq.t_complexity()
-        return LogicalCounts(
-            {
-                "numQubits": bloq.signature.n_qubits(),
-                "tCount": complexity.t * reps,
-                "rotationCount": complexity.rotations * reps,
-                "rotationDepth": complexity.rotations * reps,
-            }
-        )
-
-    @abstractmethod
-    def estimate_resources(
+    def estimate_resources_azure(
         self, estimator_params: Union[dict, List, EstimatorParams]
     ) -> EstimatorResult:
-        """Estimate the physical resources required for a single circuit run.
+        """Create a physical resource estimate using Azure.
 
         Parameters
         ----------
@@ -118,4 +89,14 @@ class QuantumAlgorithm(ABC):
         EstimatorResult
             Physical resource estimates.
         """
-        return self.get_logical_counts().estimate(estimator_params)
+        algorithm_summary = self.get_algorithm_summary()
+        t_and_ccz_count = algorithm_summary.n_logical_gates.total_t_and_ccz_count()
+        logical_counts = LogicalCounts(
+            {
+                "numQubits": algorithm_summary.n_algo_qubits,
+                "tCount": t_and_ccz_count["n_t"],
+                "cczCount": t_and_ccz_count["n_ccz"],
+            }
+        )
+
+        return logical_counts.estimate(estimator_params)
