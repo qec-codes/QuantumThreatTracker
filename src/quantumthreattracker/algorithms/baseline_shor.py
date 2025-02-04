@@ -1,9 +1,7 @@
 """Class for the baseline implementation of Shor's algorithm."""
 
 from dataclasses import dataclass
-from typing import List, Union
 
-from qsharp.estimator import EstimatorParams, EstimatorResult
 from qualtran import QUInt
 from qualtran.bloqs.mod_arithmetic import CModMulK
 from qualtran.surface_code import AlgorithmSummary
@@ -35,9 +33,6 @@ class BaselineShorParams(AlgorithmParams):
 
 class BaselineShor(QuantumAlgorithm):
     """Class for the baseline implementation of Shor's algorithm."""
-
-    def __init__(self, algorithm_params):
-        super().__init__(algorithm_params)
 
     def success_probability(self) -> float:
         """Calculate the algorithmic success probability.
@@ -81,20 +76,3 @@ class BaselineShor(QuantumAlgorithm):
         )
 
         return alg_sum_mod_exp
-
-    def estimate_resources_azure(
-        self, estimator_params: Union[dict, List, EstimatorParams]
-    ) -> EstimatorResult:
-        """Create a physical resource estimate using Azure.
-
-        Parameters
-        ----------
-        estimator_params : Union[dict, List, EstimatorParams]
-            Parameters for the Microsoft Azure Quantum Resource Estimator.
-
-        Returns
-        -------
-        EstimatorResult
-            Physical resource estimates.
-        """
-        return super().estimate_resources_azure(estimator_params)
