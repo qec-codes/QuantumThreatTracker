@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import List, Union
 
 from qsharp.estimator import EstimatorParams, EstimatorResult, LogicalCounts
-from qualtran.surface_code import AlgorithmSummary
+from qualtran.surface_code import AlgorithmSummary, PhysicalCostModel
 
 
 @dataclass
@@ -30,7 +30,6 @@ class AlgorithmParams(ABC):
 class QuantumAlgorithm(ABC):
     """Base class for quantum algorithms."""
 
-    @abstractmethod
     def __init__(self, algorithm_params: AlgorithmParams):
         """Initialise the `QuantumAlgorithm`.
 
@@ -73,7 +72,27 @@ class QuantumAlgorithm(ABC):
         """
         raise NotImplementedError
 
-    @abstractmethod
+    def estimate_resources_qualtran(self, cost_model: PhysicalCostModel) -> dict:
+        """Create a physical resource estimate using Qualtran.
+
+        Parameters
+        ----------
+        cost_model : PhysicalCostModel
+            Cost model used by Qualtran to estimate physical resources.
+
+        Returns
+        -------
+        dict
+            Physical resource estimates.
+        """
+        algorithm_summary = self.get_algorithm_summary()
+        resource_estimate = {
+            "duration_hr": cost_model.duration_hr(algorithm_summary),
+            "n_phys_qubits": cost_model.n_phys_qubits(algorithm_summary),
+            "error": cost_model.error(algorithm_summary),
+        }
+        return resource_estimate
+
     def estimate_resources_azure(
         self, estimator_params: Union[dict, List, EstimatorParams]
     ) -> EstimatorResult:
@@ -95,7 +114,9 @@ class QuantumAlgorithm(ABC):
             {
                 "numQubits": algorithm_summary.n_algo_qubits,
                 "tCount": t_and_ccz_count["n_t"],
+                "rotationCount": algorithm_summary.n_logical_gates.rotation,
                 "cczCount": t_and_ccz_count["n_ccz"],
+                "measurementCount": algorithm_summary.n_logical_gates.measurement,
             }
         )
 
