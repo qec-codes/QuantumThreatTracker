@@ -12,6 +12,7 @@ dependencies = [
     "qsharp-widgets>=1.11.1",
     "qsharp>=1.11.1",
     "ruff>=0.8.3",
+    "qualtran>=0.5.0",
 ]
 
 [build-system]
