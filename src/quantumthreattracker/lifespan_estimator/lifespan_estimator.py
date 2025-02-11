@@ -1,8 +1,10 @@
 """Class for estimating the remaining lifespan of cryptographic protocols."""
 
 import time
-from datetime import datetime
-from typing import List
+from datetime import date, datetime
+from typing import List, Union
+
+from qsharp.estimator import EstimatorParams
 
 from quantumthreattracker.algorithms.baseline_shor import (
     BaselineShor,
@@ -40,15 +42,23 @@ class HardwareRoadmap:
             indexed_roadmap.append(
                 {"index": timestamp_index, **self._hardware_roadmap[timestamp_index]}
             )
-            for qc_index in range(len(indexed_roadmap[timestamp_index]["hardware"])):
-                indexed_roadmap[timestamp_index]["hardware"][qc_index] = {
+            for qc_index in range(
+                len(indexed_roadmap[timestamp_index]["hardware_list"])
+            ):
+                indexed_roadmap[timestamp_index]["hardware_list"][qc_index] = {
                     "index": qc_index,
-                    **indexed_roadmap[timestamp_index]["hardware"][qc_index],
+                    **indexed_roadmap[timestamp_index]["hardware_list"][qc_index],
                 }
 
         return indexed_roadmap
 
-    def add(self, timestamp: int = None, year: int = None, **qc_specs):
+    def add(
+        self,
+        timestamp: int = None,
+        year: int = None,
+        num_qubits: int = None,
+        estimator_params: Union[dict, list, EstimatorParams] = None,
+    ):
         """Add an entry to the hardware roadmap.
 
         Parameters
@@ -74,7 +84,12 @@ class HardwareRoadmap:
             dt = datetime(year=year, month=1, day=1)
             timestamp = time.mktime(dt.timetuple())
 
-        new_milestone = {"timestamp": timestamp, "hardware": [qc_specs]}
+        new_milestone = {
+            "timestamp": timestamp,
+            "hardware_list": [
+                {"num_qubits": num_qubits, "estimator_params": estimator_params}
+            ],
+        }
 
         # This slightly messy chunk of code is for adding the new quantum computer to
         # the existing hardware roadmap as a new entry in the list, or combining it with
@@ -84,8 +99,8 @@ class HardwareRoadmap:
                 self._hardware_roadmap.insert(index, new_milestone)
                 return
             if timestamp == self._hardware_roadmap[index]["timestamp"]:
-                self._hardware_roadmap[index]["hardware"].append(
-                    new_milestone["hardware"]
+                self._hardware_roadmap[index]["hardware_list"].append(
+                    new_milestone["hardware_list"][0]
                 )
                 return
         self._hardware_roadmap.append(new_milestone)
@@ -104,7 +119,7 @@ class HardwareRoadmap:
         if qc_index is None:
             self._hardware_roadmap.pop(timestamp_index)
         else:
-            self._hardware_roadmap[timestamp_index]["hardware"].pop(qc_index)
+            self._hardware_roadmap[timestamp_index]["hardware_list"].pop(qc_index)
 
 
 class LifespanEstimator:
@@ -115,7 +130,7 @@ class LifespanEstimator:
 
     def estimate_lifespan(
         self, protocol: str, key_size: int, formatted: bool = False
-    ) -> int | datetime | None:
+    ) -> int | date | None:
         """Estimate the remaining lifespan of a cryptographic protocol.
 
         Parameters
@@ -138,28 +153,27 @@ class LifespanEstimator:
         algorithm = BaselineShor(algorithm_params=algorithm_params)
 
         for milestone in self._hardware_roadmap.list():
-            for quantum_computer in milestone["hardware"]:
-                gate_error_rate = quantum_computer["gate_error_rate"]
-
-                azure_estimate = algorithm.estimate_resources_azure(
-                    {
-                        "qubitParams": {
-                            "name": "qubit_gate_ns_e3",
-                            "oneQubitMeasurementErrorRate": gate_error_rate,
-                            "oneQubitGateErrorRate": gate_error_rate,
-                            "twoQubitGateErrorRate": gate_error_rate,
-                            "tGateErrorRate": gate_error_rate,
-                        }
-                    }
+            for quantum_computer in milestone["hardware_list"]:
+                estimator_result = algorithm.estimate_resources_azure(
+                    quantum_computer["estimator_params"]
                 )
 
-                num_qubits_needed = azure_estimate["physicalCounts"]["physicalQubits"]
-                num_qubits_available = quantum_computer["n_qubits"]
+                num_qubits_needed = estimator_result["physicalCounts"]["physicalQubits"]
+                num_qubits_available = quantum_computer["num_qubits"]
 
                 if num_qubits_available >= num_qubits_needed:
                     timestamp = milestone["timestamp"]
                     if formatted:
-                        return datetime.fromtimestamp(timestamp).date()
-                    return timestamp
+                        date = datetime.fromtimestamp(timestamp).date()
+                        return {
+                            "date": date,
+                            "num_qubits": num_qubits_needed,
+                            "estimator_result": estimator_result,
+                        }
+                    return {
+                        "timestamp": timestamp,
+                        "num_qubits": num_qubits_needed,
+                        "estimator_result": estimator_result,
+                    }
 
         return None
