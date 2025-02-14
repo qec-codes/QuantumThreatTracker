@@ -114,9 +114,9 @@ class HardwareRoadmap:
         ----------
         file_name : str
             File name.
-        file_path : Path, optional
-            File path. If unspecified, the file will be saved to the same directory
-            the function is executed from.
+        file_path : str, optional
+            File path. If unspecified, the file will be saved to the current working
+            directory.
 
         Raises
         ------
@@ -124,7 +124,7 @@ class HardwareRoadmap:
             If the hardware roadmap has not yet been generated.
         """
         if file_path is None:
-            file_path = str(Path(__file__).resolve().parent)
+            file_path = str(Path.cwd())
         try:
             with Path.open(file_path + "/" + file_name + ".json", "w") as fp:
                 json.dump(self._hardware_roadmap, fp, indent=4)
@@ -241,16 +241,16 @@ class LifespanEstimator:
         self._threat_report = threat_report
         return threat_report
 
-    def save_report(self, file_name: str, file_path: Path = None) -> None:
+    def save_report(self, file_name: str, file_path: str = None) -> None:
         """Save the threat report as a JSON file.
 
         Parameters
         ----------
         file_name : str
             File name.
-        file_path : Path, optional
-            File path. If unspecified, the file will be saved to the same directory
-            the function is executed from.
+        file_path : str, optional
+            File path. If unspecified, the file will be saved to the current working
+            directory.
 
         Raises
         ------
@@ -258,7 +258,7 @@ class LifespanEstimator:
             If the threat report has not yet been generated.
         """
         if file_path is None:
-            file_path = str(Path(__file__).resolve().parent)
+            file_path = str(Path.cwd())
         try:
             with Path.open(file_path + "/" + file_name + ".json", "w") as fp:
                 json.dump(self._threat_report, fp, indent=4)
