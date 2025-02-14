@@ -1,10 +1,9 @@
 """Class for estimating the remaining lifespan of cryptographic protocols."""
 
-import time
-from datetime import date, datetime
-from typing import List, Union
+import json
+from pathlib import Path
 
-from qsharp.estimator import EstimatorParams
+from qsharp.estimator import EstimatorError, EstimatorParams
 
 from quantumthreattracker.algorithms.baseline_shor import (
     BaselineShor,
@@ -18,108 +17,121 @@ class HardwareRoadmap:
     def __init__(self):
         self._hardware_roadmap = []
 
-    def list(self) -> List:
+    def as_list(self) -> list:
         """Get the hardware roadmap as a list.
 
         Returns
         -------
-        List
-            Hardware roadmap; expressed as a list of timestamps, together with the
-            quantum computing hardware expected to be available at that timestamp.
+        list
+            Hardware roadmap.
         """
         return self._hardware_roadmap
 
-    def enumerate(self) -> List:
-        """Get the hardware roadmap with indicies attached to each entry.
-
-        Returns
-        -------
-        List
-            Hardware roadmap with additional entries for indicies.
-        """
-        indexed_roadmap = []
-        for timestamp_index in range(len(self._hardware_roadmap)):
-            indexed_roadmap.append(
-                {"index": timestamp_index, **self._hardware_roadmap[timestamp_index]}
-            )
-            for qc_index in range(
-                len(indexed_roadmap[timestamp_index]["hardware_list"])
-            ):
-                indexed_roadmap[timestamp_index]["hardware_list"][qc_index] = {
-                    "index": qc_index,
-                    **indexed_roadmap[timestamp_index]["hardware_list"][qc_index],
-                }
-
-        return indexed_roadmap
-
     def add(
         self,
-        timestamp: int = None,
-        year: int = None,
-        num_qubits: int = None,
-        estimator_params: Union[dict, list, EstimatorParams] = None,
+        timestamp: int,
+        estimator_params: EstimatorParams | dict | list,
     ):
-        """Add an entry to the hardware roadmap.
+        """Add a quantum computer to the hardware roadmap.
 
         Parameters
         ----------
-        timestamp : int, optional
-            Unix timestamp at which we expect the quantum computer to be available.
-        year : int, optional
-            Year at which we expect the quantum computer to be available.
-
-        Raises
-        ------
-        SyntaxError
-            If neither the timestamp nor the year are given, or both are given.
+        timestamp : int
+            Unix timestamp.
+        estimator_params : EstimatorParams | dict | list
+            Parameters characterising the quantum computer.
         """
-        if (timestamp is None and year is None) or (
-            timestamp is not None and year is not None
-        ):
-            raise SyntaxError(
-                "Exactly one of the timestamp and the year must be given."
-            )
+        if isinstance(estimator_params, list):
+            estimator_params_list = estimator_params
+        else:
+            estimator_params_list = [estimator_params]
 
-        if year is not None:
-            dt = datetime(year=year, month=1, day=1)
-            timestamp = time.mktime(dt.timetuple())
-
-        new_milestone = {
-            "timestamp": timestamp,
-            "hardware_list": [
-                {"num_qubits": num_qubits, "estimator_params": estimator_params}
-            ],
-        }
-
-        # This slightly messy chunk of code is for adding the new quantum computer to
-        # the existing hardware roadmap as a new entry in the list, or combining it with
-        # an existing entry if another entry with the same timestamp already exists.
-        for index in range(len(self._hardware_roadmap)):
-            if timestamp < self._hardware_roadmap[index]["timestamp"]:
-                self._hardware_roadmap.insert(index, new_milestone)
-                return
-            if timestamp == self._hardware_roadmap[index]["timestamp"]:
-                self._hardware_roadmap[index]["hardware_list"].append(
-                    new_milestone["hardware_list"][0]
+        for estimator_params_entry in estimator_params_list:
+            if isinstance(estimator_params_entry, EstimatorParams):
+                estimator_params_dict = estimator_params_entry.as_dict()
+            elif isinstance(estimator_params_entry, dict):
+                estimator_params_dict = estimator_params_entry
+            else:
+                raise TypeError(
+                    f"{type(estimator_params_entry)} is the wrong type for estimator parameters. "
+                    + "It must be given as either an EstimatorParams instance or a dictionary."
                 )
-                return
-        self._hardware_roadmap.append(new_milestone)
 
-    def remove(self, timestamp_index: int, qc_index: int = None):
+            new_milestone = {
+                "timestamp": timestamp,
+                "hardwareList": [{"estimatorParams": estimator_params_dict}],
+            }
+
+            # This slightly messy chunk of code is for adding the new quantum computer
+            # to the existing hardware roadmap as a new entry in the list, or combining
+            # it with an existing entry if another entry with the same timestamp already
+            # exists.
+            inserted = False
+            for index in range(len(self._hardware_roadmap)):
+                if timestamp < self._hardware_roadmap[index]["timestamp"]:
+                    self._hardware_roadmap.insert(index, new_milestone)
+                    inserted = True
+                    break
+                if timestamp == self._hardware_roadmap[index]["timestamp"]:
+                    self._hardware_roadmap[index]["hardwareList"].append(
+                        new_milestone["hardwareList"][0]
+                    )
+                    inserted = True
+                    break
+            if not inserted:
+                self._hardware_roadmap.append(new_milestone)
+
+    def remove(self, timestamp: int, qc_index: int = None):
         """Remove an entry from the hardware roadmap.
 
         Parameters
         ----------
-        timestamp_index : int
-            Timestamp index
+        timestamp : int
+            Unix timestamp.
         qc_index : int, optional
-            Quantum computer index. If unspecified, removes all entries in the given
-            timestamp.
+            Index for removing a specific quantum computer for a given timestamp. If
+            unspecified, all entries with the specified timestamp will be removed.
         """
-        if qc_index is None:
-            self._hardware_roadmap.pop(timestamp_index)
-        else:
-            self._hardware_roadmap[timestamp_index]["hardware_list"].pop(qc_index)
+        for milestone_index in range(len(self._hardware_roadmap)):
+            if self._hardware_roadmap[milestone_index]["timestamp"] == timestamp:
+                if qc_index is None:
+                    self._hardware_roadmap.pop(milestone_index)
+                else:
+                    self._hardware_roadmap[milestone_index]["hardwareList"].pop(
+                        qc_index
+                    )
+                    if (
+                        len(self._hardware_roadmap[milestone_index]["hardwareList"])
+                        == 0
+                    ):
+                        self._hardware_roadmap.pop(milestone_index)
+                return
+
+    def save(self, file_name: str, file_path: Path = None) -> None:
+        """Save the hardware roadmap as a JSON file.
+
+        Parameters
+        ----------
+        file_name : str
+            File name.
+        file_path : Path, optional
+            File path. If unspecified, the file will be saved to the same directory
+            the function is executed from.
+
+        Raises
+        ------
+        AttributeError
+            If the hardware roadmap has not yet been generated.
+        """
+        if file_path is None:
+            file_path = str(Path(__file__).resolve().parent)
+        try:
+            with Path.open(file_path + "/" + file_name + ".json", "w") as fp:
+                json.dump(self._hardware_roadmap, fp, indent=4)
+        except AttributeError:
+            raise AttributeError(
+                "The hardware roadmap has not been generated and thus cannot be saved."
+            )
 
 
 class LifespanEstimator:
@@ -128,52 +140,129 @@ class LifespanEstimator:
     def __init__(self, hardware_roadmap: HardwareRoadmap):
         self._hardware_roadmap = hardware_roadmap
 
-    def estimate_lifespan(
-        self, protocol: str, key_size: int, formatted: bool = False
-    ) -> int | date | None:
-        """Estimate the remaining lifespan of a cryptographic protocol.
+    def estimate_threats(
+        self, protocol: str, key_size: int, detail_level: int = 1
+    ) -> dict:
+        """Estimate the possible threats against a given cryptographic protocol.
 
         Parameters
         ----------
         protocol : str
             Cryptographic protocol.
         key_size : int
-            Key size.
-        formatted : bool, optional
-            If True, returns a UTC date rather than a unix timestamp.
+            Cryptographic key size.
+        detail_level : int, optional
+            Level of detail in the output. Must be an integer between 0 and 3 inclusive.
+            By default 1.
 
         Returns
         -------
-        int | datetime | None
-            Time in the future at which we expect the protocol to be broken.
-            Returns None if there is no point in the hardware roadmap at which we have
-            the requisite hardware.
+        dict
+            Threats against the given protocol.
+
+        Raises
+        ------
+        SyntaxError
+            If the given detail level is not within the required bounds.
         """
         algorithm_params = BaselineShorParams(protocol=protocol, key_size=key_size)
         algorithm = BaselineShor(algorithm_params=algorithm_params)
 
-        for milestone in self._hardware_roadmap.list():
-            for quantum_computer in milestone["hardware_list"]:
-                estimator_result = algorithm.estimate_resources_azure(
-                    quantum_computer["estimator_params"]
-                )
+        threats = []
 
-                num_qubits_needed = estimator_result["physicalCounts"]["physicalQubits"]
-                num_qubits_available = quantum_computer["num_qubits"]
-
-                if num_qubits_available >= num_qubits_needed:
-                    timestamp = milestone["timestamp"]
-                    if formatted:
-                        date = datetime.fromtimestamp(timestamp).date()
-                        return {
-                            "date": date,
-                            "num_qubits": num_qubits_needed,
-                            "estimator_result": estimator_result,
+        for milestone in self._hardware_roadmap.as_list():
+            for quantum_computer in milestone["hardwareList"]:
+                timestamp = milestone["timestamp"]
+                try:
+                    estimator_result = algorithm.estimate_resources_azure(
+                        quantum_computer["estimatorParams"]
+                    )
+                    if detail_level == 0:
+                        result = {
+                            "timestamp": timestamp,
                         }
-                    return {
-                        "timestamp": timestamp,
-                        "num_qubits": num_qubits_needed,
-                        "estimator_result": estimator_result,
-                    }
+                    elif detail_level == 1:
+                        result = {
+                            "timestamp": timestamp,
+                            "runtime": estimator_result["physicalCounts"]["runtime"],
+                        }
+                    elif detail_level == 2:
+                        result = {
+                            "timestamp": timestamp,
+                            "physicalCounts": estimator_result["physicalCounts"],
+                        }
+                    elif detail_level == 3:
+                        result = {
+                            "timestamp": timestamp,
+                            "estimatorResult": estimator_result,
+                        }
+                    else:
+                        raise SyntaxError(
+                            f"Detail level ({detail_level}) must be an integer between 0 and 3 (inclusive)."
+                        )
+                    threats.append(result)
+                except EstimatorError:
+                    pass
 
-        return None
+        return {
+            "protocol": str(protocol) + "-" + str(key_size),
+            "threats": threats,
+        }
+
+    def generate_threat_report(
+        self,
+        protocols: list[dict],
+        detail_level: int = 1,
+    ) -> list:
+        """Predict the threats against several cryptographic protocols.
+
+        Parameters
+        ----------
+        protocols : list[dict]
+            List of cryptographic protocols.
+        detail_level : int, optional
+            Level of detail in the output, by default 1.
+
+        Returns
+        -------
+        list
+            Threat report.
+        """
+        threat_report = []
+        for protocol_and_key_size in protocols:
+            threat_report.append(
+                self.estimate_threats(
+                    protocol_and_key_size["algorithm"],
+                    protocol_and_key_size["keySize"],
+                    detail_level=detail_level,
+                )
+            )
+
+        self._threat_report = threat_report
+        return threat_report
+
+    def save_threat_report(self, file_name: str, file_path: Path = None) -> None:
+        """Save the threat report as a JSON file.
+
+        Parameters
+        ----------
+        file_name : str
+            File name.
+        file_path : Path, optional
+            File path. If unspecified, the file will be saved to the same directory
+            the function is executed from.
+
+        Raises
+        ------
+        AttributeError
+            If the threat report has not yet been generated.
+        """
+        if file_path is None:
+            file_path = str(Path(__file__).resolve().parent)
+        try:
+            with Path.open(file_path + "/" + file_name + ".json", "w") as fp:
+                json.dump(self._threat_report, fp, indent=4)
+        except AttributeError:
+            raise AttributeError(
+                "The threat report has not been generated and thus cannot be saved."
+            )
