@@ -1,6 +1,6 @@
 [
     {
-        "timestamp": 2051265600,
+        "timestamp": 2366841600,
         "hardwareList": [
             {
                 "estimatorParams": {
@@ -8,7 +8,7 @@
                         "name": "qubit_gate_ns_e3"
                     },
                     "constraints": {
-                        "maxPhysicalQubits": 32000
+                        "maxPhysicalQubits": 1024000
                     }
                 }
             },
@@ -18,14 +18,14 @@
                         "name": "qubit_gate_us_e4"
                     },
                     "constraints": {
-                        "maxPhysicalQubits": 3200
+                        "maxPhysicalQubits": 102400
                     }
                 }
             }
         ]
     },
     {
-        "timestamp": 2114380800,
+        "timestamp": 2429956800,
         "hardwareList": [
             {
                 "estimatorParams": {
@@ -33,7 +33,7 @@
                         "name": "qubit_gate_ns_e3"
                     },
                     "constraints": {
-                        "maxPhysicalQubits": 64000
+                        "maxPhysicalQubits": 2048000
                     }
                 }
             },
@@ -43,14 +43,14 @@
                         "name": "qubit_gate_us_e4"
                     },
                     "constraints": {
-                        "maxPhysicalQubits": 6400
+                        "maxPhysicalQubits": 204800
                     }
                 }
             }
         ]
     },
     {
-        "timestamp": 2177496000,
+        "timestamp": 2493072000,
         "hardwareList": [
             {
                 "estimatorParams": {
@@ -58,7 +58,7 @@
                         "name": "qubit_gate_ns_e3"
                     },
                     "constraints": {
-                        "maxPhysicalQubits": 128000
+                        "maxPhysicalQubits": 4096000
                     }
                 }
             },
@@ -68,14 +68,14 @@
                         "name": "qubit_gate_us_e4"
                     },
                     "constraints": {
-                        "maxPhysicalQubits": 12800
+                        "maxPhysicalQubits": 409600
                     }
                 }
             }
         ]
     },
     {
-        "timestamp": 2240611200,
+        "timestamp": 2556187200,
         "hardwareList": [
             {
                 "estimatorParams": {
@@ -83,7 +83,7 @@
                         "name": "qubit_gate_ns_e3"
                     },
                     "constraints": {
-                        "maxPhysicalQubits": 256000
+                        "maxPhysicalQubits": 8192000
                     }
                 }
             },
@@ -93,14 +93,14 @@
                         "name": "qubit_gate_us_e4"
                     },
                     "constraints": {
-                        "maxPhysicalQubits": 25600
+                        "maxPhysicalQubits": 819200
                     }
                 }
             }
         ]
     },
     {
-        "timestamp": 2303726400,
+        "timestamp": 2619302400,
         "hardwareList": [
             {
                 "estimatorParams": {
@@ -108,7 +108,7 @@
                         "name": "qubit_gate_ns_e3"
                     },
                     "constraints": {
-                        "maxPhysicalQubits": 512000
+                        "maxPhysicalQubits": 16384000
                     }
                 }
             },
@@ -118,7 +118,57 @@
                         "name": "qubit_gate_us_e4"
                     },
                     "constraints": {
-                        "maxPhysicalQubits": 51200
+                        "maxPhysicalQubits": 1638400
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "timestamp": 2682417600,
+        "hardwareList": [
+            {
+                "estimatorParams": {
+                    "qubitParams": {
+                        "name": "qubit_gate_ns_e3"
+                    },
+                    "constraints": {
+                        "maxPhysicalQubits": 32768000
+                    }
+                }
+            },
+            {
+                "estimatorParams": {
+                    "qubitParams": {
+                        "name": "qubit_gate_us_e4"
+                    },
+                    "constraints": {
+                        "maxPhysicalQubits": 3276800
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "timestamp": 2745532800,
+        "hardwareList": [
+            {
+                "estimatorParams": {
+                    "qubitParams": {
+                        "name": "qubit_gate_ns_e3"
+                    },
+                    "constraints": {
+                        "maxPhysicalQubits": 65536000
+                    }
+                }
+            },
+            {
+                "estimatorParams": {
+                    "qubitParams": {
+                        "name": "qubit_gate_us_e4"
+                    },
+                    "constraints": {
+                        "maxPhysicalQubits": 6553600
                     }
                 }
             }
