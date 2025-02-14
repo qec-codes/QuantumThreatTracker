@@ -107,7 +107,7 @@ class HardwareRoadmap:
                         self._hardware_roadmap.pop(milestone_index)
                 return
 
-    def save(self, file_name: str, file_path: Path = None) -> None:
+    def save_roadmap(self, file_name: str, file_path: Path = None) -> None:
         """Save the hardware roadmap as a JSON file.
 
         Parameters
@@ -209,7 +209,7 @@ class LifespanEstimator:
             "threats": threats,
         }
 
-    def generate_threat_report(
+    def generate_report(
         self,
         protocols: list[dict],
         detail_level: int = 1,
@@ -241,7 +241,7 @@ class LifespanEstimator:
         self._threat_report = threat_report
         return threat_report
 
-    def save_threat_report(self, file_name: str, file_path: Path = None) -> None:
+    def save_report(self, file_name: str, file_path: Path = None) -> None:
         """Save the threat report as a JSON file.
 
         Parameters
