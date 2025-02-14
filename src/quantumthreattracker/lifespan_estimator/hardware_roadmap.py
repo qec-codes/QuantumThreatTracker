@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+from typing import Self
 
 from qsharp.estimator import EstimatorParams
 
@@ -9,8 +10,11 @@ from qsharp.estimator import EstimatorParams
 class HardwareRoadmap:
     """Class for representing quantum computing hardware roadmaps."""
 
-    def __init__(self):
-        self._hardware_roadmap = []
+    def __init__(self, hardware_roadmap: list = None):
+        if hardware_roadmap is None:
+            self._hardware_roadmap = []
+        else:
+            self._hardware_roadmap = hardware_roadmap
 
     def as_list(self) -> list:
         """Get the hardware roadmap as a list.
@@ -21,6 +25,23 @@ class HardwareRoadmap:
             Hardware roadmap.
         """
         return self._hardware_roadmap
+
+    @classmethod
+    def from_file(cls, file_path: str) -> Self:
+        """Import a hardware roadmap from a file.
+
+        Parameters
+        ----------
+        file_path : str
+            File path.
+
+        Returns
+        -------
+        Self
+            Hardware roadmap.
+        """
+        with open(file_path, "rb") as file:
+            return cls(json.load(file))
 
     def add(
         self,
