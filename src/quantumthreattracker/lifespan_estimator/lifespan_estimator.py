@@ -40,6 +40,9 @@ class LifespanEstimator:
         SyntaxError
             If the given detail level is not within the required bounds.
         """
+        # TODO:  Once we have more algorithms implemented, there should be an additional
+        # module here to choose which quantum algorithm to use based on the
+        # cryptographic protocol, and perhaps user input.
         algorithm_params = BaselineShorParams(protocol=protocol, key_size=key_size)
         algorithm = BaselineShor(algorithm_params=algorithm_params)
 
