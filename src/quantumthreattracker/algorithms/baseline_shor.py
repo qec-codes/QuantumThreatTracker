@@ -1,34 +1,10 @@
 """Class for the baseline implementation of Shor's algorithm."""
 
-from dataclasses import dataclass
-
 from qualtran import QUInt
 from qualtran.bloqs.mod_arithmetic import CModMulK
 from qualtran.surface_code import AlgorithmSummary
 
-from quantumthreattracker.algorithms.quantum_algorithm import (
-    AlgorithmParams,
-    QuantumAlgorithm,
-)
-
-
-@dataclass
-class BaselineShorParams(AlgorithmParams):
-    """Parameters for the baseline implementation of Shor's algorithm.
-
-    Parameters
-    ----------
-    protocol: str
-        Cryptographic protocol. Can be:
-            - 'RSA' (Rivest-Shamir-Adleman; factoring)
-            - 'DH' (Diffie-Hellman; discrete log)
-            - 'ECDH' (Elliptic Curve Diffie-Hellman; discrete log over elliptic curves)
-    key_size: int
-        Cryptographic key size.
-    """
-
-    protocol: str
-    key_size: int
+from quantumthreattracker.algorithms.quantum_algorithm import QuantumAlgorithm
 
 
 class BaselineShor(QuantumAlgorithm):
@@ -62,14 +38,14 @@ class BaselineShor(QuantumAlgorithm):
         NotImplementedError
             If the method has not been implemented.
         """
-        key_size = self._algorithm_params.key_size
+        key_size = self._crypt_params.key_size
         modulus = 2**key_size - 1
         multiplicand = 2**key_size - 2
-        reps = int(1.5 * key_size)
 
         mod_mul = CModMulK(dtype=QUInt(key_size), k=multiplicand, mod=modulus)
-
         alg_sum_controlled_mod_mul = AlgorithmSummary.from_bloq(mod_mul)
+
+        reps = int(1.5 * key_size)
         alg_sum_mod_exp = AlgorithmSummary(
             n_algo_qubits=alg_sum_controlled_mod_mul.n_algo_qubits,
             n_logical_gates=alg_sum_controlled_mod_mul.n_logical_gates * reps,
