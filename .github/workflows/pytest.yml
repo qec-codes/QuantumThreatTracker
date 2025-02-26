@@ -11,6 +11,6 @@ jobs:
         with:
           python-version: '3.x'
       - name: Install dependencies
-        run: uv add pytest
+        run: python -m pip install pytest .
       - name: Run tests
-        run: uv run pytest
+        run: pytest
