@@ -41,22 +41,6 @@ class QuantumAlgorithm(ABC):
         self._crypt_params = crypt_params
 
     @abstractmethod
-    def success_probability(self) -> float:
-        """Calculate the algorithmic success probability.
-
-        Returns
-        -------
-        float
-            Algorithmic success probability.
-
-        Raises
-        ------
-        NotImplementedError
-            If the method has not been implemented.
-        """
-        raise NotImplementedError
-
-    @abstractmethod
     def get_algorithm_summary(self) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
 
