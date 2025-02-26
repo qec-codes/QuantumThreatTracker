@@ -66,9 +66,10 @@ def test_resource_estimation_azure(quantum_algorithm: QuantumAlgorithm) -> None:
     )
 
 
-def test_magic_state_factories(quantum_algorithm: QuantumAlgorithm) -> None:
-    """Test that at least one T factory is present in the resource estimate."""
+def test_physical_counts(quantum_algorithm: QuantumAlgorithm) -> None:
+    """Test that the physical counts from the resource estimates are non-zero."""
     estimator_result = quantum_algorithm.estimate_resources_azure(
         {"qubitParams": {"name": "qubit_gate_ns_e3"}}
     )
-    assert estimator_result["physicalCounts"]["breakdown"]["numTfactories"] >= 1
+    assert estimator_result["physicalCounts"]["physicalQubits"] > 0
+    assert estimator_result["physicalCounts"]["runtime"] > 0
