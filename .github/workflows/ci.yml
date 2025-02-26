@@ -5,8 +5,10 @@ jobs:
     name: Ruff
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/ruff-action@v3.2.1
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run Ruff
+        uses: astral-sh/ruff-action@v3.2.1
   pytest:
     name: Pytest
     runs-on: ubuntu-latest
