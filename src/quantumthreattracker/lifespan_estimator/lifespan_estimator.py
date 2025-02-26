@@ -6,10 +6,8 @@ from pathlib import Path
 
 from qsharp.estimator import EstimatorError
 
-from quantumthreattracker.algorithms.baseline_shor import (
-    BaselineShor,
-    BaselineShorParams,
-)
+from quantumthreattracker.algorithms.baseline_shor import BaselineShor
+from quantumthreattracker.algorithms.quantum_algorithm import CryptParams
 from quantumthreattracker.lifespan_estimator.hardware_roadmap import HardwareRoadmap
 
 
@@ -43,8 +41,8 @@ class LifespanEstimator:
         # TODO:  Once we have more algorithms implemented, there should be an additional
         # module here to choose which quantum algorithm to use based on the
         # cryptographic protocol, and perhaps user input.
-        algorithm_params = BaselineShorParams(protocol=protocol, key_size=key_size)
-        algorithm = BaselineShor(algorithm_params=algorithm_params)
+        algorithm_params = CryptParams(protocol=protocol, key_size=key_size)
+        algorithm = BaselineShor(crypt_params=algorithm_params)
 
         threats = []
 

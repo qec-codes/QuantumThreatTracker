@@ -9,8 +9,8 @@ from qualtran.surface_code import AlgorithmSummary, PhysicalCostModel
 
 
 @dataclass
-class AlgorithmParams(ABC):
-    """Base dataclass for quantum algorithm parameters.
+class CryptParams(ABC):
+    """Dataclass describing the cryptographic protocol.
 
     Parameters
     ----------
@@ -30,15 +30,15 @@ class AlgorithmParams(ABC):
 class QuantumAlgorithm(ABC):
     """Base class for quantum algorithms."""
 
-    def __init__(self, algorithm_params: AlgorithmParams):
+    def __init__(self, crypt_params: CryptParams):
         """Initialise the `QuantumAlgorithm`.
 
         Parameters
         ----------
-        algorithm_params : AlgorithmParams
-            Quantum algorithm parameters.
+        crypt_params : CryptParams
+            Cryptographic protocol parameters.
         """
-        self._algorithm_params = algorithm_params
+        self._crypt_params = crypt_params
 
     @abstractmethod
     def success_probability(self) -> float:
