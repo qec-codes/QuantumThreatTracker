@@ -16,21 +16,6 @@ from quantumthreattracker.algorithms.quantum_algorithm import QuantumAlgorithm
 class GidneyEkeraBasic(QuantumAlgorithm):
     """Class for a basic implementation of Gidney-Ekera."""
 
-    def success_probability(self):
-        """Calculate the algorithmic success probability.
-
-        Returns
-        -------
-        float
-            Algorithmic success probability.
-
-        Raises
-        ------
-        NotImplementedError
-            If the method has not been implemented.
-        """
-        return super().success_probability()
-
     def get_algorithm_summary(self):
         """Compute logical resource estimates for the circuit.
 
