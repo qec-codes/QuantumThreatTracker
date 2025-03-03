@@ -17,11 +17,6 @@ class BaselineShor(QuantumAlgorithm):
         -------
         AlgorithmSummary
             Logical resource estimates.
-
-        Raises
-        ------
-        NotImplementedError
-            If the method has not been implemented.
         """
         key_size = self._crypt_params.key_size
         modulus = 2**key_size - 1

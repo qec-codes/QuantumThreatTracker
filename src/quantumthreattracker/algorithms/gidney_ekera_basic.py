@@ -16,18 +16,13 @@ from quantumthreattracker.algorithms.quantum_algorithm import QuantumAlgorithm
 class GidneyEkeraBasic(QuantumAlgorithm):
     """Class for a basic implementation of Gidney-Ekera."""
 
-    def get_algorithm_summary(self):
+    def get_algorithm_summary(self) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
 
         Returns
         -------
         AlgorithmSummary
             Logical resource estimates.
-
-        Raises
-        ------
-        NotImplementedError
-            If the method has not been implemented.
         """
         key_size = self._crypt_params.key_size
 
