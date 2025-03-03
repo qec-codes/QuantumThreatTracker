@@ -2,7 +2,6 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, Union
 
 from qsharp.estimator import EstimatorParams, EstimatorResult, LogicalCounts
 from qualtran.surface_code import AlgorithmSummary, PhysicalCostModel
@@ -78,7 +77,7 @@ class QuantumAlgorithm(ABC):
         return resource_estimate
 
     def estimate_resources_azure(
-        self, estimator_params: Union[dict, List, EstimatorParams]
+        self, estimator_params: EstimatorParams | dict | list
     ) -> EstimatorResult:
         """Create a physical resource estimate using Azure.
 
