@@ -13,7 +13,7 @@ from quantumthreattracker.algorithms import (
 @pytest.fixture()
 def default_algorithm() -> GidneyEkeraBasic:
     """Get a default instance of `BaselineShor`."""
-    return GidneyEkeraBasic(CryptParams("ECDH", 64))
+    return GidneyEkeraBasic(CryptParams("RSA", 64))
 
 
 def test_alg_sum(default_algorithm: QuantumAlgorithm) -> None:
