@@ -21,7 +21,18 @@ class ECCBasic(QuantumAlgorithm):
         -------
         AlgorithmSummary
             Logical resource estimates.
+
+        Raises
+        ------
+        NameError
+            If the protocol is not "ECDH".
         """
+        if self._crypt_params.protocol != "ECDH":
+            raise NameError(
+                'The protocol for this class must be "ECDH". '
+                + f'"{self._crypt_params.protocol}" was given.'
+            )
+
         key_size = self._crypt_params.key_size
 
         qubit_count = 9 * key_size

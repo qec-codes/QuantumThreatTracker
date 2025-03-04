@@ -23,7 +23,18 @@ class GidneyEkeraBasic(QuantumAlgorithm):
         -------
         AlgorithmSummary
             Logical resource estimates.
+
+        Raises
+        ------
+        NameError
+            If the protocol is not "RSA".
         """
+        if self._crypt_params.protocol != "RSA":
+            raise NameError(
+                'The protocol for this class must be "RSA". '
+                + f'"{self._crypt_params.protocol}" was given.'
+            )
+
         key_size = self._crypt_params.key_size
 
         qubit_count = int(np.ceil(3 * key_size + 0.002 * key_size * np.log(key_size)))

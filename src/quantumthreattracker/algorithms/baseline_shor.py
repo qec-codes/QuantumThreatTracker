@@ -17,7 +17,18 @@ class BaselineShor(QuantumAlgorithm):
         -------
         AlgorithmSummary
             Logical resource estimates.
+
+        Raises
+        ------
+        NameError
+            If the protocol is not "RSA".
         """
+        if self._crypt_params.protocol != "RSA":
+            raise NameError(
+                'The protocol for this class must be "RSA". '
+                + f'"{self._crypt_params.protocol}" was given.'
+            )
+
         key_size = self._crypt_params.key_size
         modulus = 2**key_size - 1
         multiplicand = 2**key_size - 2
