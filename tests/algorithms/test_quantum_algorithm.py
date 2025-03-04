@@ -4,10 +4,7 @@ import pytest
 from qualtran.resource_counting import GateCounts
 from qualtran.surface_code import AlgorithmSummary, PhysicalCostModel
 
-from quantumthreattracker.algorithms.quantum_algorithm import (
-    CryptParams,
-    QuantumAlgorithm,
-)
+from quantumthreattracker.algorithms import CryptParams, QuantumAlgorithm
 
 
 class SampleQuantumAlgorithm(QuantumAlgorithm):
