@@ -1,9 +1,9 @@
 """Class for a basic implementation of Gidney-Ekera.
 
 Creates physical resource estimates from the logical resource counts given in the
-abstract.
+abstract of [1].
 
-https://doi.org/10.22331/q-2021-04-15-433
+[1] https://doi.org/10.22331/q-2021-04-15-433
 """
 
 import numpy as np
