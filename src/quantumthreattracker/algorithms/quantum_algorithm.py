@@ -29,7 +29,7 @@ class CryptParams(ABC):
 class QuantumAlgorithm(ABC):
     """Base class for quantum algorithms."""
 
-    def __init__(self, crypt_params: CryptParams):
+    def __init__(self, crypt_params: CryptParams) -> None:
         """Initialise the `QuantumAlgorithm`.
 
         Parameters
