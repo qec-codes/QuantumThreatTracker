@@ -1,8 +1,8 @@
 """Algorithms module."""
 
-from .baseline_shor import BaselineShor
-from .ecc_basic import ECCBasic
-from .gidney_ekera_basic import GidneyEkeraBasic
+from .rsa.baseline_shor import BaselineShor
+from .rsa.gidney_ekera_basic import GidneyEkeraBasic
+from .ecc.ecc_basic import ECCBasic
 from .quantum_algorithm import CryptParams, QuantumAlgorithm
 
 __all__ = [
