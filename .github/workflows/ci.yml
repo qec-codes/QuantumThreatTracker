@@ -1,0 +1,23 @@
+name: CI
+on: [ push, pull_request ]
+jobs:
+  ruff:
+    name: Ruff
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run Ruff
+        uses: astral-sh/ruff-action@v3.2.1
+  pytest:
+    name: Pytest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+      - name: Install the project
+        run: uv sync
+      - name: Run tests
+        run: uv run pytest tests

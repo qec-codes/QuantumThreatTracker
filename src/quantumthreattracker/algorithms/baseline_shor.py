@@ -10,21 +10,6 @@ from quantumthreattracker.algorithms.quantum_algorithm import QuantumAlgorithm
 class BaselineShor(QuantumAlgorithm):
     """Class for the baseline implementation of Shor's algorithm."""
 
-    def success_probability(self) -> float:
-        """Calculate the algorithmic success probability.
-
-        Returns
-        -------
-        float
-            Algorithmic success probability.
-
-        Raises
-        ------
-        NotImplementedError
-            If the method has not been implemented.
-        """
-        return super().success_probability()
-
     def get_algorithm_summary(self) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
 
@@ -35,9 +20,15 @@ class BaselineShor(QuantumAlgorithm):
 
         Raises
         ------
-        NotImplementedError
-            If the method has not been implemented.
+        NameError
+            If the protocol is not "RSA".
         """
+        if self._crypt_params.protocol != "RSA":
+            raise NameError(
+                'The protocol for this class must be "RSA". '
+                + f'"{self._crypt_params.protocol}" was given.'
+            )
+
         key_size = self._crypt_params.key_size
         modulus = 2**key_size - 1
         multiplicand = 2**key_size - 2

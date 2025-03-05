@@ -2,7 +2,6 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, Union
 
 from qsharp.estimator import EstimatorParams, EstimatorResult, LogicalCounts
 from qualtran.surface_code import AlgorithmSummary, PhysicalCostModel
@@ -30,7 +29,7 @@ class CryptParams(ABC):
 class QuantumAlgorithm(ABC):
     """Base class for quantum algorithms."""
 
-    def __init__(self, crypt_params: CryptParams):
+    def __init__(self, crypt_params: CryptParams) -> None:
         """Initialise the `QuantumAlgorithm`.
 
         Parameters
@@ -39,22 +38,6 @@ class QuantumAlgorithm(ABC):
             Cryptographic protocol parameters.
         """
         self._crypt_params = crypt_params
-
-    @abstractmethod
-    def success_probability(self) -> float:
-        """Calculate the algorithmic success probability.
-
-        Returns
-        -------
-        float
-            Algorithmic success probability.
-
-        Raises
-        ------
-        NotImplementedError
-            If the method has not been implemented.
-        """
-        raise NotImplementedError
 
     @abstractmethod
     def get_algorithm_summary(self) -> AlgorithmSummary:
@@ -94,13 +77,13 @@ class QuantumAlgorithm(ABC):
         return resource_estimate
 
     def estimate_resources_azure(
-        self, estimator_params: Union[dict, List, EstimatorParams]
+        self, estimator_params: EstimatorParams | dict
     ) -> EstimatorResult:
         """Create a physical resource estimate using Azure.
 
         Parameters
         ----------
-        estimator_params : Union[dict, List, EstimatorParams]
+        estimator_params : EstimatorParams | dict
             Parameters for the Microsoft Azure Quantum Resource Estimator.
 
         Returns
@@ -119,5 +102,16 @@ class QuantumAlgorithm(ABC):
                 "measurementCount": algorithm_summary.n_logical_gates.measurement,
             }
         )
+
+        if isinstance(estimator_params, EstimatorParams):
+            estimator_params = estimator_params.as_dict()
+        elif not isinstance(estimator_params, dict):
+            raise TypeError(
+                f"{type(estimator_params)} is the wrong type for estimator parameters. "
+                + "It must be given as either an EstimatorParams instance or a dictionary."
+            )
+
+        if "errorBudget" not in estimator_params:
+            estimator_params["errorBudget"] = 0.9
 
         return logical_counts.estimate(estimator_params)
