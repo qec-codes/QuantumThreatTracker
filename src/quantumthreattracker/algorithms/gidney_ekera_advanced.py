@@ -1,6 +1,6 @@
 """Class for a parameterised implementation of Gidney-Ekera.
 
-https://doi.org/10.22331/q-2021-04-15-433
+[1] https://doi.org/10.22331/q-2021-04-15-433
 """
 
 from dataclasses import dataclass
@@ -18,21 +18,60 @@ from quantumthreattracker.algorithms.quantum_algorithm import (
 
 @dataclass
 class GidneyEkeraParams:
+    """Dataclass describing the parameters for Gidney-Ekera.
+
+    Parameters
+    ----------
     num_exp_qubits: int
-    num_pad_qubits: int
+        Number of exponent qubits. Denoted $n_e$ in [1].
+    window_size_exp: int
+        Exponentiation windows size. Denoted $n_{exp}$ in [1].
+    window_size_mul: int
+        Multiplication window size. Denoted $n_{mul}$ in [1].
+    """
+
+    num_exp_qubits: int
     window_size_exp: int
     window_size_mul: int
 
 
 class GidneyEkeraAdvanced(QuantumAlgorithm):
+    """Class for a parameterised implementation of Gidney-Ekera."""
+
     def __init__(self, crypt_params: CryptParams, alg_params: GidneyEkeraParams):
+        """Initialise the quantum algorithm.
+
+        Parameters
+        ----------
+        crypt_params : CryptParams
+            Cryptographic parameters.
+        alg_params : GidneyEkeraParams
+            Algorithmic parameters.
+        """
         super().__init__(crypt_params)
         self._alg_params = alg_params
 
-    def get_algorithm_summary(self):
+    def get_algorithm_summary(self) -> AlgorithmSummary:
+        """Compute logical resource estimates for the circuit.
+
+        Returns
+        -------
+        AlgorithmSummary
+            Logical resource estimates.
+
+        Raises
+        ------
+        NameError
+            If the protocol is not "RSA".
+        """
+        if self._crypt_params.protocol != "RSA":
+            raise NameError(
+                'The protocol for this class must be "RSA". '
+                + f'"{self._crypt_params.protocol}" was given.'
+            )
+
         key_size = self._crypt_params.key_size
         num_exp_qubits = self._alg_params.num_exp_qubits
-        num_pad_qubits = self._alg_params.num_pad_qubits
         window_size_exp = self._alg_params.window_size_exp
         window_size_mul = self._alg_params.window_size_mul
 
