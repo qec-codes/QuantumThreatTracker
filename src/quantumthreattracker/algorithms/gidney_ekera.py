@@ -35,7 +35,7 @@ class GidneyEkeraParams:
     window_size_mul: int
 
 
-class GidneyEkeraAdvanced(QuantumAlgorithm):
+class GidneyEkera(QuantumAlgorithm):
     """Class for a parameterised implementation of Gidney-Ekera."""
 
     def __init__(self, crypt_params: CryptParams, alg_params: GidneyEkeraParams):
