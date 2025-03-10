@@ -4,16 +4,52 @@
 """
 
 from dataclasses import dataclass
+from functools import cached_property
+from typing import Optional
 
-from qualtran import QUInt
+from attrs import field, frozen
+from qualtran import Bloq, QInt, QMontgomeryUInt, QUInt, Register, Signature
 from qualtran.bloqs.arithmetic import Add
-from qualtran.resource_counting import GateCounts, QECGatesCost, get_cost_value
+from qualtran.bloqs.basic_gates import CNOT, Toffoli
+from qualtran.resource_counting import (
+    BloqCountDictT,
+    GateCounts,
+    SympySymbolAllocator,
+)
+from qualtran.resource_counting.generalizers import _ignore_wrapper
 from qualtran.surface_code import AlgorithmSummary
 
 from quantumthreattracker.algorithms.quantum_algorithm import (
     CryptParams,
     QuantumAlgorithm,
 )
+
+
+@frozen
+class AddCustom(Bloq):
+    """A custom implementation of the `Add` bloq that overrides the call graph."""
+
+    a_dtype: QInt | QUInt | QMontgomeryUInt = field()
+    b_dtype: QInt | QUInt | QMontgomeryUInt = field()
+
+    @cached_property
+    def signature(self):
+        """Bloq signature."""
+        return Signature([Register("a", self.a_dtype), Register("b", self.b_dtype)])
+
+    def build_call_graph(self, ssa: "SympySymbolAllocator") -> "BloqCountDictT":
+        """Call graph construction."""
+        n = self.b_dtype.bitsize
+        n_cnot = (n - 2) * 6 + 3
+        return {Toffoli(): 2 * (n - 1), CNOT(): n_cnot}
+
+
+def generalize_and_decomp(bloq: Bloq) -> Optional[Bloq]:
+    """Override the default And Bloq of qualtran."""
+    if isinstance(bloq, Add):
+        return AddCustom(a_dtype=bloq.a_dtype, b_dtype=bloq.b_dtype)
+
+    return _ignore_wrapper(generalize_and_decomp, bloq)
 
 
 @dataclass
@@ -75,18 +111,25 @@ class GidneyEkera(QuantumAlgorithm):
         window_size_exp = self._alg_params.window_size_exp
         window_size_mul = self._alg_params.window_size_mul
 
+        # TODO: remove the custom overriding of the `Add` bloqs once the Qualtran
+        # implementation is fixed.
+        adder = Add(a_dtype=QUInt(key_size), b_dtype=QUInt(key_size))
+        adder_bloq_counts = adder.call_graph(
+            max_depth=10, generalizer=generalize_and_decomp
+        )[1]
+        adder_cost = GateCounts(
+            toffoli=adder_bloq_counts[Toffoli()],
+            clifford=adder_bloq_counts[CNOT()],
+        )
+
+        lookup_cost = GateCounts(toffoli=int(2 ** (window_size_exp + window_size_mul)))
+
         num_lookup_additions = int(
             2 * key_size * num_exp_qubits / (window_size_exp * window_size_mul)
         )
-
-        adder = Add(a_dtype=QUInt(key_size), b_dtype=QUInt(key_size))
-        lookup_cost = GateCounts(toffoli=int(2 ** (window_size_exp + window_size_mul)))
+        total_gate_count = num_lookup_additions * (lookup_cost + adder_cost)
 
         logical_qubit_count = 3 * key_size
-
-        total_gate_count = num_lookup_additions * (
-            get_cost_value(adder, QECGatesCost()) + lookup_cost
-        )
 
         return AlgorithmSummary(
             n_algo_qubits=logical_qubit_count, n_logical_gates=total_gate_count
