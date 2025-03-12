@@ -173,5 +173,80 @@
                 }
             }
         ]
+    },
+    {
+        "timestamp": 2808648000,
+        "hardwareList": [
+            {
+                "estimatorParams": {
+                    "qubitParams": {
+                        "name": "qubit_gate_ns_e3"
+                    },
+                    "constraints": {
+                        "maxPhysicalQubits": 131072000
+                    }
+                }
+            },
+            {
+                "estimatorParams": {
+                    "qubitParams": {
+                        "name": "qubit_gate_us_e4"
+                    },
+                    "constraints": {
+                        "maxPhysicalQubits": 13107200
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "timestamp": 2871763200,
+        "hardwareList": [
+            {
+                "estimatorParams": {
+                    "qubitParams": {
+                        "name": "qubit_gate_ns_e3"
+                    },
+                    "constraints": {
+                        "maxPhysicalQubits": 262144000
+                    }
+                }
+            },
+            {
+                "estimatorParams": {
+                    "qubitParams": {
+                        "name": "qubit_gate_us_e4"
+                    },
+                    "constraints": {
+                        "maxPhysicalQubits": 26214400
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "timestamp": 2934878400,
+        "hardwareList": [
+            {
+                "estimatorParams": {
+                    "qubitParams": {
+                        "name": "qubit_gate_ns_e3"
+                    },
+                    "constraints": {
+                        "maxPhysicalQubits": 524288000
+                    }
+                }
+            },
+            {
+                "estimatorParams": {
+                    "qubitParams": {
+                        "name": "qubit_gate_us_e4"
+                    },
+                    "constraints": {
+                        "maxPhysicalQubits": 52428800
+                    }
+                }
+            }
+        ]
     }
 ]

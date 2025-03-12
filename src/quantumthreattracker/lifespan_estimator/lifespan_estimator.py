@@ -6,7 +6,7 @@ from pathlib import Path
 
 from qsharp.estimator import EstimatorError
 
-from quantumthreattracker.algorithms import CryptParams, GidneyEkeraBasic
+from quantumthreattracker.algorithms import CryptParams, GidneyEkera, GidneyEkeraParams
 from quantumthreattracker.lifespan_estimator import HardwareRoadmap
 
 
@@ -40,8 +40,13 @@ class LifespanEstimator:
         # TODO:  Once we have more algorithms implemented, there should be an additional
         # module here to choose which quantum algorithm to use based on the
         # cryptographic protocol, and perhaps user input.
-        algorithm_params = CryptParams(protocol=protocol, key_size=key_size)
-        algorithm = GidneyEkeraBasic(crypt_params=algorithm_params)
+        crypt_params = CryptParams(protocol=protocol, key_size=key_size)
+        alg_params = GidneyEkeraParams(
+            num_exp_qubits=int(1.5 * key_size),
+            window_size_exp=5,
+            window_size_mul=5,
+        )
+        algorithm = GidneyEkera(crypt_params=crypt_params, alg_params=alg_params)
 
         threats = []
 
