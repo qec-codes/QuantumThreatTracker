@@ -19,7 +19,8 @@ from qualtran.resource_counting import (
 from qualtran.resource_counting.generalizers import _ignore_wrapper
 from qualtran.surface_code import AlgorithmSummary
 
-from quantumthreattracker.algorithms.quantum_algorithm import (
+from quantumthreattracker.algorithms import (
+    AlgParams,
     CryptParams,
     QuantumAlgorithm,
 )
@@ -53,7 +54,7 @@ def generalize_and_decomp(bloq: Bloq) -> Optional[Bloq]:
 
 
 @dataclass
-class GidneyEkeraParams:
+class GidneyEkeraParams(AlgParams):
     """Dataclass describing the parameters for Gidney-Ekera.
 
     Parameters
@@ -84,8 +85,29 @@ class GidneyEkera(QuantumAlgorithm):
         alg_params : GidneyEkeraParams
             Algorithmic parameters.
         """
-        super().__init__(crypt_params)
-        self._alg_params = alg_params
+        super().__init__(crypt_params, alg_params)
+
+    def generate_search_space(self):
+        """Generate a search space for algorithm parameters."""
+        key_size = self._crypt_params.key_size
+
+        search_space = []
+
+        # TODO: We need to change the number of exponentiation qubits
+        for num_exp_qubits in [1.5*key_size]:
+            for window_size_exp in [2, 3, 4, 5, 6, 7]:
+                for window_size_mul in [2, 3, 4, 5, 6, 7]:
+                    params = {
+                        "num_exp_qubits": num_exp_qubits,
+                        "window_size_exp": window_size_exp,
+                        "window_size_mul": window_size_mul,
+                    }
+
+                    alg_params = GidneyEkeraParams(**params)
+
+                    search_space.append(alg_params)
+
+        return search_space
 
     def get_algorithm_summary(self) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.

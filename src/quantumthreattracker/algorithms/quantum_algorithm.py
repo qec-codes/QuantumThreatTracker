@@ -25,11 +25,17 @@ class CryptParams(ABC):
     protocol: str
     key_size: int
 
+@dataclass
+class AlgParams:
+    """Base class for algorithm parameters."""
+
+    pass
+
 
 class QuantumAlgorithm(ABC):
     """Base class for quantum algorithms."""
 
-    def __init__(self, crypt_params: CryptParams) -> None:
+    def __init__(self, crypt_params: CryptParams, alg_params: AlgParams = None) -> None:
         """Initialise the `QuantumAlgorithm`.
 
         Parameters
@@ -38,6 +44,7 @@ class QuantumAlgorithm(ABC):
             Cryptographic protocol parameters.
         """
         self._crypt_params = crypt_params
+        self._alg_params = alg_params
 
     @abstractmethod
     def get_algorithm_summary(self) -> AlgorithmSummary:
@@ -54,6 +61,16 @@ class QuantumAlgorithm(ABC):
             If the method has not been implemented.
         """
         raise NotImplementedError
+
+    def generate_search_space(self) -> list[AlgParams]:
+        """Generate a search space for algorithm parameters.
+
+        Returns
+        -------
+        list[AlgParams]
+            List of algorithm parameters to search over.
+        """
+        return []
 
     def estimate_resources_qualtran(self, cost_model: PhysicalCostModel) -> dict:
         """Create a physical resource estimate using Qualtran.
