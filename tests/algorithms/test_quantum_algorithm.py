@@ -1,16 +1,18 @@
 """Tests for the quantum algorithm base class."""
 
+from typing import Optional
+
 import pytest
 from qualtran.resource_counting import GateCounts
 from qualtran.surface_code import AlgorithmSummary, PhysicalCostModel
 
-from quantumthreattracker.algorithms import CryptParams, QuantumAlgorithm
+from quantumthreattracker.algorithms import AlgParams, CryptParams, QuantumAlgorithm
 
 
 class SampleQuantumAlgorithm(QuantumAlgorithm):
     """Sample instance of the `QuantumAlgorithm` class."""
 
-    def get_algorithm_summary(self) -> AlgorithmSummary:
+    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
 
         Returns

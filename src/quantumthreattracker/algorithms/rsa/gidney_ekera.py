@@ -19,7 +19,7 @@ from qualtran.resource_counting import (
 from qualtran.resource_counting.generalizers import _ignore_wrapper
 from qualtran.surface_code import AlgorithmSummary
 
-from quantumthreattracker.algorithms import (
+from quantumthreattracker.algorithms.quantum_algorithm import (
     AlgParams,
     CryptParams,
     QuantumAlgorithm,
@@ -74,7 +74,8 @@ class GidneyEkeraParams(AlgParams):
 
 class GidneyEkera(QuantumAlgorithm):
     """Class for a parameterised implementation of Gidney-Ekera."""
-    def __init__(self, crypt_params: CryptParams, alg_params: GidneyEkeraParams = None):
+
+    def __init__(self, crypt_params: CryptParams, alg_params: Optional[GidneyEkeraParams] = None):
         """Initialise the quantum algorithm.
 
         Parameters
@@ -82,41 +83,18 @@ class GidneyEkera(QuantumAlgorithm):
         crypt_params : CryptParams
             Cryptographic parameters.
         alg_params : Optional[GidneyEkeraParams], optional
-            Algorithmic parameters. If None, default parameters will be used.
+            Algorithmic parameters, by default None
         """
-        if alg_params is None:
-            key_size = crypt_params.key_size
-            alg_params = GidneyEkeraParams(
-                num_exp_qubits=int(1.5 * key_size),
-                window_size_exp=4,
-                window_size_mul=4
-            )
         super().__init__(crypt_params, alg_params)
 
-    def generate_search_space(self):
-        """Generate a search space for algorithm parameters."""
-        key_size = self._crypt_params.key_size
-
-        search_space = []
-
-        # TODO: We need to change the number of exponentiation qubits
-        for num_exp_qubits in [1.5*key_size]:
-            for window_size_exp in [2, 3, 4, 5, 6, 7]:
-                for window_size_mul in [2, 3, 4, 5, 6, 7]:
-                    params = {
-                        "num_exp_qubits": num_exp_qubits,
-                        "window_size_exp": window_size_exp,
-                        "window_size_mul": window_size_mul,
-                    }
-
-                    alg_params = GidneyEkeraParams(**params)
-
-                    search_space.append(alg_params)
-
-        return search_space
-
-    def get_algorithm_summary(self) -> AlgorithmSummary:
+    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
+
+        Parameters
+        ----------
+        alg_params : Optional[AlgParams], optional
+            Algorithm parameters to use for the summary. If None, uses the parameters
+            stored in the instance (self._alg_params).
 
         Returns
         -------
@@ -127,6 +105,8 @@ class GidneyEkera(QuantumAlgorithm):
         ------
         NameError
             If the protocol is not "RSA".
+        ValueError
+            If no algorithm parameters are provided.
         """
         if self._crypt_params.protocol != "RSA":
             raise NameError(
@@ -134,10 +114,20 @@ class GidneyEkera(QuantumAlgorithm):
                 + f'"{self._crypt_params.protocol}" was given.'
             )
 
+        # Use provided alg_params or instance alg_params
+        effective_alg_params = alg_params or self._alg_params
+
+        if effective_alg_params is None:
+            raise ValueError("Algorithm parameters must be provided either at initialization or to this method.")
+
+        # Type checking
+        if not isinstance(effective_alg_params, GidneyEkeraParams):
+            raise TypeError(f"Expected GidneyEkeraParams, got {type(effective_alg_params).__name__}")
+
         key_size = self._crypt_params.key_size
-        num_exp_qubits = self._alg_params.num_exp_qubits
-        window_size_exp = self._alg_params.window_size_exp
-        window_size_mul = self._alg_params.window_size_mul
+        num_exp_qubits = effective_alg_params.num_exp_qubits
+        window_size_exp = effective_alg_params.window_size_exp
+        window_size_mul = effective_alg_params.window_size_mul
 
         # TODO: remove the custom overriding of the `Add` bloqs once the Qualtran
         # implementation is fixed.
