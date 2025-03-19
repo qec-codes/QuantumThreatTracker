@@ -15,7 +15,6 @@ class AlgorithmOptimizer:
     def find_min_estimate(
         algorithm: QuantumAlgorithm,
         crypt_params: CryptParams,
-        search_space: List[AlgParams],
         estimator_params: EstimatorParams,
         minimize_metric: str = 'physicalQubits'
     ) -> Tuple[AlgParams, EstimatorResult]:
@@ -37,6 +36,7 @@ class AlgorithmOptimizer:
         """
         # TODO: Change docstring for minimize_metric
         # Check if the search space is empty
+        search_space = algorithm(crypt_params).generate_search_space()
         if not search_space:
             raise ValueError("The search space is empty.")
 

@@ -34,7 +34,6 @@ class AlgParams:
 
 class QuantumAlgorithm(ABC):
     """Base class for quantum algorithms."""
-
     def __init__(self, crypt_params: CryptParams, alg_params: AlgParams = None) -> None:
         """Initialise the `QuantumAlgorithm`.
 
@@ -42,6 +41,8 @@ class QuantumAlgorithm(ABC):
         ----------
         crypt_params : CryptParams
             Cryptographic protocol parameters.
+        alg_params : AlgParams, optional
+            Algorithm parameters.
         """
         self._crypt_params = crypt_params
         self._alg_params = alg_params

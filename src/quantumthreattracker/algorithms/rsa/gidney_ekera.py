@@ -74,17 +74,23 @@ class GidneyEkeraParams(AlgParams):
 
 class GidneyEkera(QuantumAlgorithm):
     """Class for a parameterised implementation of Gidney-Ekera."""
-
-    def __init__(self, crypt_params: CryptParams, alg_params: GidneyEkeraParams):
+    def __init__(self, crypt_params: CryptParams, alg_params: GidneyEkeraParams = None):
         """Initialise the quantum algorithm.
 
         Parameters
         ----------
         crypt_params : CryptParams
             Cryptographic parameters.
-        alg_params : GidneyEkeraParams
-            Algorithmic parameters.
+        alg_params : Optional[GidneyEkeraParams], optional
+            Algorithmic parameters. If None, default parameters will be used.
         """
+        if alg_params is None:
+            key_size = crypt_params.key_size
+            alg_params = GidneyEkeraParams(
+                num_exp_qubits=int(1.5 * key_size),
+                window_size_exp=4,
+                window_size_mul=4
+            )
         super().__init__(crypt_params, alg_params)
 
     def generate_search_space(self):
