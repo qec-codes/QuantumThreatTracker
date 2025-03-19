@@ -6,9 +6,9 @@ Circuit construction from [Lit23], Fig. 4:
 """
 
 import math
+from dataclasses import dataclass
 from functools import cached_property
 from typing import Optional
-from dataclasses import dataclass
 
 from attrs import frozen
 from qualtran import Bloq, QBit, QUInt, Register, Signature
@@ -23,8 +23,8 @@ from qualtran.resource_counting.generalizers import _ignore_wrapper
 from qualtran.surface_code import AlgorithmSummary
 
 from quantumthreattracker.algorithms.quantum_algorithm import (
-    CryptParams,
     AlgParams,
+    CryptParams,
     QuantumAlgorithm,
 )
 
@@ -56,7 +56,7 @@ def generalize_c_half_decomp(b: Bloq) -> Optional[Bloq]:
 @dataclass
 class LitinskiECCParams(AlgParams):
     """Parameters for the Litinski ECC algorithm.
-    
+
     Parameters
     ----------
     window_size: int
@@ -64,16 +64,17 @@ class LitinskiECCParams(AlgParams):
     classical_bits: int
         Number of classical bits to be bruteforced.
     """
+
     window_size: int
     classical_bits: int = 48
 
 
 class LitinskiECC(QuantumAlgorithm):
     """Implementation of Litinski's algorithm for elliptic curve cryptography."""
-    
+
     def __init__(self, crypt_params: CryptParams, alg_params: Optional[LitinskiECCParams] = None):
         """Initialize the Litinski ECC algorithm.
-        
+
         Parameters
         ----------
         crypt_params: CryptParams
@@ -82,7 +83,7 @@ class LitinskiECC(QuantumAlgorithm):
             Algorithm parameters, by default None
         """
         super().__init__(crypt_params, alg_params)
-        
+
     def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
         """Compute logical resource estimates for Litinski's ECC algorithm.
 
@@ -109,10 +110,10 @@ class LitinskiECC(QuantumAlgorithm):
             raise NameError(
                 f'Protocol must be "ECDH", got "{self._crypt_params.protocol}"'
             )
-            
+
         # Use provided alg_params or instance alg_params
         effective_alg_params = alg_params or self._alg_params
-        
+
         if effective_alg_params is None:
             raise ValueError("Algorithm parameters must be provided either at initialization or to this method.")
 

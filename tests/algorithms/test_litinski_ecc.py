@@ -3,8 +3,11 @@
 import pytest
 from qualtran.surface_code import AlgorithmSummary
 
-from quantumthreattracker.algorithms import CryptParams, QuantumAlgorithm, AlgParams
-from quantumthreattracker.algorithms.ecc.litinski_ecc import LitinskiECC, LitinskiECCParams
+from quantumthreattracker.algorithms import AlgParams, CryptParams, QuantumAlgorithm
+from quantumthreattracker.algorithms.ecc.litinski_ecc import (
+    LitinskiECC,
+    LitinskiECCParams,
+)
 
 
 @pytest.fixture()
@@ -44,10 +47,10 @@ def test_missing_params_raises_error() -> None:
 def test_wrong_params_type_raises_error() -> None:
     """Test that providing wrong parameter type raises an error."""
     algorithm = LitinskiECC(CryptParams("ECDH", 64))
-    
+
     class WrongParams(AlgParams):
         pass
-    
+
     with pytest.raises(TypeError, match="Expected LitinskiECCParams"):
         algorithm.get_algorithm_summary(WrongParams())
 
@@ -55,7 +58,7 @@ def test_wrong_params_type_raises_error() -> None:
 def test_window_size_affects_output(default_algorithm: LitinskiECC) -> None:
     """Test that changing window size affects the algorithm summary."""
     default_sum = default_algorithm.get_algorithm_summary()
-    
+
     different_params = LitinskiECCParams(window_size=10, classical_bits=48)
     different_sum = default_algorithm.get_algorithm_summary(different_params)
 

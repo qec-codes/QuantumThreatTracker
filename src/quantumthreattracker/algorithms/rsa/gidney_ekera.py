@@ -5,7 +5,7 @@
 
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Optional, List
+from typing import Optional
 
 from attrs import field, frozen
 from qualtran import Bloq, QInt, QMontgomeryUInt, QUInt, Register, Signature
@@ -20,8 +20,8 @@ from qualtran.resource_counting.generalizers import _ignore_wrapper
 from qualtran.surface_code import AlgorithmSummary
 
 from quantumthreattracker.algorithms.quantum_algorithm import (
-    CryptParams,
     AlgParams,
+    CryptParams,
     QuantumAlgorithm,
 )
 
@@ -113,10 +113,10 @@ class GidneyEkera(QuantumAlgorithm):
                 'The protocol for this class must be "RSA". '
                 + f'"{self._crypt_params.protocol}" was given.'
             )
-        
+
         # Use provided alg_params or instance alg_params
         effective_alg_params = alg_params or self._alg_params
-        
+
         if effective_alg_params is None:
             raise ValueError("Algorithm parameters must be provided either at initialization or to this method.")
 

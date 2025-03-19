@@ -6,15 +6,20 @@ from qualtran import QUInt
 from qualtran.bloqs.mod_arithmetic import CModMulK
 from qualtran.surface_code import AlgorithmSummary
 
-from quantumthreattracker.algorithms.quantum_algorithm import AlgParams, CryptParams, QuantumAlgorithm
+from quantumthreattracker.algorithms.quantum_algorithm import (
+    AlgParams,
+    CryptParams,
+    QuantumAlgorithm,
+)
 
 
 class BaselineShorParams(AlgParams):
     """Dataclass describing the parameters for baseline Shor's algorithm.
-    
+
     Note: The basic implementation doesn't have configurable parameters,
     but this class is provided for consistency with the interface.
     """
+
     pass
 
 
@@ -23,7 +28,7 @@ class BaselineShor(QuantumAlgorithm):
 
     def __init__(self, crypt_params: CryptParams, alg_params: Optional[BaselineShorParams] = None):
         """Initialize the quantum algorithm.
-        
+
         Parameters
         ----------
         crypt_params : CryptParams
@@ -36,7 +41,7 @@ class BaselineShor(QuantumAlgorithm):
 
     def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
-        
+
         Parameters
         ----------
         alg_params : Optional[AlgParams], optional
@@ -54,8 +59,6 @@ class BaselineShor(QuantumAlgorithm):
         """
         # Parameters check is unnecessary for Baseline Shor as it doesn't use parameters
         # But we'll include it for consistency with the interface
-        effective_alg_params = alg_params or self._alg_params
-        
         if self._crypt_params.protocol != "RSA":
             raise NameError(
                 'The protocol for this class must be "RSA". '

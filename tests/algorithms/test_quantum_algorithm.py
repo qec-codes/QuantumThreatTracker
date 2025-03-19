@@ -1,11 +1,12 @@
 """Tests for the quantum algorithm base class."""
 
 from typing import Optional
+
 import pytest
 from qualtran.resource_counting import GateCounts
 from qualtran.surface_code import AlgorithmSummary, PhysicalCostModel
 
-from quantumthreattracker.algorithms import CryptParams, AlgParams, QuantumAlgorithm
+from quantumthreattracker.algorithms import AlgParams, CryptParams, QuantumAlgorithm
 
 
 class SampleQuantumAlgorithm(QuantumAlgorithm):

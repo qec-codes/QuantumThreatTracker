@@ -1,8 +1,8 @@
 """Base class for quantum algorithms."""
 
 from abc import ABC, abstractmethod
-from typing import Optional
 from dataclasses import dataclass
+from typing import Optional
 
 from qsharp.estimator import EstimatorParams, EstimatorResult, LogicalCounts
 from qualtran.surface_code import AlgorithmSummary, PhysicalCostModel
@@ -39,7 +39,7 @@ class QuantumAlgorithm(ABC):
 
     def __init__(self, crypt_params: CryptParams, alg_params: Optional[AlgParams] = None):
         """Initialize the quantum algorithm.
-        
+
         Parameters
         ----------
         crypt_params : CryptParams
@@ -53,28 +53,30 @@ class QuantumAlgorithm(ABC):
     @abstractmethod
     def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
-        
+
         This method must be implemented by all concrete algorithm classes.
-        
+
         Parameters
         ----------
         alg_params : Optional[AlgParams], optional
             Algorithm parameters to use for the summary. If None, uses the parameters
             stored in the instance (self._alg_params).
-            
+
         Returns
         -------
         AlgorithmSummary
             Logical resource estimates.
-        
+
         Raises
         ------
         ValueError
-            If no algorithm parameters are provided either at initialization or to this method.
+            If no alg params are provided either at init or to this method.
         """
         pass
-    
-    def estimate_resources_qualtran(self, cost_model: PhysicalCostModel, alg_params: Optional[AlgParams] = None) -> dict:
+
+    def estimate_resources_qualtran(
+        self, cost_model: PhysicalCostModel, alg_params: Optional[AlgParams] = None
+    ) -> dict:
         """Create a physical resource estimate using Qualtran.
 
         Parameters
@@ -95,11 +97,11 @@ class QuantumAlgorithm(ABC):
         }
         return resource_estimate
 
-    def estimate_resources_azure(self, 
+    def estimate_resources_azure(self,
                                estimator_params: EstimatorParams,
                                alg_params: Optional[AlgParams] = None) -> EstimatorResult:
         """Estimate resources using Azure Quantum Resource Estimator.
-        
+
         Parameters
         ----------
         estimator_params : EstimatorParams
@@ -107,16 +109,16 @@ class QuantumAlgorithm(ABC):
         alg_params : Optional[AlgParams], optional
             Algorithm parameters to use for the estimation. If None, uses the
             parameters stored in the instance (self._alg_params).
-            
+
         Returns
         -------
         EstimatorResult
             Results from the Azure Quantum Resource Estimator.
-            
+
         Raises
         ------
         ValueError
-            If no algorithm parameters are provided either at initialization or to this method.
+            If no alg params are provided either at init or to this method.
         """
         algorithm_summary = self.get_algorithm_summary(alg_params)
         t_and_ccz_count = algorithm_summary.n_logical_gates.total_t_and_ccz_count()
