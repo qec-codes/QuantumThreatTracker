@@ -64,3 +64,35 @@ def test_window_size_affects_output(default_algorithm: LitinskiECC) -> None:
 
     # Different window sizes should result in different resource estimates
     assert default_sum.n_logical_gates.toffoli != different_sum.n_logical_gates.toffoli
+
+
+def test_params_at_estimation_time() -> None:
+    """Test providing params during estimation instead of initialization."""
+    # Create algorithm without params
+    algorithm = LitinskiECC(CryptParams("ECDH", 256))
+
+    # Create params for estimation
+    params = LitinskiECCParams(window_size=22, classical_bits=48)
+
+    # Test Azure resource estimation with params at estimation time
+    from qsharp.estimator import EstimatorParams
+    estimator_params = EstimatorParams()
+
+    # This should succeed because we're providing params at estimation time
+    azure_result = algorithm.estimate_resources_azure(estimator_params, params)
+    assert 'physicalCounts' in azure_result
+    assert 'physicalQubits' in azure_result['physicalCounts']
+
+
+def test_no_params_anywhere_raises_error() -> None:
+    """Test that not providing params at init or estimation raises an error."""
+    # Create algorithm without params
+    algorithm = LitinskiECC(CryptParams("ECDH", 256))
+
+    # Test Azure resource estimation without params
+    from qsharp.estimator import EstimatorParams
+    estimator_params = EstimatorParams()
+
+    # This should raise a ValueError because no params are provided
+    with pytest.raises(ValueError, match="Algorithm parameters must be provided"):
+        algorithm.estimate_resources_azure(estimator_params)

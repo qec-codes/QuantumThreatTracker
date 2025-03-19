@@ -1,5 +1,6 @@
 """Class for the baseline implementation of Shor's algorithm."""
 
+from dataclasses import dataclass
 from typing import Optional
 
 from qualtran import QUInt
@@ -13,6 +14,7 @@ from quantumthreattracker.algorithms.quantum_algorithm import (
 )
 
 
+@dataclass
 class BaselineShorParams(AlgParams):
     """Dataclass describing the parameters for baseline Shor's algorithm.
 

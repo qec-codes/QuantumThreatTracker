@@ -1,5 +1,6 @@
 """Class for a basic implementation of Gidney-Ekera."""
 
+from dataclasses import dataclass
 from typing import Optional
 
 import numpy as np
@@ -13,6 +14,7 @@ from quantumthreattracker.algorithms.quantum_algorithm import (
 )
 
 
+@dataclass
 class GidneyEkeraBasicParams(AlgParams):
     """Parameters for the basic implementation of Gidney-Ekera.
 
