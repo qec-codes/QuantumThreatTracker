@@ -150,3 +150,38 @@ class LitinskiECC(QuantumAlgorithm):
         return AlgorithmSummary(
             n_algo_qubits=logical_qubit_count, n_logical_gates=total_gate_count
         )
+
+    def generate_search_space(self) -> list[LitinskiECCParams]:
+        """Generate a search space for algorithm parameters.
+
+        Creates a range of window sizes to search over. For smaller key sizes (≤256),
+        it explores smaller window sizes. For larger key sizes, it explores larger
+        window sizes which are more computationally efficient.
+
+        Returns
+        -------
+        list[LitinskiECCParams]
+            List of LitinskiECCParams with different window sizes.
+        """
+        key_size = self._crypt_params.key_size
+        search_space = []
+
+        # Default classical bits to bruteforce
+        classical_bits = 48
+
+        # Choose window sizes based on key size
+        if key_size <= 256:
+            # For smaller key sizes, smaller window sizes may be optimal
+            window_sizes = [4, 8, 12, 16, 20, 24, 28]
+        else:
+            # For larger key sizes, larger window sizes are generally better
+            window_sizes = [16, 20, 24, 28, 32, 36, 40]
+
+        for window_size in window_sizes:
+            params = LitinskiECCParams(
+                window_size=window_size,
+                classical_bits=classical_bits
+            )
+            search_space.append(params)
+
+        return search_space

@@ -86,3 +86,16 @@ class GidneyEkeraBasic(QuantumAlgorithm):
             ),
         )
         return alg_sum
+
+    def generate_search_space(self) -> list[GidneyEkeraBasicParams]:
+        """Generate a search space for algorithm parameters.
+
+        Since GidneyEkeraBasic doesn't have configurable parameters, this returns
+        a list with a single set of default parameters.
+
+        Returns
+        -------
+        list[GidneyEkeraBasicParams]
+            Single-element list containing default parameters.
+        """
+        return [GidneyEkeraBasicParams()]

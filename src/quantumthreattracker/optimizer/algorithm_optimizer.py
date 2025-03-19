@@ -3,55 +3,54 @@ from typing import List, Tuple
 
 from qsharp.estimator import EstimatorParams, EstimatorResult
 
-from quantumthreattracker.algorithms import AlgParams, CryptParams, QuantumAlgorithm
+from quantumthreattracker.algorithms import AlgParams, QuantumAlgorithm
 
 
 class AlgorithmOptimizer:
     """Class for optimizing quantum algorithm parameters based on resource estimates."""
 
-    # TODO: Enforce that the alg params should correspond a specific quantum algorithm
-    # TODO: or, just generate the search space here
     @staticmethod
     def find_min_estimate(
         algorithm: QuantumAlgorithm,
-        crypt_params: CryptParams,
         estimator_params: EstimatorParams,
-        minimize_metric: str = 'physicalQubits'
+        minimize_metric: str = 'physicalQubits',
+        search_space: List[AlgParams] = None
     ) -> Tuple[AlgParams, EstimatorResult]:
         """
         Optimize algorithm parameters to minimize a specific resource metric.
 
         Args:
             algorithm: The quantum algorithm instance to optimize.
-            crypt_params: Cryptographic parameters for the algorithm.
-            search_space: List of algorithm parameters to search over.
             estimator_params: Parameters for the resource estimator.
-            minimize_metric: The resource metric to minimize (default: 'n_phys_qubits').
-                             Options include: 'n_phys_qubits', 'runtime_in_seconds',
+            minimize_metric: Resource metric to minimize (default: 'physicalQubits').
+                             Options include: 'physicalQubits', 'runtimeInSeconds',
                              'toffoli_count', etc.
+            search_space: List of algorithm parameters to search over. If None or empty,
+                         will attempt to generate from algorithm.
 
         Returns
         -------
             Tuple containing (optimal_parameters, optimal_resource_estimate).
         """
-        # TODO: Change docstring for minimize_metric
-        # Check if the search space is empty
-        search_space = algorithm(crypt_params).generate_search_space()
+        # If search_space is None or empty, try to generate it from the algorithm
         if not search_space:
-            raise ValueError("The search space is empty.")
+            search_space = algorithm.generate_search_space()
+
+            # If search_space is still empty, raise an error
+            if not search_space:
+                raise ValueError("No search space provided and the algorithm doesn't have a defined search space")
 
         # Initialize variables to track minimum estimate
         min_estimate_params = search_space[0]
-        min_estimate = algorithm(crypt_params, search_space[0]).estimate_resources_azure(
-            estimator_params
+        min_estimate = algorithm.estimate_resources_azure(
+            estimator_params, search_space[0]
         )
         # Iterate through the rest of the search space
         for alg_params in search_space[1:]:
             # Configure algorithm with current parameters
-            current_alg = algorithm(crypt_params, alg_params)
-
-            # Get resource estimate for current parameters
-            current_estimate = current_alg.estimate_resources_azure(estimator_params)
+            current_estimate = algorithm.estimate_resources_azure(
+                estimator_params, alg_params
+            )
 
             # Extract current metric value
             current_metric_value = current_estimate['physicalCounts'].get(minimize_metric)

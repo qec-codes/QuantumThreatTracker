@@ -67,7 +67,6 @@ class BaselineShor(QuantumAlgorithm):
                 + f'"{self._crypt_params.protocol}" was given.'
             )
 
-        # Original computation logic
         key_size = self._crypt_params.key_size
         modulus = 2**key_size - 1
         multiplicand = 2**key_size - 2
@@ -82,3 +81,16 @@ class BaselineShor(QuantumAlgorithm):
         )
 
         return alg_sum_mod_exp
+
+    def generate_search_space(self) -> list[BaselineShorParams]:
+        """Generate a search space for algorithm parameters.
+
+        Since BaselineShor doesn't have configurable parameters, this returns
+        a list with a single set of default parameters.
+
+        Returns
+        -------
+        list[BaselineShorParams]
+            Single-element list containing default parameters.
+        """
+        return [BaselineShorParams()]

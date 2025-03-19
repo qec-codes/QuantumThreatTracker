@@ -2,14 +2,25 @@
 
 import pytest
 from qsharp.estimator import EstimatorParams
+from qualtran.surface_code import AlgorithmSummary
 
-from quantumthreattracker.algorithms import CryptParams
+from quantumthreattracker.algorithms import CryptParams, QuantumAlgorithm
 from quantumthreattracker.algorithms.rsa.gidney_ekera import (
     GidneyEkera,
     GidneyEkeraParams,
 )
 from quantumthreattracker.optimizer.algorithm_optimizer import AlgorithmOptimizer
 
+
+class SampleAlgorithm(QuantumAlgorithm):
+    """Sample algorithm class for testing."""
+
+    def __init__(self, crypt_params, alg_params=None):
+        super().__init__(crypt_params, alg_params)
+
+    def get_algorithm_summary(self, alg_params = None):
+        """Return a sample algorithm summary."""
+        return AlgorithmSummary(n_algo_qubits=10, n_logical_gates={'toffoli': 10})
 
 class TestGidneyEkeraOptimizer:
     """Test class specifically for optimizing GidneyEkera parameters."""
@@ -50,11 +61,10 @@ class TestGidneyEkeraOptimizer:
 
         # Run the optimizer
         best_params, _ = AlgorithmOptimizer.find_min_estimate(
-            GidneyEkera,
-            self.crypt_params,
-            search_space,
+            GidneyEkera(self.crypt_params),
             self.estimator_params,
-            minimize_metric='physicalQubits'
+            minimize_metric='physicalQubits',
+            search_space=search_space
         )
 
         # Verify the optimizer selected the parameters with minimum qubit count
@@ -74,12 +84,12 @@ class TestGidneyEkeraOptimizer:
 
         # Run the optimizer
         best_params, best_estimate = AlgorithmOptimizer.find_min_estimate(
-            GidneyEkera,
-            self.crypt_params,
-            search_space,
+            GidneyEkera(self.crypt_params),
             self.estimator_params,
-            minimize_metric='physicalQubits'
+            minimize_metric='physicalQubits',
+            search_space=search_space
         )
+
 
         # Verify that the optimizer returns a non-None value
         assert best_estimate is not None, "Best estimate should not be None"
@@ -88,24 +98,21 @@ class TestGidneyEkeraOptimizer:
         assert best_params == single_param
 
     def test_empty_search_space(self):
-        """Test that an error is raised when the search space is empty."""
-        # Create an empty search space
-        search_space = []
-
+        """Test error on empty search space."""
         # Verify that the optimizer raises a ValueError
-        with pytest.raises(ValueError, match="The search space is empty."):
+        # We use a sample algorithm with no defined search space
+        with pytest.raises(ValueError, match="No search space provided"):
             AlgorithmOptimizer.find_min_estimate(
-                GidneyEkera,
-                self.crypt_params,
-                search_space,
+                SampleAlgorithm(self.crypt_params),
                 self.estimator_params,
-                minimize_metric='physicalQubits'
+                minimize_metric='physicalQubits',
+                search_space=[]
             )
 
     def test_gidney_ekera_generate_search_space(self):
         """Test that a search space can be generated for GidneyEkera."""
         # Create an instance of GidneyEkera
-        algorithm = GidneyEkera(self.crypt_params, self.params_medium_windows)
+        algorithm = GidneyEkera(self.crypt_params)
 
         # Generate search space
         search_space = algorithm.generate_search_space()

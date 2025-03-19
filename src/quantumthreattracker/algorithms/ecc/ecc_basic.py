@@ -83,3 +83,16 @@ class ECCBasic(QuantumAlgorithm):
         )
 
         return alg_sum
+
+    def generate_search_space(self) -> list[ECCBasicParams]:
+        """Generate a search space for algorithm parameters.
+
+        Since ECCBasic doesn't have configurable parameters, this returns
+        a list with a single set of default parameters.
+
+        Returns
+        -------
+        list[ECCBasicParams]
+            Single-element list containing default parameters.
+        """
+        return [ECCBasicParams()]
