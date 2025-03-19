@@ -8,6 +8,7 @@ Circuit construction from [Lit23], Fig. 4:
 import math
 from functools import cached_property
 from typing import Optional
+from dataclasses import dataclass
 
 from attrs import frozen
 from qualtran import Bloq, QBit, QUInt, Register, Signature
@@ -21,7 +22,11 @@ from qualtran.resource_counting import (
 from qualtran.resource_counting.generalizers import _ignore_wrapper
 from qualtran.surface_code import AlgorithmSummary
 
-from quantumthreattracker.algorithms.quantum_algorithm import QuantumAlgorithm
+from quantumthreattracker.algorithms.quantum_algorithm import (
+    CryptParams,
+    AlgParams,
+    QuantumAlgorithm,
+)
 
 
 @frozen
@@ -48,17 +53,47 @@ def generalize_c_half_decomp(b: Bloq) -> Optional[Bloq]:
 
     return _ignore_wrapper(generalize_c_half_decomp, b)
 
-class LitinskiECC(QuantumAlgorithm):
-    """Implements Litinski's ECC algorithm."""
+@dataclass
+class LitinskiECCParams(AlgParams):
+    """Parameters for the Litinski ECC algorithm.
+    
+    Parameters
+    ----------
+    window_size: int
+        Window size for point addition in the ECC implementation.
+    classical_bits: int
+        Number of classical bits to be bruteforced.
+    """
+    window_size: int
+    classical_bits: int = 48
 
-    def get_algorithm_summary(self, window_size: int = 22) -> AlgorithmSummary:
+
+class LitinskiECC(QuantumAlgorithm):
+    """Implementation of Litinski's algorithm for elliptic curve cryptography."""
+    
+    def __init__(self, crypt_params: CryptParams, alg_params: Optional[LitinskiECCParams] = None):
+        """Initialize the Litinski ECC algorithm.
+        
+        Parameters
+        ----------
+        crypt_params: CryptParams
+            Cryptographic parameters, including key size.
+        alg_params: Optional[LitinskiECCParams], optional
+            Algorithm parameters, by default None
+        """
+        super().__init__(crypt_params, alg_params)
+        
+    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
         """Compute logical resource estimates for Litinski's ECC algorithm.
 
         Uses windowed approach with lookup, point addition, and unlookup operations.
         The algorithm uses (key_size-48)/window_size Lookup Additions.
 
-        Args:
-            window_size: Lookup table window size
+        Parameters
+        ----------
+        alg_params : Optional[AlgParams], optional
+            Algorithm parameters to use for the summary. If None, uses the parameters
+            stored in the instance (self._alg_params).
 
         Returns
         -------
@@ -67,16 +102,30 @@ class LitinskiECC(QuantumAlgorithm):
         Raises
         ------
             NameError: If protocol is not "ECDH"
+            ValueError: If no algorithm parameters are provided
+            TypeError: If alg_params is not LitinskiECCParams
         """
-        if self._crypt_params.protocol != "ECDH":
+        if self._crypt_params.protocol not in ["ECDH"]:
             raise NameError(
                 f'Protocol must be "ECDH", got "{self._crypt_params.protocol}"'
             )
+            
+        # Use provided alg_params or instance alg_params
+        effective_alg_params = alg_params or self._alg_params
+        
+        if effective_alg_params is None:
+            raise ValueError("Algorithm parameters must be provided either at initialization or to this method.")
+
+        # Type checking
+        if not isinstance(effective_alg_params, LitinskiECCParams):
+            raise TypeError(f"Expected LitinskiECCParams, got {type(effective_alg_params).__name__}")
 
         key_size = self._crypt_params.key_size
+        window_size = effective_alg_params.window_size
+        classical_bits = effective_alg_params.classical_bits
         mod = 2**key_size - 3
         # Litinski assumes that 48 bits of the key can be bruteforced classically
-        num_reps = math.ceil((key_size - 48) / window_size)
+        num_reps = math.ceil((key_size - classical_bits) / window_size)
 
         # Calculate costs of individual operations
         ecc_circ = ECAdd(n=key_size, mod=mod)

@@ -5,7 +5,7 @@
 
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Optional
+from typing import Optional, List
 
 from attrs import field, frozen
 from qualtran import Bloq, QInt, QMontgomeryUInt, QUInt, Register, Signature
@@ -21,6 +21,7 @@ from qualtran.surface_code import AlgorithmSummary
 
 from quantumthreattracker.algorithms.quantum_algorithm import (
     CryptParams,
+    AlgParams,
     QuantumAlgorithm,
 )
 
@@ -53,7 +54,7 @@ def generalize_and_decomp(bloq: Bloq) -> Optional[Bloq]:
 
 
 @dataclass
-class GidneyEkeraParams:
+class GidneyEkeraParams(AlgParams):
     """Dataclass describing the parameters for Gidney-Ekera.
 
     Parameters
@@ -74,21 +75,26 @@ class GidneyEkeraParams:
 class GidneyEkera(QuantumAlgorithm):
     """Class for a parameterised implementation of Gidney-Ekera."""
 
-    def __init__(self, crypt_params: CryptParams, alg_params: GidneyEkeraParams):
+    def __init__(self, crypt_params: CryptParams, alg_params: Optional[GidneyEkeraParams] = None):
         """Initialise the quantum algorithm.
 
         Parameters
         ----------
         crypt_params : CryptParams
             Cryptographic parameters.
-        alg_params : GidneyEkeraParams
-            Algorithmic parameters.
+        alg_params : Optional[GidneyEkeraParams], optional
+            Algorithmic parameters, by default None
         """
-        super().__init__(crypt_params)
-        self._alg_params = alg_params
+        super().__init__(crypt_params, alg_params)
 
-    def get_algorithm_summary(self) -> AlgorithmSummary:
+    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
+
+        Parameters
+        ----------
+        alg_params : Optional[AlgParams], optional
+            Algorithm parameters to use for the summary. If None, uses the parameters
+            stored in the instance (self._alg_params).
 
         Returns
         -------
@@ -99,17 +105,29 @@ class GidneyEkera(QuantumAlgorithm):
         ------
         NameError
             If the protocol is not "RSA".
+        ValueError
+            If no algorithm parameters are provided.
         """
         if self._crypt_params.protocol != "RSA":
             raise NameError(
                 'The protocol for this class must be "RSA". '
                 + f'"{self._crypt_params.protocol}" was given.'
             )
+        
+        # Use provided alg_params or instance alg_params
+        effective_alg_params = alg_params or self._alg_params
+        
+        if effective_alg_params is None:
+            raise ValueError("Algorithm parameters must be provided either at initialization or to this method.")
+
+        # Type checking
+        if not isinstance(effective_alg_params, GidneyEkeraParams):
+            raise TypeError(f"Expected GidneyEkeraParams, got {type(effective_alg_params).__name__}")
 
         key_size = self._crypt_params.key_size
-        num_exp_qubits = self._alg_params.num_exp_qubits
-        window_size_exp = self._alg_params.window_size_exp
-        window_size_mul = self._alg_params.window_size_mul
+        num_exp_qubits = effective_alg_params.num_exp_qubits
+        window_size_exp = effective_alg_params.window_size_exp
+        window_size_mul = effective_alg_params.window_size_mul
 
         # TODO: remove the custom overriding of the `Add` bloqs once the Qualtran
         # implementation is fixed.

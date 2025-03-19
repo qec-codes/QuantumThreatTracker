@@ -1,6 +1,7 @@
 """Base class for quantum algorithms."""
 
 from abc import ABC, abstractmethod
+from typing import Optional
 from dataclasses import dataclass
 
 from qsharp.estimator import EstimatorParams, EstimatorResult, LogicalCounts
@@ -26,36 +27,54 @@ class CryptParams(ABC):
     key_size: int
 
 
+@dataclass
+class AlgParams:
+    """Base class for algorithm parameters."""
+
+    pass
+
+
 class QuantumAlgorithm(ABC):
-    """Base class for quantum algorithms."""
+    """Abstract base class for quantum algorithms."""
 
-    def __init__(self, crypt_params: CryptParams) -> None:
-        """Initialise the `QuantumAlgorithm`.
-
+    def __init__(self, crypt_params: CryptParams, alg_params: Optional[AlgParams] = None):
+        """Initialize the quantum algorithm.
+        
         Parameters
         ----------
         crypt_params : CryptParams
-            Cryptographic protocol parameters.
+            Cryptographic parameters.
+        alg_params : Optional[AlgParams], optional
+            Algorithmic parameters, by default None
         """
         self._crypt_params = crypt_params
+        self._alg_params = alg_params
 
     @abstractmethod
-    def get_algorithm_summary(self) -> AlgorithmSummary:
+    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
-
+        
+        This method must be implemented by all concrete algorithm classes.
+        
+        Parameters
+        ----------
+        alg_params : Optional[AlgParams], optional
+            Algorithm parameters to use for the summary. If None, uses the parameters
+            stored in the instance (self._alg_params).
+            
         Returns
         -------
         AlgorithmSummary
             Logical resource estimates.
-
+        
         Raises
         ------
-        NotImplementedError
-            If the method has not been implemented.
+        ValueError
+            If no algorithm parameters are provided either at initialization or to this method.
         """
-        raise NotImplementedError
-
-    def estimate_resources_qualtran(self, cost_model: PhysicalCostModel) -> dict:
+        pass
+    
+    def estimate_resources_qualtran(self, cost_model: PhysicalCostModel, alg_params: Optional[AlgParams] = None) -> dict:
         """Create a physical resource estimate using Qualtran.
 
         Parameters
@@ -68,7 +87,7 @@ class QuantumAlgorithm(ABC):
         dict
             Physical resource estimates.
         """
-        algorithm_summary = self.get_algorithm_summary()
+        algorithm_summary = self.get_algorithm_summary(alg_params)
         resource_estimate = {
             "duration_hr": cost_model.duration_hr(algorithm_summary),
             "n_phys_qubits": cost_model.n_phys_qubits(algorithm_summary),
@@ -76,22 +95,30 @@ class QuantumAlgorithm(ABC):
         }
         return resource_estimate
 
-    def estimate_resources_azure(
-        self, estimator_params: EstimatorParams | dict
-    ) -> EstimatorResult:
-        """Create a physical resource estimate using Azure.
-
+    def estimate_resources_azure(self, 
+                               estimator_params: EstimatorParams,
+                               alg_params: Optional[AlgParams] = None) -> EstimatorResult:
+        """Estimate resources using Azure Quantum Resource Estimator.
+        
         Parameters
         ----------
-        estimator_params : EstimatorParams | dict
-            Parameters for the Microsoft Azure Quantum Resource Estimator.
-
+        estimator_params : EstimatorParams
+            Parameters for the resource estimator.
+        alg_params : Optional[AlgParams], optional
+            Algorithm parameters to use for the estimation. If None, uses the
+            parameters stored in the instance (self._alg_params).
+            
         Returns
         -------
         EstimatorResult
-            Physical resource estimates.
+            Results from the Azure Quantum Resource Estimator.
+            
+        Raises
+        ------
+        ValueError
+            If no algorithm parameters are provided either at initialization or to this method.
         """
-        algorithm_summary = self.get_algorithm_summary()
+        algorithm_summary = self.get_algorithm_summary(alg_params)
         t_and_ccz_count = algorithm_summary.n_logical_gates.total_t_and_ccz_count()
         logical_counts = LogicalCounts(
             {
