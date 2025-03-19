@@ -1,9 +1,14 @@
 [project]
 name = "quantumthreattracker"
 version = "0.1.0"
-description = "Add your description here"
+description = "A Python library for analysing the quantum threat posed by Shor's algorithm against cryptographic systems."
 readme = "README.md"
 requires-python = ">=3.12"
+authors = [
+    { name = "University of Edinburgh" },
+    { name = "Cambridge Consultants" },
+]
+license = "MIT"
 dependencies = [
     "ipykernel>=6.29.5",
     "matplotlib>=3.9.3",
@@ -14,6 +19,7 @@ dependencies = [
     "ruff>=0.8.3",
     "qualtran>=0.5.0",
     "pytest>=8.3.4",
+    "sphinx>=8.2.3",
 ]
 
 [build-system]
@@ -29,7 +35,8 @@ target-version = "py312"
 [tool.ruff.lint]
 # Enable flake8 (Pyflakes + pycodestyle), pep8-naming, flake8-bugbear, pylint 
 # and check for unused error suppression 
-select = ["D", "F", "E", "W", "N", "B", "PL", "RUF100", "I"]
+select = ["ANN", "D", "F", "E", "W", "N", "B", "PERF", "DOC", "PL", "RUF", "I"]
+preview = true
 
 # Ignore too many argument errors, and the opinionated flake8-bugbear rules
 ignore = ["PLR0912","PLR0913", "PLR0914", "B901", "B904", "B905", "B909", "PLR2004"]
@@ -45,3 +52,6 @@ max-doc-length = 88
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
+
+[tool.ruff.lint.flake8-annotations]
+mypy-init-return = true
