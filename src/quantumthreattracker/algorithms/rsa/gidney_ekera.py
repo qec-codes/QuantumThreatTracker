@@ -16,7 +16,7 @@ from qualtran.resource_counting import (
     GateCounts,
     SympySymbolAllocator,
 )
-from qualtran.resource_counting.generalizers import _ignore_wrapper
+from qualtran.resource_counting.generalizers import _ignore_wrapper  # noqa: PLC2701
 from qualtran.surface_code import AlgorithmSummary
 
 from quantumthreattracker.algorithms.quantum_algorithm import (
@@ -34,19 +34,32 @@ class AddCustom(Bloq):
     b_dtype: QInt | QUInt | QMontgomeryUInt = field()
 
     @cached_property
-    def signature(self):
+    def signature(self) -> "Signature":
         """Bloq signature."""
         return Signature([Register("a", self.a_dtype), Register("b", self.b_dtype)])
 
     def build_call_graph(self, ssa: "SympySymbolAllocator") -> "BloqCountDictT":
-        """Call graph construction."""
+        """Call graph construction.
+
+        Returns
+        -------
+        BloqCountDictT
+            Custom Bloq counts.
+        """
         n = self.b_dtype.bitsize
         n_cnot = (n - 2) * 6 + 3
         return {Toffoli(): 2 * (n - 1), CNOT(): n_cnot}
 
 
 def generalize_and_decomp(bloq: Bloq) -> Optional[Bloq]:
-    """Override the default And Bloq of qualtran."""
+    """Override the default And Bloq of qualtran.
+
+    Returns
+    -------
+    Optional[Bloq]
+        A custom And Bloq if the input is an instance of And, otherwise the result
+        of _ignore_wrapper.
+    """
     if isinstance(bloq, Add):
         return AddCustom(a_dtype=bloq.a_dtype, b_dtype=bloq.b_dtype)
 
@@ -75,7 +88,9 @@ class GidneyEkeraParams(AlgParams):
 class GidneyEkera(QuantumAlgorithm):
     """Class for a parameterised implementation of Gidney-Ekera."""
 
-    def __init__(self, crypt_params: CryptParams, alg_params: Optional[GidneyEkeraParams] = None):
+    def __init__(
+        self, crypt_params: CryptParams, alg_params: Optional[GidneyEkeraParams] = None
+    ):
         """Initialise the quantum algorithm.
 
         Parameters
@@ -87,7 +102,9 @@ class GidneyEkera(QuantumAlgorithm):
         """
         super().__init__(crypt_params, alg_params)
 
-    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
+    def get_algorithm_summary(
+        self, alg_params: Optional[AlgParams] = None
+    ) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
 
         Parameters
@@ -107,6 +124,8 @@ class GidneyEkera(QuantumAlgorithm):
             If the protocol is not "RSA".
         ValueError
             If no algorithm parameters are provided.
+        TypeError
+            If alg_params is not GidneyEkeraParams.
         """
         if self._crypt_params.protocol != "RSA":
             raise NameError(
@@ -118,11 +137,15 @@ class GidneyEkera(QuantumAlgorithm):
         effective_alg_params = alg_params or self._alg_params
 
         if effective_alg_params is None:
-            raise ValueError("Algorithm parameters must be provided either at initialization or to this method.")
+            raise ValueError(
+                "Algorithm parameters must be provided either at initialization or to this method."
+            )
 
         # Type checking
         if not isinstance(effective_alg_params, GidneyEkeraParams):
-            raise TypeError(f"Expected GidneyEkeraParams, got {type(effective_alg_params).__name__}")
+            raise TypeError(
+                f"Expected GidneyEkeraParams, got {type(effective_alg_params).__name__}"
+            )
 
         key_size = self._crypt_params.key_size
         num_exp_qubits = effective_alg_params.num_exp_qubits
@@ -152,3 +175,34 @@ class GidneyEkera(QuantumAlgorithm):
         return AlgorithmSummary(
             n_algo_qubits=logical_qubit_count, n_logical_gates=total_gate_count
         )
+
+    def generate_search_space(self) -> list[GidneyEkeraParams]:
+        """Generate a search space for algorithm parameters.
+
+        Creates a comprehensive range of algorithm parameters to search over, including:
+        - Fixed number of exponent qubits (typically 1.5x key size)
+        - Various window sizes for exponentiation (2-7)
+        - Various window sizes for multiplication (2-7)
+
+        Returns
+        -------
+        list[GidneyEkeraParams]
+            List of GidneyEkeraParams with various parameter combinations.
+        """
+        key_size = self._crypt_params.key_size
+        search_space = []
+
+        # Standard choice for exponent qubits
+        num_exp_qubits = int(1.5 * key_size)
+
+        # Create parameters for various window size combinations
+        for window_size_exp in [2, 3, 4, 5, 6, 7]:
+            for window_size_mul in [2, 3, 4, 5, 6, 7]:
+                params = GidneyEkeraParams(
+                    num_exp_qubits=num_exp_qubits,
+                    window_size_exp=window_size_exp,
+                    window_size_mul=window_size_mul,
+                )
+                search_space.append(params)
+
+        return search_space

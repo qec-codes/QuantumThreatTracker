@@ -13,13 +13,23 @@ from quantumthreattracker.algorithms.rsa.baseline_shor import (
 
 @pytest.fixture()
 def default_params() -> BaselineShorParams:
-    """Get default algorithm parameters for tests."""
+    """Get default algorithm parameters for tests.
+
+    Returns
+    -------
+        BaselineShorParams: The default parameters for the BaselineShor algorithm.
+    """
     return BaselineShorParams()
 
 
 @pytest.fixture()
-def default_algorithm(default_params) -> BaselineShor:
-    """Get a default instance of `BaselineShor`."""
+def default_algorithm(default_params: BaselineShorParams) -> BaselineShor:
+    """Get a default instance of `BaselineShor`.
+
+    Returns
+    -------
+        BaselineShor: An instance of the `BaselineShor` class.
+    """
     return BaselineShor(CryptParams("RSA", 64), default_params)
 
 
@@ -48,10 +58,8 @@ def test_key_size_affects_output() -> None:
 
     # Larger key size should result in more qubits and gates
     assert large_sum.n_algo_qubits > small_sum.n_algo_qubits
-    assert (
-        large_sum.n_logical_gates.clifford >
-        small_sum.n_logical_gates.clifford
-    )
+    assert large_sum.n_logical_gates.clifford > small_sum.n_logical_gates.clifford
+
 
 def test_params_at_estimation_time() -> None:
     """Test providing params during estimation instead of initialization."""
@@ -65,8 +73,9 @@ def test_params_at_estimation_time() -> None:
 
     # This should succeed because we're providing params at estimation time
     azure_result = algorithm.estimate_resources_azure(estimator_params, params)
-    assert 'physicalCounts' in azure_result
-    assert 'physicalQubits' in azure_result['physicalCounts']
+    assert "physicalCounts" in azure_result
+    assert "physicalQubits" in azure_result["physicalCounts"]
+
 
 def test_alg_summary_works_with_no_alg_params() -> None:
     """Test that not providing params at initialization or estimation works fine."""
@@ -77,6 +86,5 @@ def test_alg_summary_works_with_no_alg_params() -> None:
 
     # This should raise a ValueError because no params are provided
     azure_result = algorithm.estimate_resources_azure(estimator_params)
-    assert 'physicalCounts' in azure_result
-    assert 'physicalQubits' in azure_result['physicalCounts']
-
+    assert "physicalCounts" in azure_result
+    assert "physicalQubits" in azure_result["physicalCounts"]

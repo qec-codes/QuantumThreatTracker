@@ -37,7 +37,9 @@ class AlgParams:
 class QuantumAlgorithm(ABC):
     """Abstract base class for quantum algorithms."""
 
-    def __init__(self, crypt_params: CryptParams, alg_params: Optional[AlgParams] = None):
+    def __init__(
+        self, crypt_params: CryptParams, alg_params: Optional[AlgParams] = None
+    ):
         """Initialize the quantum algorithm.
 
         Parameters
@@ -51,7 +53,9 @@ class QuantumAlgorithm(ABC):
         self._alg_params = alg_params
 
     @abstractmethod
-    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
+    def get_algorithm_summary(
+        self, alg_params: Optional[AlgParams] = None
+    ) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
 
         This method must be implemented by all concrete algorithm classes.
@@ -73,6 +77,17 @@ class QuantumAlgorithm(ABC):
             If no alg params are provided either at init or to this method.
         """
         pass
+
+    @staticmethod
+    def generate_search_space() -> list[AlgParams]:
+        """Generate a search space for algorithm parameters.
+
+        Returns
+        -------
+        list[AlgParams]
+            List of algorithm parameters to search over.
+        """
+        return []
 
     def estimate_resources_qualtran(
         self, cost_model: PhysicalCostModel, alg_params: Optional[AlgParams] = None
@@ -97,9 +112,9 @@ class QuantumAlgorithm(ABC):
         }
         return resource_estimate
 
-    def estimate_resources_azure(self,
-                               estimator_params: EstimatorParams,
-                               alg_params: Optional[AlgParams] = None) -> EstimatorResult:
+    def estimate_resources_azure(
+        self, estimator_params: EstimatorParams, alg_params: Optional[AlgParams] = None
+    ) -> EstimatorResult:
         """Estimate resources using Azure Quantum Resource Estimator.
 
         Parameters
@@ -117,8 +132,9 @@ class QuantumAlgorithm(ABC):
 
         Raises
         ------
-        ValueError
-            If no alg params are provided either at init or to this method.
+        TypeError
+            If the estimator parameters are not given as an EstimatorParams instance or
+            a dictionary.
         """
         algorithm_summary = self.get_algorithm_summary(alg_params)
         t_and_ccz_count = algorithm_summary.n_logical_gates.total_t_and_ccz_count()

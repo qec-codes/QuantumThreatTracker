@@ -1,6 +1,7 @@
 """Tests for the `LitinskiECC` class."""
 
 import pytest
+from qsharp.estimator import EstimatorParams
 from qualtran.surface_code import AlgorithmSummary
 
 from quantumthreattracker.algorithms import AlgParams, CryptParams, QuantumAlgorithm
@@ -12,13 +13,23 @@ from quantumthreattracker.algorithms.ecc.litinski_ecc import (
 
 @pytest.fixture()
 def default_params() -> LitinskiECCParams:
-    """Get default algorithm parameters for tests."""
+    """Get default algorithm parameters for tests.
+
+    Returns
+    -------
+        LitinskiECCParams: A default set of parameters for the LitinskiECC algorithm.
+    """
     return LitinskiECCParams(window_size=22, classical_bits=48)
 
 
 @pytest.fixture()
-def default_algorithm(default_params) -> LitinskiECC:
-    """Get a default instance of `LitinskiECC`."""
+def default_algorithm(default_params: LitinskiECCParams) -> LitinskiECC:
+    """Get a default instance of `LitinskiECC`.
+
+    Returns
+    -------
+        LitinskiECC: A default instance of the LitinskiECC algorithm.
+    """
     return LitinskiECC(CryptParams("ECDH", 64), default_params)
 
 
@@ -75,13 +86,12 @@ def test_params_at_estimation_time() -> None:
     params = LitinskiECCParams(window_size=22, classical_bits=48)
 
     # Test Azure resource estimation with params at estimation time
-    from qsharp.estimator import EstimatorParams
     estimator_params = EstimatorParams()
 
     # This should succeed because we're providing params at estimation time
     azure_result = algorithm.estimate_resources_azure(estimator_params, params)
-    assert 'physicalCounts' in azure_result
-    assert 'physicalQubits' in azure_result['physicalCounts']
+    assert "physicalCounts" in azure_result
+    assert "physicalQubits" in azure_result["physicalCounts"]
 
 
 def test_no_params_anywhere_raises_error() -> None:
@@ -90,7 +100,6 @@ def test_no_params_anywhere_raises_error() -> None:
     algorithm = LitinskiECC(CryptParams("ECDH", 256))
 
     # Test Azure resource estimation without params
-    from qsharp.estimator import EstimatorParams
     estimator_params = EstimatorParams()
 
     # This should raise a ValueError because no params are provided

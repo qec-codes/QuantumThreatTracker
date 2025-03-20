@@ -12,7 +12,10 @@ from quantumthreattracker.algorithms import AlgParams, CryptParams, QuantumAlgor
 class SampleQuantumAlgorithm(QuantumAlgorithm):
     """Sample instance of the `QuantumAlgorithm` class."""
 
-    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
+    @staticmethod
+    def get_algorithm_summary(
+        alg_params: Optional[AlgParams] = None,
+    ) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
 
         Returns
@@ -25,13 +28,25 @@ class SampleQuantumAlgorithm(QuantumAlgorithm):
 
 @pytest.fixture()
 def default_crypt_params() -> CryptParams:
-    """Get a default set of `CryptParams`."""
+    """Get a default set of `CryptParams`.
+
+    Returns
+    -------
+    CryptParams
+        A default instance of `CryptParams`.
+    """
     return CryptParams("RSA", 2048)
 
 
 @pytest.fixture()
 def quantum_algorithm(default_crypt_params: CryptParams) -> QuantumAlgorithm:
-    """Get a default `QuantumAlgorithm`."""
+    """Get a default `QuantumAlgorithm`.
+
+    Returns
+    -------
+    QuantumAlgorithm
+        A default instance of `QuantumAlgorithm`.
+    """
     return SampleQuantumAlgorithm(crypt_params=default_crypt_params)
 
 

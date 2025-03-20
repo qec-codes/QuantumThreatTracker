@@ -10,7 +10,7 @@ from qsharp.estimator import EstimatorParams
 class HardwareRoadmap:
     """Class for representing quantum computing hardware roadmaps."""
 
-    def __init__(self, hardware_roadmap: list = None):
+    def __init__(self, hardware_roadmap: list | None = None):
         if hardware_roadmap is None:
             self._hardware_roadmap = []
         else:
@@ -47,7 +47,7 @@ class HardwareRoadmap:
         self,
         timestamp: int,
         estimator_params: EstimatorParams | dict | list,
-    ):
+    ) -> None:
         """Add a quantum computer to the hardware roadmap.
 
         Parameters
@@ -56,6 +56,12 @@ class HardwareRoadmap:
             Unix timestamp.
         estimator_params : EstimatorParams | dict | list
             Parameters characterising the quantum computer.
+
+        Raises
+        ------
+        TypeError
+            If the estimator parameters are not given as an EstimatorParams instance or
+            a dictionary.
         """
         if isinstance(estimator_params, list):
             estimator_params_list = estimator_params
@@ -97,7 +103,7 @@ class HardwareRoadmap:
             if not inserted:
                 self._hardware_roadmap.append(new_milestone)
 
-    def remove(self, timestamp: int, qc_index: int = None):
+    def remove(self, timestamp: int, qc_index: int | None = None) -> None:
         """Remove an entry from the hardware roadmap.
 
         Parameters
@@ -123,7 +129,7 @@ class HardwareRoadmap:
                         self._hardware_roadmap.pop(milestone_index)
                 return
 
-    def save_roadmap(self, file_name: str, file_path: Path = None) -> None:
+    def save_roadmap(self, file_name: str, file_path: Path | None = None) -> None:
         """Save the hardware roadmap as a JSON file.
 
         Parameters
