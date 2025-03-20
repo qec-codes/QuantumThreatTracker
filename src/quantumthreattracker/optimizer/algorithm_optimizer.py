@@ -1,4 +1,5 @@
 """Module for optimizing quantum algorithm parameters based on resource estimates."""
+
 from typing import List, Tuple
 
 from qsharp.estimator import EstimatorParams, EstimatorResult
@@ -13,24 +14,34 @@ class AlgorithmOptimizer:
     def find_min_estimate(
         algorithm: QuantumAlgorithm,
         estimator_params: EstimatorParams,
-        minimize_metric: str = 'physicalQubits',
-        search_space: List[AlgParams] = None
+        minimize_metric: str = "physicalQubits",
+        search_space: List[AlgParams] | None = None,
     ) -> Tuple[AlgParams, EstimatorResult]:
-        """
-        Optimize algorithm parameters to minimize a specific resource metric.
+        """Optimize algorithm parameters to minimize a specific resource metric.
 
-        Args:
-            algorithm: The quantum algorithm instance to optimize.
-            estimator_params: Parameters for the resource estimator.
-            minimize_metric: Resource metric to minimize (default: 'physicalQubits').
-                             Options include: 'physicalQubits', 'runtimeInSeconds',
-                             'toffoli_count', etc.
-            search_space: List of algorithm parameters to search over. If None or empty,
-                         will attempt to generate from algorithm.
+        Parameters
+        ----------
+        algorithm : QuantumAlgorithm
+            The quantum algorithm instance to optimize.
+        estimator_params : EstimatorParams
+            Parameters for the resource estimator.
+        minimize_metric : str, optional
+            Resource metric to minimize (default: 'physicalQubits'). Options include:
+            'physicalQubits', 'runtimeInSeconds', 'toffoli_count', etc.
+        search_space : List[AlgParams] | None, optional
+            List of algorithm parameters to search over. If None or empty, will attempt
+            to generate from algorithm.
 
         Returns
         -------
+        Tuple[AlgParams, EstimatorResult]
             Tuple containing (optimal_parameters, optimal_resource_estimate).
+
+        Raises
+        ------
+        ValueError
+            If no search space is provided and the algorithm doesn't have a defined
+            search space.
         """
         # If search_space is None or empty, try to generate it from the algorithm
         if not search_space:
@@ -38,7 +49,9 @@ class AlgorithmOptimizer:
 
             # If search_space is still empty, raise an error
             if not search_space:
-                raise ValueError("No search space provided and the algorithm doesn't have a defined search space")
+                raise ValueError(
+                    "No search space provided and the algorithm doesn't have a defined search space"
+                )
 
         # Initialize variables to track minimum estimate
         min_estimate_params = search_space[0]
@@ -53,8 +66,10 @@ class AlgorithmOptimizer:
             )
 
             # Extract current metric value
-            current_metric_value = current_estimate['physicalCounts'].get(minimize_metric)
-            min_metric_value = min_estimate['physicalCounts'].get(minimize_metric)
+            current_metric_value = current_estimate["physicalCounts"].get(
+                minimize_metric
+            )
+            min_metric_value = min_estimate["physicalCounts"].get(minimize_metric)
 
             # Skip if metric is not available
             if current_metric_value is None:

@@ -28,7 +28,9 @@ class BaselineShorParams(AlgParams):
 class BaselineShor(QuantumAlgorithm):
     """Class for the baseline implementation of Shor's algorithm."""
 
-    def __init__(self, crypt_params: CryptParams, alg_params: Optional[BaselineShorParams] = None):
+    def __init__(
+        self, crypt_params: CryptParams, alg_params: Optional[BaselineShorParams] = None
+    ):
         """Initialize the quantum algorithm.
 
         Parameters
@@ -41,7 +43,9 @@ class BaselineShor(QuantumAlgorithm):
         """
         super().__init__(crypt_params, alg_params)
 
-    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
+    def get_algorithm_summary(
+        self, alg_params: Optional[AlgParams] = None
+    ) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
 
         Parameters
@@ -82,7 +86,8 @@ class BaselineShor(QuantumAlgorithm):
 
         return alg_sum_mod_exp
 
-    def generate_search_space(self) -> list[BaselineShorParams]:
+    @staticmethod
+    def generate_search_space() -> list[BaselineShorParams]:
         """Generate a search space for algorithm parameters.
 
         Since BaselineShor doesn't have configurable parameters, this returns

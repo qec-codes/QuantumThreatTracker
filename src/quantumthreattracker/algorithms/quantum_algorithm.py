@@ -78,7 +78,8 @@ class QuantumAlgorithm(ABC):
         """
         pass
 
-    def generate_search_space(self) -> list[AlgParams]:
+    @staticmethod
+    def generate_search_space() -> list[AlgParams]:
         """Generate a search space for algorithm parameters.
 
         Returns

@@ -28,7 +28,11 @@ class GidneyEkeraBasicParams(AlgParams):
 class GidneyEkeraBasic(QuantumAlgorithm):
     """Class for a basic implementation of Gidney-Ekera."""
 
-    def __init__(self, crypt_params: CryptParams, alg_params: Optional[GidneyEkeraBasicParams] = None):
+    def __init__(
+        self,
+        crypt_params: CryptParams,
+        alg_params: Optional[GidneyEkeraBasicParams] = None,
+    ):
         """Initialize the quantum algorithm.
 
         Parameters
@@ -41,7 +45,9 @@ class GidneyEkeraBasic(QuantumAlgorithm):
         """
         super().__init__(crypt_params, alg_params)
 
-    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
+    def get_algorithm_summary(
+        self, alg_params: Optional[AlgParams] = None
+    ) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
 
         Parameters
@@ -87,7 +93,8 @@ class GidneyEkeraBasic(QuantumAlgorithm):
         )
         return alg_sum
 
-    def generate_search_space(self) -> list[GidneyEkeraBasicParams]:
+    @staticmethod
+    def generate_search_space() -> list[GidneyEkeraBasicParams]:
         """Generate a search space for algorithm parameters.
 
         Since GidneyEkeraBasic doesn't have configurable parameters, this returns
