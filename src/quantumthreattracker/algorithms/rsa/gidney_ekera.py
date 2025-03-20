@@ -16,7 +16,7 @@ from qualtran.resource_counting import (
     GateCounts,
     SympySymbolAllocator,
 )
-from qualtran.resource_counting.generalizers import _ignore_wrapper
+from qualtran.resource_counting.generalizers import _ignore_wrapper  # noqa: PLC2701
 from qualtran.surface_code import AlgorithmSummary
 
 from quantumthreattracker.algorithms.quantum_algorithm import (
@@ -34,19 +34,32 @@ class AddCustom(Bloq):
     b_dtype: QInt | QUInt | QMontgomeryUInt = field()
 
     @cached_property
-    def signature(self):
+    def signature(self) -> "Signature":
         """Bloq signature."""
         return Signature([Register("a", self.a_dtype), Register("b", self.b_dtype)])
 
     def build_call_graph(self, ssa: "SympySymbolAllocator") -> "BloqCountDictT":
-        """Call graph construction."""
+        """Call graph construction.
+
+        Returns
+        -------
+        BloqCountDictT
+            Custom Bloq counts.
+        """
         n = self.b_dtype.bitsize
         n_cnot = (n - 2) * 6 + 3
         return {Toffoli(): 2 * (n - 1), CNOT(): n_cnot}
 
 
 def generalize_and_decomp(bloq: Bloq) -> Optional[Bloq]:
-    """Override the default And Bloq of qualtran."""
+    """Override the default And Bloq of qualtran.
+
+    Returns
+    -------
+    Optional[Bloq]
+        A custom And Bloq if the input is an instance of And, otherwise the result
+        of _ignore_wrapper.
+    """
     if isinstance(bloq, Add):
         return AddCustom(a_dtype=bloq.a_dtype, b_dtype=bloq.b_dtype)
 
@@ -75,7 +88,9 @@ class GidneyEkeraParams(AlgParams):
 class GidneyEkera(QuantumAlgorithm):
     """Class for a parameterised implementation of Gidney-Ekera."""
 
-    def __init__(self, crypt_params: CryptParams, alg_params: Optional[GidneyEkeraParams] = None):
+    def __init__(
+        self, crypt_params: CryptParams, alg_params: Optional[GidneyEkeraParams] = None
+    ):
         """Initialise the quantum algorithm.
 
         Parameters
@@ -87,7 +102,9 @@ class GidneyEkera(QuantumAlgorithm):
         """
         super().__init__(crypt_params, alg_params)
 
-    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
+    def get_algorithm_summary(
+        self, alg_params: Optional[AlgParams] = None
+    ) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
 
         Parameters
@@ -107,6 +124,8 @@ class GidneyEkera(QuantumAlgorithm):
             If the protocol is not "RSA".
         ValueError
             If no algorithm parameters are provided.
+        TypeError
+            If alg_params is not GidneyEkeraParams.
         """
         if self._crypt_params.protocol != "RSA":
             raise NameError(
@@ -118,11 +137,15 @@ class GidneyEkera(QuantumAlgorithm):
         effective_alg_params = alg_params or self._alg_params
 
         if effective_alg_params is None:
-            raise ValueError("Algorithm parameters must be provided either at initialization or to this method.")
+            raise ValueError(
+                "Algorithm parameters must be provided either at initialization or to this method."
+            )
 
         # Type checking
         if not isinstance(effective_alg_params, GidneyEkeraParams):
-            raise TypeError(f"Expected GidneyEkeraParams, got {type(effective_alg_params).__name__}")
+            raise TypeError(
+                f"Expected GidneyEkeraParams, got {type(effective_alg_params).__name__}"
+            )
 
         key_size = self._crypt_params.key_size
         num_exp_qubits = effective_alg_params.num_exp_qubits

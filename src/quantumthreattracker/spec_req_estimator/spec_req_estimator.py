@@ -53,7 +53,7 @@ class SpecReqEstimator:
     def estimate_specs(
         self,
         estimator_params: EstimatorParams | dict,
-        quantum_algorithm: type[QuantumAlgorithm] = None,
+        quantum_algorithm: type[QuantumAlgorithm] | None = None,
     ) -> float:
         """Estimate the gate error rate needed for a given number of qubits.
 
@@ -104,7 +104,7 @@ class SpecReqEstimator:
                 )
                 lower_bound_found = True
             except EstimatorError:
-                gate_error_rate = gate_error_rate / 10
+                gate_error_rate /= 10
                 estimator_params = update_estimator_params(
                     estimator_params, gate_error_rate
                 )
