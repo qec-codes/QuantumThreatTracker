@@ -78,6 +78,17 @@ class QuantumAlgorithm(ABC):
         """
         pass
 
+    @staticmethod
+    def generate_search_space() -> list[AlgParams]:
+        """Generate a search space for algorithm parameters.
+
+        Returns
+        -------
+        list[AlgParams]
+            List of algorithm parameters to search over.
+        """
+        return []
+
     def estimate_resources_qualtran(
         self, cost_model: PhysicalCostModel, alg_params: Optional[AlgParams] = None
     ) -> dict:

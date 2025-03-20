@@ -175,3 +175,34 @@ class GidneyEkera(QuantumAlgorithm):
         return AlgorithmSummary(
             n_algo_qubits=logical_qubit_count, n_logical_gates=total_gate_count
         )
+
+    def generate_search_space(self) -> list[GidneyEkeraParams]:
+        """Generate a search space for algorithm parameters.
+
+        Creates a comprehensive range of algorithm parameters to search over, including:
+        - Fixed number of exponent qubits (typically 1.5x key size)
+        - Various window sizes for exponentiation (2-7)
+        - Various window sizes for multiplication (2-7)
+
+        Returns
+        -------
+        list[GidneyEkeraParams]
+            List of GidneyEkeraParams with various parameter combinations.
+        """
+        key_size = self._crypt_params.key_size
+        search_space = []
+
+        # Standard choice for exponent qubits
+        num_exp_qubits = int(1.5 * key_size)
+
+        # Create parameters for various window size combinations
+        for window_size_exp in [2, 3, 4, 5, 6, 7]:
+            for window_size_mul in [2, 3, 4, 5, 6, 7]:
+                params = GidneyEkeraParams(
+                    num_exp_qubits=num_exp_qubits,
+                    window_size_exp=window_size_exp,
+                    window_size_mul=window_size_mul,
+                )
+                search_space.append(params)
+
+        return search_space
