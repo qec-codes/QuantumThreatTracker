@@ -32,7 +32,9 @@ class ECCBasicParams(AlgParams):
 class ECCBasic(QuantumAlgorithm):
     """Class for a basic implementation of ECC."""
 
-    def __init__(self, crypt_params: CryptParams, alg_params: Optional[ECCBasicParams] = None):
+    def __init__(
+        self, crypt_params: CryptParams, alg_params: Optional[ECCBasicParams] = None
+    ):
         """Initialize the quantum algorithm.
 
         Parameters
@@ -45,7 +47,9 @@ class ECCBasic(QuantumAlgorithm):
         """
         super().__init__(crypt_params, alg_params)
 
-    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
+    def get_algorithm_summary(
+        self, alg_params: Optional[AlgParams] = None
+    ) -> AlgorithmSummary:
         """Compute logical resource estimates for the circuit.
 
         Parameters
@@ -83,3 +87,17 @@ class ECCBasic(QuantumAlgorithm):
         )
 
         return alg_sum
+
+    @staticmethod
+    def generate_search_space() -> list[ECCBasicParams]:
+        """Generate a search space for algorithm parameters.
+
+        Since ECCBasic doesn't have configurable parameters, this returns
+        a list with a single set of default parameters.
+
+        Returns
+        -------
+        list[ECCBasicParams]
+            Single-element list containing default parameters.
+        """
+        return [ECCBasicParams()]
