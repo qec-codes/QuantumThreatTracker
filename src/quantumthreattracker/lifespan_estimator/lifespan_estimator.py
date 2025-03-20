@@ -31,11 +31,6 @@ class LifespanEstimator:
         -------
         dict
             Threats against the given protocol.
-
-        Raises
-        ------
-        SyntaxError
-            If the given detail level is not within the required bounds.
         """
         # TODO:  Once we have more algorithms implemented, there should be an additional
         # module here to choose which quantum algorithm to use based on the
@@ -71,7 +66,7 @@ class LifespanEstimator:
             "threats": threats,
         }
 
-    def generate_report(self, protocols: list[dict]):
+    def generate_report(self, protocols: list[dict]) -> None:
         """Predict the threats against several cryptographic protocols.
 
         Parameters
@@ -79,14 +74,13 @@ class LifespanEstimator:
         protocols : list[dict]
             List of cryptographic protocols.
         """
-        threat_report = []
-        for protocol_and_key_size in protocols:
-            threat_report.append(
-                self.estimate_threats(
-                    protocol_and_key_size["algorithm"],
-                    protocol_and_key_size["keySize"],
-                )
+        threat_report = [
+            self.estimate_threats(
+                protocol_and_key_size["algorithm"],
+                protocol_and_key_size["keySize"],
             )
+            for protocol_and_key_size in protocols
+        ]
 
         self._threat_report = threat_report
 
@@ -147,7 +141,9 @@ class LifespanEstimator:
                 )
         return report_output
 
-    def save_report(self, file_name: str, file_path: str = None, detail_level: int = 3):
+    def save_report(
+        self, file_name: str, file_path: str | None = None, detail_level: int = 3
+    ) -> None:
         """Save the hardware roadmap as a JSON file.
 
         Parameters

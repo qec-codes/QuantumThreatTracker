@@ -10,13 +10,23 @@ from quantumthreattracker.algorithms.ecc.ecc_basic import ECCBasic, ECCBasicPara
 
 @pytest.fixture()
 def default_params() -> ECCBasicParams:
-    """Get default algorithm parameters for tests."""
+    """Get default algorithm parameters for tests.
+
+    Returns
+    -------
+        ECCBasicParams: The default parameters for the ECCBasic algorithm.
+    """
     return ECCBasicParams()
 
 
 @pytest.fixture()
-def default_algorithm(default_params) -> ECCBasic:
-    """Get a default instance of `ECCBasic`."""
+def default_algorithm(default_params: ECCBasicParams) -> ECCBasic:
+    """Get a default instance of `ECCBasic`.
+
+    Returns
+    -------
+        ECCBasic: An instance of the ECCBasic class with default parameters.
+    """
     return ECCBasic(CryptParams("ECDH", 64), default_params)
 
 
@@ -47,6 +57,7 @@ def test_key_size_affects_output() -> None:
     assert large_sum.n_algo_qubits > small_sum.n_algo_qubits
     assert large_sum.n_logical_gates.toffoli > small_sum.n_logical_gates.toffoli
 
+
 def test_alg_summary_works_with_no_alg_params() -> None:
     """Test that not providing params at init or estimation works fine."""
     # Create algorithm without params
@@ -56,5 +67,5 @@ def test_alg_summary_works_with_no_alg_params() -> None:
 
     # This should raise a ValueError because no params are provided
     azure_result = algorithm.estimate_resources_azure(estimator_params)
-    assert 'physicalCounts' in azure_result
-    assert 'physicalQubits' in azure_result['physicalCounts']
+    assert "physicalCounts" in azure_result
+    assert "physicalQubits" in azure_result["physicalCounts"]

@@ -12,6 +12,7 @@ from typing import Optional
 
 from attrs import frozen
 from qualtran import Bloq, QBit, QUInt, Register, Signature
+from qualtran.bloqs.arithmetic._shims import CHalf  # noqa: PLC2701
 from qualtran.bloqs.basic_gates import CNOT, TGate, Toffoli
 from qualtran.bloqs.factoring.ecc import ECAdd
 from qualtran.resource_counting import (
@@ -19,7 +20,7 @@ from qualtran.resource_counting import (
     GateCounts,
     SympySymbolAllocator,
 )
-from qualtran.resource_counting.generalizers import _ignore_wrapper
+from qualtran.resource_counting.generalizers import _ignore_wrapper  # noqa: PLC2701
 from qualtran.surface_code import AlgorithmSummary
 
 from quantumthreattracker.algorithms.quantum_algorithm import (
@@ -36,22 +37,35 @@ class CHalfCustom(Bloq):
     n: int
 
     @cached_property
-    def signature(self) -> 'Signature':
+    def signature(self) -> "Signature":
         """Bloq signature."""
-        return Signature([Register('ctrl', QBit()), Register('x', QUInt(self.n))])
+        return Signature([Register("ctrl", QBit()), Register("x", QUInt(self.n))])
 
     def build_call_graph(self, ssa: SympySymbolAllocator) -> BloqCountDictT:
-        """Call graph construction."""
-        return {Toffoli(): self.n, CNOT(): 2*self.n}
+        """Call graph construction.
+
+        Returns
+        -------
+        BloqCountDictT
+            Custom Bloq counts.
+        """
+        return {Toffoli(): self.n, CNOT(): 2 * self.n}
+
 
 def generalize_c_half_decomp(b: Bloq) -> Optional[Bloq]:
-    """Override the default CHalf Bloq of qualtran."""
-    from qualtran.bloqs.arithmetic._shims import CHalf
+    """Override the default CHalf Bloq of qualtran.
 
+    Returns
+    -------
+    Optional[Bloq]
+        A custom CHalf Bloq if the input is an instance of CHalf, otherwise the result
+        of _ignore_wrapper.
+    """
     if isinstance(b, CHalf):
         return CHalfCustom(b.n)
 
     return _ignore_wrapper(generalize_c_half_decomp, b)
+
 
 @dataclass
 class LitinskiECCParams(AlgParams):
@@ -72,7 +86,9 @@ class LitinskiECCParams(AlgParams):
 class LitinskiECC(QuantumAlgorithm):
     """Implementation of Litinski's algorithm for elliptic curve cryptography."""
 
-    def __init__(self, crypt_params: CryptParams, alg_params: Optional[LitinskiECCParams] = None):
+    def __init__(
+        self, crypt_params: CryptParams, alg_params: Optional[LitinskiECCParams] = None
+    ):
         """Initialize the Litinski ECC algorithm.
 
         Parameters
@@ -84,7 +100,9 @@ class LitinskiECC(QuantumAlgorithm):
         """
         super().__init__(crypt_params, alg_params)
 
-    def get_algorithm_summary(self, alg_params: Optional[AlgParams] = None) -> AlgorithmSummary:
+    def get_algorithm_summary(
+        self, alg_params: Optional[AlgParams] = None
+    ) -> AlgorithmSummary:
         """Compute logical resource estimates for Litinski's ECC algorithm.
 
         Uses windowed approach with lookup, point addition, and unlookup operations.
@@ -102,11 +120,14 @@ class LitinskiECC(QuantumAlgorithm):
 
         Raises
         ------
-            NameError: If protocol is not "ECDH"
-            ValueError: If no algorithm parameters are provided
-            TypeError: If alg_params is not LitinskiECCParams
+        NameError
+            If protocol is not "ECDH".
+        ValueError
+            If no algorithm parameters are provided.
+        TypeError
+            If alg_params is not LitinskiECCParams.
         """
-        if self._crypt_params.protocol not in ["ECDH"]:
+        if self._crypt_params.protocol not in {"ECDH"}:
             raise NameError(
                 f'Protocol must be "ECDH", got "{self._crypt_params.protocol}"'
             )
@@ -115,11 +136,15 @@ class LitinskiECC(QuantumAlgorithm):
         effective_alg_params = alg_params or self._alg_params
 
         if effective_alg_params is None:
-            raise ValueError("Algorithm parameters must be provided either at initialization or to this method.")
+            raise ValueError(
+                "Algorithm parameters must be provided either at initialization or to this method."
+            )
 
         # Type checking
         if not isinstance(effective_alg_params, LitinskiECCParams):
-            raise TypeError(f"Expected LitinskiECCParams, got {type(effective_alg_params).__name__}")
+            raise TypeError(
+                f"Expected LitinskiECCParams, got {type(effective_alg_params).__name__}"
+            )
 
         key_size = self._crypt_params.key_size
         window_size = effective_alg_params.window_size
@@ -130,20 +155,22 @@ class LitinskiECC(QuantumAlgorithm):
 
         # Calculate costs of individual operations
         ecc_circ = ECAdd(n=key_size, mod=mod)
-        # TODO: Change this to use the algorithm summary method once qualtran has a
+        # TODO: Change this to use the algorithm summary method once qualtran has a
         # decompositon for CHalf. This is a round about way of getting the cost of CHalf
-        ecc_circ_bloq_counts = ecc_circ.call_graph(max_depth=10, generalizer=generalize_c_half_decomp)[1]
+        ecc_circ_bloq_counts = ecc_circ.call_graph(
+            max_depth=10, generalizer=generalize_c_half_decomp
+        )[1]
         ecc_add_cost = GateCounts(
             toffoli=ecc_circ_bloq_counts[Toffoli()],
             clifford=ecc_circ_bloq_counts[CNOT()],
             t=ecc_circ_bloq_counts[TGate()],
         )
         windowing_cost = GateCounts(
-            toffoli=int(2**window_size + 2**(window_size / 2))
+            toffoli=int(2**window_size + 2 ** (window_size / 2))
         )
 
         # From [Lit23]: Only window_size bits needed in memory at once
-        logical_qubit_count = 10 * key_size + 2*window_size + 5
+        logical_qubit_count = 10 * key_size + 2 * window_size + 5
         # Total cost across all repetitions
         total_gate_count = num_reps * (ecc_add_cost + windowing_cost)
 
