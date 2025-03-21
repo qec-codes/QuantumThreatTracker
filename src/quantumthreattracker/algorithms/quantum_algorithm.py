@@ -114,7 +114,7 @@ class QuantumAlgorithm(ABC):
         return resource_estimate
 
     def estimate_resources_azure(
-        self, estimator_params: EstimatorParams, alg_params: Optional[AlgParams] = None
+        self, estimator_params: Optional[EstimatorParams] = None, alg_params: Optional[AlgParams] = None
     ) -> EstimatorResult:
         """Estimate resources using Azure Quantum Resource Estimator.
 
@@ -130,12 +130,6 @@ class QuantumAlgorithm(ABC):
         -------
         EstimatorResult
             Results from the Azure Quantum Resource Estimator.
-
-        Raises
-        ------
-        TypeError
-            If the estimator parameters are not given as an EstimatorParams instance or
-            a dictionary.
         """
         algorithm_summary = self.get_algorithm_summary(alg_params)
         t_and_ccz_count = algorithm_summary.n_logical_gates.total_t_and_ccz_count()
@@ -151,11 +145,9 @@ class QuantumAlgorithm(ABC):
 
         if isinstance(estimator_params, EstimatorParams):
             estimator_params = estimator_params.as_dict()
-        elif not isinstance(estimator_params, dict):
-            raise TypeError(
-                f"{type(estimator_params)} is the wrong type for estimator parameters. "
-                + "It must be given as either an EstimatorParams instance or a dictionary."
-            )
+
+        if estimator_params is None:
+            estimator_params = {}
 
         if "errorBudget" not in estimator_params:
             estimator_params["errorBudget"] = 0.9
