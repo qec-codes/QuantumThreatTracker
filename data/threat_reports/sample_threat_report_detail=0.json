@@ -1,7 +1,22 @@
 [
     {
-        "protocol": "RSA-512",
+        "protocol": "RSA-2048",
         "threats": [
+            {
+                "timestamp": 2366841600
+            },
+            {
+                "timestamp": 2366841600
+            },
+            {
+                "timestamp": 2429956800
+            },
+            {
+                "timestamp": 2429956800
+            },
+            {
+                "timestamp": 2493072000
+            },
             {
                 "timestamp": 2493072000
             },
@@ -43,142 +58,6 @@
             },
             {
                 "timestamp": 2934878400
-            },
-            {
-                "timestamp": 2934878400
-            }
-        ]
-    },
-    {
-        "protocol": "RSA-1024",
-        "threats": [
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2934878400
-            },
-            {
-                "timestamp": 2934878400
-            }
-        ]
-    },
-    {
-        "protocol": "RSA-2048",
-        "threats": [
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2934878400
-            },
-            {
-                "timestamp": 2934878400
-            }
-        ]
-    },
-    {
-        "protocol": "RSA-4096",
-        "threats": [
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2934878400
-            },
-            {
-                "timestamp": 2934878400
-            }
-        ]
-    },
-    {
-        "protocol": "RSA-8192",
-        "threats": [
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2934878400
-            },
-            {
-                "timestamp": 2934878400
-            }
-        ]
-    },
-    {
-        "protocol": "RSA-16384",
-        "threats": [
-            {
-                "timestamp": 2871763200
             },
             {
                 "timestamp": 2934878400

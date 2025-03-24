@@ -11,16 +11,6 @@
                         "maxPhysicalQubits": 1024000
                     }
                 }
-            },
-            {
-                "estimatorParams": {
-                    "qubitParams": {
-                        "name": "qubit_gate_us_e4"
-                    },
-                    "constraints": {
-                        "maxPhysicalQubits": 102400
-                    }
-                }
             }
         ]
     },
@@ -34,16 +24,6 @@
                     },
                     "constraints": {
                         "maxPhysicalQubits": 2048000
-                    }
-                }
-            },
-            {
-                "estimatorParams": {
-                    "qubitParams": {
-                        "name": "qubit_gate_us_e4"
-                    },
-                    "constraints": {
-                        "maxPhysicalQubits": 204800
                     }
                 }
             }
@@ -61,16 +41,6 @@
                         "maxPhysicalQubits": 4096000
                     }
                 }
-            },
-            {
-                "estimatorParams": {
-                    "qubitParams": {
-                        "name": "qubit_gate_us_e4"
-                    },
-                    "constraints": {
-                        "maxPhysicalQubits": 409600
-                    }
-                }
             }
         ]
     },
@@ -84,16 +54,6 @@
                     },
                     "constraints": {
                         "maxPhysicalQubits": 8192000
-                    }
-                }
-            },
-            {
-                "estimatorParams": {
-                    "qubitParams": {
-                        "name": "qubit_gate_us_e4"
-                    },
-                    "constraints": {
-                        "maxPhysicalQubits": 819200
                     }
                 }
             }
@@ -111,16 +71,6 @@
                         "maxPhysicalQubits": 16384000
                     }
                 }
-            },
-            {
-                "estimatorParams": {
-                    "qubitParams": {
-                        "name": "qubit_gate_us_e4"
-                    },
-                    "constraints": {
-                        "maxPhysicalQubits": 1638400
-                    }
-                }
             }
         ]
     },
@@ -134,16 +84,6 @@
                     },
                     "constraints": {
                         "maxPhysicalQubits": 32768000
-                    }
-                }
-            },
-            {
-                "estimatorParams": {
-                    "qubitParams": {
-                        "name": "qubit_gate_us_e4"
-                    },
-                    "constraints": {
-                        "maxPhysicalQubits": 3276800
                     }
                 }
             }
@@ -161,16 +101,6 @@
                         "maxPhysicalQubits": 65536000
                     }
                 }
-            },
-            {
-                "estimatorParams": {
-                    "qubitParams": {
-                        "name": "qubit_gate_us_e4"
-                    },
-                    "constraints": {
-                        "maxPhysicalQubits": 6553600
-                    }
-                }
             }
         ]
     },
@@ -184,16 +114,6 @@
                     },
                     "constraints": {
                         "maxPhysicalQubits": 131072000
-                    }
-                }
-            },
-            {
-                "estimatorParams": {
-                    "qubitParams": {
-                        "name": "qubit_gate_us_e4"
-                    },
-                    "constraints": {
-                        "maxPhysicalQubits": 13107200
                     }
                 }
             }
@@ -211,16 +131,6 @@
                         "maxPhysicalQubits": 262144000
                     }
                 }
-            },
-            {
-                "estimatorParams": {
-                    "qubitParams": {
-                        "name": "qubit_gate_us_e4"
-                    },
-                    "constraints": {
-                        "maxPhysicalQubits": 26214400
-                    }
-                }
             }
         ]
     },
@@ -234,16 +144,6 @@
                     },
                     "constraints": {
                         "maxPhysicalQubits": 524288000
-                    }
-                }
-            },
-            {
-                "estimatorParams": {
-                    "qubitParams": {
-                        "name": "qubit_gate_us_e4"
-                    },
-                    "constraints": {
-                        "maxPhysicalQubits": 52428800
                     }
                 }
             }
