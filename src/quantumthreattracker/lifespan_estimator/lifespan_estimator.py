@@ -2,8 +2,10 @@
 
 import copy
 import json
+from datetime import datetime
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 from qsharp.estimator import EstimatorError
 
 from quantumthreattracker.algorithms import (
@@ -47,7 +49,7 @@ class LifespanEstimator:
                 timestamp = milestone["timestamp"]
                 for algorithm in eligible_algorithms:
                     estimator_params = quantum_computer["estimatorParams"]
-                    estimator_params_uncapped_qubits = estimator_params
+                    estimator_params_uncapped_qubits = copy.deepcopy(estimator_params)
                     estimator_params_uncapped_qubits["constraints"][
                         "maxPhysicalQubits"
                     ] = None
@@ -95,13 +97,19 @@ class LifespanEstimator:
 
         self._threat_report = threat_report
 
-    def get_report(self, detail_level: int = 3) -> list:
+    def get_report(
+        self, detail_level: int = 3, soonest_threat_only: bool = False
+    ) -> list:
         """Get the threat report.
 
         Parameters
         ----------
         detail_level : int, optional
             Level of detail in the output, by default 3.
+        soonest_threat_only : bool, optional
+            Whether to only include the soonest threat for each protocol, by default
+            False. If True, all threats other than that with the soonest timestamp will
+            be removed from the report.
 
         Returns
         -------
@@ -150,6 +158,21 @@ class LifespanEstimator:
                 raise SyntaxError(
                     f"Detail level ({detail_level}) must be an integer between 0 and 3 (inclusive)."
                 )
+
+        if soonest_threat_only:
+            simplified_report_output = []
+            for protocol in report_output:
+                lowest_timestamp = protocol["threats"][0]["timestamp"]
+                soonest_threat = protocol["threats"][0]
+                for threat in protocol["threats"]:
+                    if threat["timestamp"] < lowest_timestamp:
+                        lowest_timestamp = threat["timestamp"]
+                        soonest_threat = threat
+                simplified_report_output.append(
+                    {"protocol": protocol["protocol"], "threats": [soonest_threat]}
+                )
+            return simplified_report_output
+
         return report_output
 
     def save_report(
@@ -172,3 +195,23 @@ class LifespanEstimator:
             file_path = str(Path.cwd())
         with Path.open(file_path + "/" + file_name + ".json", "w") as fp:
             json.dump(report_output, fp, indent=4)
+
+    def plot_threats(self) -> None:
+        """Plot the threats over time."""
+        report = self.get_report(detail_level=1, soonest_threat_only=True)
+        labels = []
+        timestamps = []
+        runtimes = []
+        for protocol in report:
+            labels.append(protocol["protocol"])
+            timestamps.append(
+                datetime.fromtimestamp(protocol["threats"][0]["timestamp"])
+            )
+            runtimes.append(protocol["threats"][0]["runtime"] / 3.6e12)
+        plt.scatter(timestamps, runtimes)
+        for i, txt in enumerate(labels):
+            plt.annotate(txt, (timestamps[i], runtimes[i]))
+        plt.yscale("log")
+        plt.xlabel("Time")
+        plt.ylabel("Runtime (hours)")
+        plt.title("Quantum threats over time")
