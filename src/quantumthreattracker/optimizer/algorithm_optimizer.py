@@ -1,7 +1,5 @@
 """Module for optimizing quantum algorithm parameters based on resource estimates."""
 
-from typing import List, Tuple
-
 from qsharp.estimator import EstimatorParams, EstimatorResult
 
 from quantumthreattracker.algorithms import AlgParams, QuantumAlgorithm
@@ -15,8 +13,8 @@ class AlgorithmOptimizer:
         algorithm: QuantumAlgorithm,
         estimator_params: EstimatorParams,
         minimize_metric: str = "physicalQubits",
-        search_space: List[AlgParams] | None = None,
-    ) -> Tuple[AlgParams, EstimatorResult]:
+        search_space: list[AlgParams] | None = None,
+    ) -> tuple[AlgParams, EstimatorResult]:
         """Optimize algorithm parameters to minimize a specific resource metric.
 
         Parameters
@@ -27,14 +25,14 @@ class AlgorithmOptimizer:
             Parameters for the resource estimator.
         minimize_metric : str, optional
             Resource metric to minimize (default: 'physicalQubits'). Options include:
-            'physicalQubits', 'runtimeInSeconds', 'toffoli_count', etc.
-        search_space : List[AlgParams] | None, optional
+            'physicalQubits', 'runtime', 'toffoliCount', etc.
+        search_space : list[AlgParams] | None, optional
             List of algorithm parameters to search over. If None or empty, will attempt
             to generate from algorithm.
 
         Returns
         -------
-        Tuple[AlgParams, EstimatorResult]
+        tuple[AlgParams, EstimatorResult]
             Tuple containing (optimal_parameters, optimal_resource_estimate).
 
         Raises
@@ -66,10 +64,8 @@ class AlgorithmOptimizer:
             )
 
             # Extract current metric value
-            current_metric_value = current_estimate["physicalCounts"].get(
-                minimize_metric
-            )
-            min_metric_value = min_estimate["physicalCounts"].get(minimize_metric)
+            current_metric_value = current_estimate["physicalCounts"][minimize_metric]
+            min_metric_value = min_estimate["physicalCounts"][minimize_metric]
 
             # Skip if metric is not available
             if current_metric_value is None:
