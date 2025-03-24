@@ -6,8 +6,12 @@ from pathlib import Path
 
 from qsharp.estimator import EstimatorError
 
-from quantumthreattracker.algorithms import CryptParams, GidneyEkera, GidneyEkeraParams
+from quantumthreattracker.algorithms import (
+    AlgorithmLister,
+    CryptParams,
+)
 from quantumthreattracker.lifespan_estimator import HardwareRoadmap
+from quantumthreattracker.optimizer import AlgorithmOptimizer
 
 
 class LifespanEstimator:
@@ -32,34 +36,41 @@ class LifespanEstimator:
         dict
             Threats against the given protocol.
         """
-        # TODO:  Once we have more algorithms implemented, there should be an additional
-        # module here to choose which quantum algorithm to use based on the
-        # cryptographic protocol, and perhaps user input.
-        crypt_params = CryptParams(protocol=protocol, key_size=key_size)
-        alg_params = GidneyEkeraParams(
-            num_exp_qubits=int(1.5 * key_size),
-            window_size_exp=5,
-            window_size_mul=5,
+        eligible_algorithms = AlgorithmLister.list_algorithms(
+            CryptParams(protocol=protocol, key_size=key_size)
         )
-        algorithm = GidneyEkera(crypt_params=crypt_params, alg_params=alg_params)
 
         threats = []
 
         for milestone in self._hardware_roadmap.as_list():
             for quantum_computer in milestone["hardwareList"]:
                 timestamp = milestone["timestamp"]
-                try:
-                    estimator_result = algorithm.estimate_resources_azure(
-                        quantum_computer["estimatorParams"]
-                    )
-                    threats.append(
-                        {
-                            "timestamp": timestamp,
-                            "estimatorResult": estimator_result,
-                        }
-                    )
-                except EstimatorError:
-                    pass
+                for algorithm in eligible_algorithms:
+                    estimator_params = quantum_computer["estimatorParams"]
+                    estimator_params_uncapped_qubits = estimator_params
+                    estimator_params_uncapped_qubits["constraints"][
+                        "maxPhysicalQubits"
+                    ] = None
+                    for minimize_metric in ["physicalQubits", "runtime"]:
+                        alg_params = (
+                            AlgorithmOptimizer.find_min_estimate(
+                                algorithm,
+                                estimator_params=estimator_params_uncapped_qubits,
+                                minimize_metric=minimize_metric,
+                            )
+                        )[0]
+                        try:
+                            estimator_result = algorithm.estimate_resources_azure(
+                                estimator_params, alg_params
+                            )
+                            threats.append(
+                                {
+                                    "timestamp": timestamp,
+                                    "estimatorResult": estimator_result,
+                                }
+                            )
+                        except EstimatorError:
+                            pass
 
         return {
             "protocol": str(protocol) + "-" + str(key_size),
