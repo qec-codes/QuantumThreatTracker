@@ -1,6 +1,5 @@
 """Class for listing the algorithms eligible for breaking a given crypt protocol."""
 
-from .ecc.ecc_basic import ECCBasic
 from .ecc.litinski_ecc import LitinskiECC
 from .quantum_algorithm import (
     CryptParams,
@@ -39,7 +38,7 @@ class AlgorithmLister:
         elif crypt_params.protocol == "DLDH":
             algorithms = []
         elif crypt_params.protocol == "ECDH":
-            algorithms = [ECCBasic(crypt_params), LitinskiECC(crypt_params)]
+            algorithms = [LitinskiECC(crypt_params)]
         else:
             raise ValueError(f"Unknown protocol: {crypt_params.protocol}")
         return algorithms
