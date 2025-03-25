@@ -1,522 +1,54 @@
 [
     {
-        "protocol": "RSA-8",
-        "threats": [
-            {
-                "timestamp": 2051265600
-            },
-            {
-                "timestamp": 2051265600
-            },
-            {
-                "timestamp": 2114380800
-            },
-            {
-                "timestamp": 2114380800
-            },
-            {
-                "timestamp": 2177496000
-            },
-            {
-                "timestamp": 2177496000
-            },
-            {
-                "timestamp": 2240611200
-            },
-            {
-                "timestamp": 2240611200
-            },
-            {
-                "timestamp": 2303726400
-            },
-            {
-                "timestamp": 2303726400
-            },
-            {
-                "timestamp": 2366841600
-            },
-            {
-                "timestamp": 2366841600
-            },
-            {
-                "timestamp": 2429956800
-            },
-            {
-                "timestamp": 2429956800
-            },
-            {
-                "timestamp": 2493072000
-            },
-            {
-                "timestamp": 2493072000
-            },
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2934878400
-            },
-            {
-                "timestamp": 2934878400
-            }
-        ]
-    },
-    {
-        "protocol": "RSA-16",
-        "threats": [
-            {
-                "timestamp": 2114380800
-            },
-            {
-                "timestamp": 2114380800
-            },
-            {
-                "timestamp": 2177496000
-            },
-            {
-                "timestamp": 2177496000
-            },
-            {
-                "timestamp": 2240611200
-            },
-            {
-                "timestamp": 2240611200
-            },
-            {
-                "timestamp": 2303726400
-            },
-            {
-                "timestamp": 2303726400
-            },
-            {
-                "timestamp": 2366841600
-            },
-            {
-                "timestamp": 2366841600
-            },
-            {
-                "timestamp": 2429956800
-            },
-            {
-                "timestamp": 2429956800
-            },
-            {
-                "timestamp": 2493072000
-            },
-            {
-                "timestamp": 2493072000
-            },
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2934878400
-            },
-            {
-                "timestamp": 2934878400
-            }
-        ]
-    },
-    {
-        "protocol": "RSA-32",
-        "threats": [
-            {
-                "timestamp": 2177496000
-            },
-            {
-                "timestamp": 2177496000
-            },
-            {
-                "timestamp": 2240611200
-            },
-            {
-                "timestamp": 2240611200
-            },
-            {
-                "timestamp": 2303726400
-            },
-            {
-                "timestamp": 2303726400
-            },
-            {
-                "timestamp": 2366841600
-            },
-            {
-                "timestamp": 2366841600
-            },
-            {
-                "timestamp": 2429956800
-            },
-            {
-                "timestamp": 2429956800
-            },
-            {
-                "timestamp": 2493072000
-            },
-            {
-                "timestamp": 2493072000
-            },
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2934878400
-            },
-            {
-                "timestamp": 2934878400
-            }
-        ]
-    },
-    {
-        "protocol": "RSA-64",
-        "threats": [
-            {
-                "timestamp": 2240611200
-            },
-            {
-                "timestamp": 2240611200
-            },
-            {
-                "timestamp": 2303726400
-            },
-            {
-                "timestamp": 2303726400
-            },
-            {
-                "timestamp": 2366841600
-            },
-            {
-                "timestamp": 2366841600
-            },
-            {
-                "timestamp": 2429956800
-            },
-            {
-                "timestamp": 2429956800
-            },
-            {
-                "timestamp": 2493072000
-            },
-            {
-                "timestamp": 2493072000
-            },
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2934878400
-            },
-            {
-                "timestamp": 2934878400
-            }
-        ]
-    },
-    {
-        "protocol": "RSA-128",
-        "threats": [
-            {
-                "timestamp": 2366841600
-            },
-            {
-                "timestamp": 2366841600
-            },
-            {
-                "timestamp": 2429956800
-            },
-            {
-                "timestamp": 2429956800
-            },
-            {
-                "timestamp": 2493072000
-            },
-            {
-                "timestamp": 2493072000
-            },
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2934878400
-            },
-            {
-                "timestamp": 2934878400
-            }
-        ]
-    },
-    {
-        "protocol": "RSA-256",
-        "threats": [
-            {
-                "timestamp": 2429956800
-            },
-            {
-                "timestamp": 2429956800
-            },
-            {
-                "timestamp": 2493072000
-            },
-            {
-                "timestamp": 2493072000
-            },
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2556187200
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2619302400
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2682417600
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2745532800
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2808648000
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2871763200
-            },
-            {
-                "timestamp": 2934878400
-            },
-            {
-                "timestamp": 2934878400
-            }
-        ]
-    },
-    {
         "protocol": "RSA-512",
         "threats": [
             {
-                "timestamp": 2493072000
+                "timestamp": 2303337600.0
             },
             {
-                "timestamp": 2493072000
+                "timestamp": 2303337600.0
             },
             {
-                "timestamp": 2556187200
+                "timestamp": 2350641600.0
             },
             {
-                "timestamp": 2556187200
+                "timestamp": 2350641600.0
             },
             {
-                "timestamp": 2619302400
+                "timestamp": 2397945600.0
             },
             {
-                "timestamp": 2619302400
+                "timestamp": 2397945600.0
             },
             {
-                "timestamp": 2682417600
+                "timestamp": 2445249600.0
             },
             {
-                "timestamp": 2682417600
+                "timestamp": 2445249600.0
             },
             {
-                "timestamp": 2745532800
+                "timestamp": 2492553600.0
             },
             {
-                "timestamp": 2745532800
+                "timestamp": 2492553600.0
             },
             {
-                "timestamp": 2808648000
+                "timestamp": 2539857600.0
             },
             {
-                "timestamp": 2808648000
+                "timestamp": 2539857600.0
             },
             {
-                "timestamp": 2871763200
+                "timestamp": 2587161600.0
             },
             {
-                "timestamp": 2871763200
+                "timestamp": 2587161600.0
             },
             {
-                "timestamp": 2934878400
+                "timestamp": 2634465600.0
             },
             {
-                "timestamp": 2934878400
+                "timestamp": 2634465600.0
             }
         ]
     },
@@ -524,46 +56,46 @@
         "protocol": "RSA-1024",
         "threats": [
             {
-                "timestamp": 2556187200
+                "timestamp": 2350641600.0
             },
             {
-                "timestamp": 2556187200
+                "timestamp": 2350641600.0
             },
             {
-                "timestamp": 2619302400
+                "timestamp": 2397945600.0
             },
             {
-                "timestamp": 2619302400
+                "timestamp": 2397945600.0
             },
             {
-                "timestamp": 2682417600
+                "timestamp": 2445249600.0
             },
             {
-                "timestamp": 2682417600
+                "timestamp": 2445249600.0
             },
             {
-                "timestamp": 2745532800
+                "timestamp": 2492553600.0
             },
             {
-                "timestamp": 2745532800
+                "timestamp": 2492553600.0
             },
             {
-                "timestamp": 2808648000
+                "timestamp": 2539857600.0
             },
             {
-                "timestamp": 2808648000
+                "timestamp": 2539857600.0
             },
             {
-                "timestamp": 2871763200
+                "timestamp": 2587161600.0
             },
             {
-                "timestamp": 2871763200
+                "timestamp": 2587161600.0
             },
             {
-                "timestamp": 2934878400
+                "timestamp": 2634465600.0
             },
             {
-                "timestamp": 2934878400
+                "timestamp": 2634465600.0
             }
         ]
     },
@@ -571,40 +103,335 @@
         "protocol": "RSA-2048",
         "threats": [
             {
-                "timestamp": 2619302400
+                "timestamp": 2397945600.0
             },
             {
-                "timestamp": 2619302400
+                "timestamp": 2397945600.0
             },
             {
-                "timestamp": 2682417600
+                "timestamp": 2445249600.0
             },
             {
-                "timestamp": 2682417600
+                "timestamp": 2445249600.0
             },
             {
-                "timestamp": 2745532800
+                "timestamp": 2492553600.0
             },
             {
-                "timestamp": 2745532800
+                "timestamp": 2492553600.0
             },
             {
-                "timestamp": 2808648000
+                "timestamp": 2539857600.0
             },
             {
-                "timestamp": 2808648000
+                "timestamp": 2539857600.0
             },
             {
-                "timestamp": 2871763200
+                "timestamp": 2587161600.0
             },
             {
-                "timestamp": 2871763200
+                "timestamp": 2587161600.0
             },
             {
-                "timestamp": 2934878400
+                "timestamp": 2634465600.0
             },
             {
-                "timestamp": 2934878400
+                "timestamp": 2634465600.0
+            }
+        ]
+    },
+    {
+        "protocol": "RSA-4096",
+        "threats": [
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            }
+        ]
+    },
+    {
+        "protocol": "RSA-8192",
+        "threats": [
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            }
+        ]
+    },
+    {
+        "protocol": "ECDH-256",
+        "threats": [
+            {
+                "timestamp": 2350641600.0
+            },
+            {
+                "timestamp": 2350641600.0
+            },
+            {
+                "timestamp": 2350641600.0
+            },
+            {
+                "timestamp": 2350641600.0
+            },
+            {
+                "timestamp": 2397945600.0
+            },
+            {
+                "timestamp": 2397945600.0
+            },
+            {
+                "timestamp": 2397945600.0
+            },
+            {
+                "timestamp": 2397945600.0
+            },
+            {
+                "timestamp": 2445249600.0
+            },
+            {
+                "timestamp": 2445249600.0
+            },
+            {
+                "timestamp": 2445249600.0
+            },
+            {
+                "timestamp": 2445249600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            }
+        ]
+    },
+    {
+        "protocol": "ECDH-384",
+        "threats": [
+            {
+                "timestamp": 2397945600.0
+            },
+            {
+                "timestamp": 2397945600.0
+            },
+            {
+                "timestamp": 2397945600.0
+            },
+            {
+                "timestamp": 2397945600.0
+            },
+            {
+                "timestamp": 2445249600.0
+            },
+            {
+                "timestamp": 2445249600.0
+            },
+            {
+                "timestamp": 2445249600.0
+            },
+            {
+                "timestamp": 2445249600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            }
+        ]
+    },
+    {
+        "protocol": "ECDH-521",
+        "threats": [
+            {
+                "timestamp": 2397945600.0
+            },
+            {
+                "timestamp": 2397945600.0
+            },
+            {
+                "timestamp": 2397945600.0
+            },
+            {
+                "timestamp": 2397945600.0
+            },
+            {
+                "timestamp": 2445249600.0
+            },
+            {
+                "timestamp": 2445249600.0
+            },
+            {
+                "timestamp": 2445249600.0
+            },
+            {
+                "timestamp": 2445249600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2492553600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2539857600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2587161600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            },
+            {
+                "timestamp": 2634465600.0
+            },
+            {
+                "timestamp": 2634465600.0
             }
         ]
     }
