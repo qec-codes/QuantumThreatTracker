@@ -4,19 +4,12 @@
 """
 
 from dataclasses import dataclass
-from functools import cached_property
 from typing import Optional
 
-from attrs import field, frozen
-from qualtran import Bloq, QInt, QMontgomeryUInt, QUInt, Register, Signature
+from qualtran import QUInt
 from qualtran.bloqs.arithmetic import Add
 from qualtran.bloqs.basic_gates import CNOT, Toffoli
-from qualtran.resource_counting import (
-    BloqCountDictT,
-    GateCounts,
-    SympySymbolAllocator,
-)
-from qualtran.resource_counting.generalizers import _ignore_wrapper  # noqa: PLC2701
+from qualtran.resource_counting import GateCounts
 from qualtran.surface_code import AlgorithmSummary
 
 from quantumthreattracker.algorithms.quantum_algorithm import (
@@ -24,46 +17,7 @@ from quantumthreattracker.algorithms.quantum_algorithm import (
     CryptParams,
     QuantumAlgorithm,
 )
-
-
-@frozen
-class AddCustom(Bloq):
-    """A custom implementation of the `Add` bloq that overrides the call graph."""
-
-    a_dtype: QInt | QUInt | QMontgomeryUInt = field()
-    b_dtype: QInt | QUInt | QMontgomeryUInt = field()
-
-    @cached_property
-    def signature(self) -> "Signature":
-        """Bloq signature."""
-        return Signature([Register("a", self.a_dtype), Register("b", self.b_dtype)])
-
-    def build_call_graph(self, ssa: "SympySymbolAllocator") -> "BloqCountDictT":
-        """Call graph construction.
-
-        Returns
-        -------
-        BloqCountDictT
-            Custom Bloq counts.
-        """
-        n = self.b_dtype.bitsize
-        n_cnot = (n - 2) * 6 + 3
-        return {Toffoli(): 2 * (n - 1), CNOT(): n_cnot}
-
-
-def generalize_and_decomp(bloq: Bloq) -> Optional[Bloq]:
-    """Override the default And Bloq of qualtran.
-
-    Returns
-    -------
-    Optional[Bloq]
-        A custom And Bloq if the input is an instance of And, otherwise the result
-        of _ignore_wrapper.
-    """
-    if isinstance(bloq, Add):
-        return AddCustom(a_dtype=bloq.a_dtype, b_dtype=bloq.b_dtype)
-
-    return _ignore_wrapper(generalize_and_decomp, bloq)
+from quantumthreattracker.algorithms.utils import generalize_and_decomp
 
 
 @dataclass
