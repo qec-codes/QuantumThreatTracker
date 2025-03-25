@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
 from qsharp.estimator import EstimatorError
 
 from quantumthreattracker.algorithms import (
@@ -196,8 +197,14 @@ class LifespanEstimator:
         with Path.open(file_path + "/" + file_name + ".json", "w") as fp:
             json.dump(report_output, fp, indent=4)
 
-    def plot_threats(self) -> None:
-        """Plot the threats over time."""
+    def plot_threats(self) -> Axes:
+        """Plot the threats over time.
+
+        Returns
+        -------
+        Axes
+            A matplotlib Axes object containing the plot.
+        """
         report = self.get_report(detail_level=1, soonest_threat_only=True)
         labels = []
         timestamps = []
@@ -208,10 +215,14 @@ class LifespanEstimator:
                 datetime.fromtimestamp(protocol["threats"][0]["timestamp"])
             )
             runtimes.append(protocol["threats"][0]["runtime"] / 3.6e12)
-        plt.scatter(timestamps, runtimes)
+
+        ax = plt.subplot(111)
+        ax.scatter(timestamps, runtimes)
         for i, txt in enumerate(labels):
-            plt.annotate(txt, (timestamps[i], runtimes[i]))
-        plt.yscale("log")
-        plt.xlabel("Time")
-        plt.ylabel("Runtime (hours)")
-        plt.title("Quantum threats over time")
+            ax.annotate(txt, (timestamps[i], runtimes[i]))
+        ax.set_yscale("log")
+        ax.set_xlabel("Timestamp")
+        ax.set_ylabel("Algorithm runtime (hours)")
+        ax.set_title("Estimates of when cryptographic protocols will be broken")
+        ax.spines[["right", "top"]].set_visible(False)
+        return ax
