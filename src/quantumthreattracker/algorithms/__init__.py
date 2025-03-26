@@ -1,5 +1,6 @@
 """Algorithms module."""
 
+from .algorithm_lister import AlgorithmLister
 from .ecc.ecc_basic import ECCBasic, ECCBasicParams
 from .ecc.litinski_ecc import LitinskiECC, LitinskiECCParams
 from .quantum_algorithm import AlgParams, CryptParams, QuantumAlgorithm
@@ -9,20 +10,17 @@ from .rsa.gidney_ekera_basic import GidneyEkeraBasic, GidneyEkeraBasicParams
 
 __all__ = [
     "AlgParams",
-    "AlgParams",
+    "AlgorithmLister",
     "BaselineShor",
     "BaselineShorParams",
-    "CryptParams",
     "CryptParams",
     "ECCBasic",
     "ECCBasicParams",
     "GidneyEkera",
     "GidneyEkeraBasic",
-    "GidneyEkeraBasic",
     "GidneyEkeraBasicParams",
     "GidneyEkeraParams",
     "LitinskiECC",
     "LitinskiECCParams",
-    "QuantumAlgorithm",
     "QuantumAlgorithm",
 ]
