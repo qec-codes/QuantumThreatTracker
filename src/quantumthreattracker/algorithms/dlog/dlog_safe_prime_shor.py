@@ -1,7 +1,7 @@
 """Class for the baseline implementation of Shor's algorithm for dlog."""
 
 from dataclasses import dataclass
-from typing import Literal, Optional
+from typing import Optional
 
 from qualtran import QUInt
 from qualtran.bloqs.arithmetic import Add
@@ -14,14 +14,11 @@ from quantumthreattracker.algorithms.quantum_algorithm import (
     CryptParams,
     QuantumAlgorithm,
 )
-from quantumthreattracker.algorithms.utils import (
-    fips_strength_level_rounded,
-    generalize_and_decomp,
-)
+from quantumthreattracker.algorithms.utils import generalize_and_decomp
 
 
 @dataclass
-class DLogShorParams(AlgParams):
+class DLogSafePrimeShorParams(AlgParams):
     """Parameters for discrete logarithm implementation using Shor's algorithm.
 
     In discrete logarithm problems, we have two main group types:
@@ -29,22 +26,21 @@ class DLogShorParams(AlgParams):
     - Safe-prime group: order n-1 where n is the modulus bit length
       With short exponent: nd = 2z
 
-    Note: This implementation focuses only on short exponents.
+    Note: This implementation focuses only on short exponents in safe-prime groups.
     """
 
-    group_type: Literal["schnorr", "safe_prime"]
     window_size_exp: int
     window_size_mul: int
 
 
-class DLogShor(QuantumAlgorithm):
+class DLogSafePrimeShor(QuantumAlgorithm):
     """Class for the implementation of Shor's algorithm for dlog problems.
 
     Method from https://github.com/Strilanc/efficient-quantum-factoring-2019/.
     """
 
     def __init__(
-        self, crypt_params: CryptParams, alg_params: Optional[DLogShorParams] = None
+        self, crypt_params: CryptParams, alg_params: Optional[DLogSafePrimeShorParams] = None
     ):
         """Initialize the quantum algorithm.
 
@@ -52,7 +48,7 @@ class DLogShor(QuantumAlgorithm):
         ----------
         crypt_params : CryptParams
             Cryptographic parameters.
-        alg_params : Optional[DLogShorParams], optional
+        alg_params : Optional[DLogSafePrimeShorParams], optional
             Algorithmic parameters for discrete logarithm problems.
         """
         super().__init__(crypt_params, alg_params)
@@ -75,13 +71,13 @@ class DLogShor(QuantumAlgorithm):
         Raises
         ------
         NameError
-            If the protocol is not "DH".
+            If the protocol is not "DH-SC".
         TypeError
-            If alg_params is not of type DLogShorParams.
+            If alg_params is not of type DLogSafePrimeShorParams.
         """
-        if self._crypt_params.protocol != "DH":
+        if self._crypt_params.protocol != "DH-SP":
             raise NameError(
-                'The protocol for this class must be "DH". '
+                'The protocol for this class must be "DH-SP". '
                 + f'"{self._crypt_params.protocol}" was given.'
             )
 
@@ -89,9 +85,12 @@ class DLogShor(QuantumAlgorithm):
         effective_alg_params = alg_params or self._alg_params
 
         # Type checking
-        if effective_alg_params is not None and not isinstance(effective_alg_params, DLogShorParams):
+        if (
+            effective_alg_params is not None
+            and not isinstance(effective_alg_params, DLogSafePrimeShorParams)
+        ):
             raise TypeError(
-                f"Expected DLogShorParams, got {type(effective_alg_params).__name__}"
+                f"Expected DLogSafePrimeShorParams, got {type(effective_alg_params).__name__}"
             )
 
         key_size = self._crypt_params.key_size
@@ -99,14 +98,7 @@ class DLogShor(QuantumAlgorithm):
         window_size_mul = effective_alg_params.window_size_mul
         delta = 5
 
-        z = fips_strength_level_rounded(key_size)
-        if effective_alg_params.group_type == "schnorr":
-            m = 2 * z + delta
-            num_exp_qubits = 2 * m
-
-        else:
-            m = key_size - 1 + delta
-            num_exp_qubits = 3 * m
+        num_exp_qubits = 3 * (key_size - 1 + delta)
 
         # TODO: remove the custom overriding of the `Add` bloqs once the Qualtran
         # implementation is fixed.
@@ -119,7 +111,9 @@ class DLogShor(QuantumAlgorithm):
             clifford=adder_bloq_counts[CNOT()],
         )
 
-        lookup_cost = GateCounts(toffoli=int(2 ** (window_size_exp + window_size_mul)))
+        lookup_cost = GateCounts(
+            toffoli=int(2 ** (window_size_exp + window_size_mul))
+        )
 
         num_lookup_additions = int(
             2 * key_size * num_exp_qubits / (window_size_exp * window_size_mul)
@@ -133,18 +127,21 @@ class DLogShor(QuantumAlgorithm):
         )
 
     @staticmethod
-    def generate_search_space() -> list[DLogShorParams]:
+    def generate_search_space() -> list[DLogSafePrimeShorParams]:
         """Generate a search space for algorithm parameters.
 
         Returns
         -------
-        list[DLogShorParams]
-            List of parameters for different group types with short exponents.
+        list[DLogSafePrimeShorParams]
+            List of parameters for different window size combinations.
         """
         search_space = []
 
-        # Generate params for both Schnorr and safe-prime groups with short exponents
-        search_space.append(DLogShorParams(group_type="schnorr", exponent_type="short"))
-        search_space.append(DLogShorParams(group_type="safe_prime", exponent_type="short"))
-
+        for window_size_exp in [2, 3, 4, 5, 6, 7]:
+            for window_size_mul in [2, 3, 4, 5, 6, 7]:
+                params = DLogSafePrimeShorParams(
+                    window_size_exp=window_size_exp,
+                    window_size_mul=window_size_mul,
+                )
+                search_space.append(params)
         return search_space

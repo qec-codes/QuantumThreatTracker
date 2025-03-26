@@ -1,5 +1,9 @@
 """Algorithms module."""
 
+from .dlog.dlog_safe_prime_eh import DLogSafePrimeEH, DLogSafePrimeEHParams
+from .dlog.dlog_safe_prime_shor import DLogSafePrimeShor, DLogSafePrimeShorParams
+from .dlog.dlog_schnorr_eh import DLogSchnorrEH, DLogSchnorrEHParams
+from .dlog.dlog_schnorr_shor import DLogSchnorrShor, DLogSchnorrShorParams
 from .algorithm_lister import AlgorithmLister
 from .ecc.ecc_basic import ECCBasic, ECCBasicParams
 from .ecc.litinski_ecc import LitinskiECC, LitinskiECCParams
@@ -14,6 +18,14 @@ __all__ = [
     "BaselineShor",
     "BaselineShorParams",
     "CryptParams",
+    "DLogSafePrimeEH",
+    "DLogSafePrimeEHParams",
+    "DLogSafePrimeShor",
+    "DLogSafePrimeShorParams",
+    "DLogSchnorrEH",
+    "DLogSchnorrEHParams",
+    "DLogSchnorrShor",
+    "DLogSchnorrShorParams",
     "ECCBasic",
     "ECCBasicParams",
     "GidneyEkera",
