@@ -1,10 +1,10 @@
 """Algorithms module."""
 
+from .algorithm_lister import AlgorithmLister
 from .dlog.dlog_safe_prime_eh import DLogSafePrimeEH, DLogSafePrimeEHParams
 from .dlog.dlog_safe_prime_shor import DLogSafePrimeShor, DLogSafePrimeShorParams
 from .dlog.dlog_schnorr_eh import DLogSchnorrEH, DLogSchnorrEHParams
 from .dlog.dlog_schnorr_shor import DLogSchnorrShor, DLogSchnorrShorParams
-from .algorithm_lister import AlgorithmLister
 from .ecc.ecc_basic import ECCBasic, ECCBasicParams
 from .ecc.litinski_ecc import LitinskiECC, LitinskiECCParams
 from .quantum_algorithm import AlgParams, CryptParams, QuantumAlgorithm
