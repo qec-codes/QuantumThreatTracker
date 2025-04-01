@@ -17,7 +17,8 @@ class CryptParams(ABC):
     protocol: str
         Cryptographic protocol. Can be:
             - 'RSA' (Rivest-Shamir-Adleman; factoring)
-            - 'DH' (Diffie-Hellman; discrete log)
+            - 'DH-SCH' (Diffie-Hellman; discrete log over Schnorr group)
+            - 'DH-SP' (Diffie-Hellman; discrete log over safe prime group)
             - 'ECDH' (Elliptic Curve Diffie-Hellman; discrete log over elliptic curves)
     key_size: int
         Cryptographic key size.

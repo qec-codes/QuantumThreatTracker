@@ -1,7 +1,4 @@
-"""Class for a parameterised implementation of Gidney-Ekera.
-
-[1] https://doi.org/10.22331/q-2021-04-15-433
-"""
+"""Class for the baseline implementation of Shor's algorithm for dlog."""
 
 from dataclasses import dataclass
 from typing import Optional
@@ -17,42 +14,45 @@ from quantumthreattracker.algorithms.quantum_algorithm import (
     CryptParams,
     QuantumAlgorithm,
 )
-from quantumthreattracker.algorithms.utils import generalize_and_decomp
+from quantumthreattracker.algorithms.utils import (
+    fips_strength_level_rounded,
+    generalize_and_decomp,
+)
 
 
 @dataclass
-class GidneyEkeraParams(AlgParams):
-    """Dataclass describing the parameters for Gidney-Ekera.
+class DLogSchnorrShorParams(AlgParams):
+    """Parameters for discrete logarithm implementation using Shor's algorithm.
 
-    Parameters
-    ----------
-    num_exp_qubits: int
-        Number of exponent qubits. Denoted $n_e$ in [1].
-    window_size_exp: int
-        Exponentiation windows size. Denoted $n_{exp}$ in [1].
-    window_size_mul: int
-        Multiplication window size. Denoted $n_{mul}$ in [1].
+    In discrete logarithm problems, we have two main group types:
+    - Schnorr group: order r with nd = nr = 2z (where z is bits of classical security)
+    - Safe-prime group: order n-1 where n is the modulus bit length
+      With short exponent: nd = 2z
+
+    Note: This implementation focuses only on short exponents.
     """
 
-    num_exp_qubits: int
     window_size_exp: int
     window_size_mul: int
 
 
-class GidneyEkera(QuantumAlgorithm):
-    """Class for a parameterised implementation of Gidney-Ekera."""
+class DLogSchnorrShor(QuantumAlgorithm):
+    """Class for the implementation of Shor's algorithm for dlog problems.
+
+    Method from https://github.com/Strilanc/efficient-quantum-factoring-2019/.
+    """
 
     def __init__(
-        self, crypt_params: CryptParams, alg_params: Optional[GidneyEkeraParams] = None
+        self, crypt_params: CryptParams, alg_params: Optional[DLogSchnorrShorParams] = None
     ):
-        """Initialise the quantum algorithm.
+        """Initialize the quantum algorithm.
 
         Parameters
         ----------
         crypt_params : CryptParams
             Cryptographic parameters.
-        alg_params : Optional[GidneyEkeraParams], optional
-            Algorithmic parameters, by default None
+        alg_params : Optional[DLogSchnorrShorParams], optional
+            Algorithmic parameters for discrete logarithm problems.
         """
         super().__init__(crypt_params, alg_params)
 
@@ -64,8 +64,7 @@ class GidneyEkera(QuantumAlgorithm):
         Parameters
         ----------
         alg_params : Optional[AlgParams], optional
-            Algorithm parameters to use for the summary. If None, uses the parameters
-            stored in the instance (self._alg_params).
+            Algorithm parameters
 
         Returns
         -------
@@ -75,36 +74,33 @@ class GidneyEkera(QuantumAlgorithm):
         Raises
         ------
         NameError
-            If the protocol is not "RSA".
-        ValueError
-            If no algorithm parameters are provided.
+            If the protocol is not "DH-SCH".
         TypeError
-            If alg_params is not GidneyEkeraParams.
+            If alg_params is not of type DLogSchnorrShorParams.
         """
-        if self._crypt_params.protocol != "RSA":
+        if self._crypt_params.protocol != "DH-SCH":
             raise NameError(
-                'The protocol for this class must be "RSA". '
+                'The protocol for this class must be "DH-SCH". '
                 + f'"{self._crypt_params.protocol}" was given.'
             )
 
         # Use provided alg_params or instance alg_params
         effective_alg_params = alg_params or self._alg_params
 
-        if effective_alg_params is None:
-            raise ValueError(
-                "Algorithm parameters must be provided either at initialization or to this method."
-            )
-
         # Type checking
-        if not isinstance(effective_alg_params, GidneyEkeraParams):
+        if (effective_alg_params is not None and
+                not isinstance(effective_alg_params, DLogSchnorrShorParams)):
             raise TypeError(
-                f"Expected GidneyEkeraParams, got {type(effective_alg_params).__name__}"
+                f"Expected DLogSchnorrShorParams, got {type(effective_alg_params).__name__}"
             )
 
         key_size = self._crypt_params.key_size
-        num_exp_qubits = effective_alg_params.num_exp_qubits
         window_size_exp = effective_alg_params.window_size_exp
         window_size_mul = effective_alg_params.window_size_mul
+        delta = 5
+
+        z = fips_strength_level_rounded(key_size)
+        num_exp_qubits = 2 * (2 * z + delta)
 
         # TODO: remove the custom overriding of the `Add` bloqs once the Qualtran
         # implementation is fixed.
@@ -130,30 +126,20 @@ class GidneyEkera(QuantumAlgorithm):
             n_algo_qubits=logical_qubit_count, n_logical_gates=total_gate_count
         )
 
-    def generate_search_space(self) -> list[GidneyEkeraParams]:
+    @staticmethod
+    def generate_search_space() -> list[DLogSchnorrShorParams]:
         """Generate a search space for algorithm parameters.
-
-        Creates a comprehensive range of algorithm parameters to search over, including:
-        - Fixed number of exponent qubits (typically 1.5x key size)
-        - Various window sizes for exponentiation (2-7)
-        - Various window sizes for multiplication (2-7)
 
         Returns
         -------
-        list[GidneyEkeraParams]
-            List of GidneyEkeraParams with various parameter combinations.
+        list[DLogSchnorrShorParams]
+            List of parameters for different group types with short exponents.
         """
-        key_size = self._crypt_params.key_size
         search_space = []
 
-        # Standard choice for exponent qubits
-        num_exp_qubits = int(1.5 * key_size)
-
-        # Create parameters for various window size combinations
         for window_size_exp in [2, 3, 4, 5, 6, 7]:
             for window_size_mul in [2, 3, 4, 5, 6, 7]:
-                params = GidneyEkeraParams(
-                    num_exp_qubits=num_exp_qubits,
+                params = DLogSchnorrShorParams(
                     window_size_exp=window_size_exp,
                     window_size_mul=window_size_mul,
                 )
