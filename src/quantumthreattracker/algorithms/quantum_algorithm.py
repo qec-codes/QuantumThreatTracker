@@ -158,6 +158,6 @@ class QuantumAlgorithm(ABC):
             )
 
         if "errorBudget" not in estimator_params:
-            estimator_params["errorBudget"] = 0.9
+            estimator_params["errorBudget"] = 0.5
 
         return logical_counts.estimate(estimator_params)
