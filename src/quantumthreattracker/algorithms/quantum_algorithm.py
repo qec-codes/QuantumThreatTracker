@@ -90,6 +90,17 @@ class QuantumAlgorithm(ABC):
         """
         return []
 
+    @staticmethod
+    def get_success_probability() -> float:
+        """Get the algorithmic success probability.
+
+        Returns
+        -------
+        float
+            Algorithmic success probability.
+        """
+        return 1.0
+
     def estimate_resources_qualtran(
         self, cost_model: PhysicalCostModel, alg_params: Optional[AlgParams] = None
     ) -> dict:
