@@ -192,8 +192,9 @@ class MultiBitSum(QuantumCircuit):
             _ = len(incrementor_inputs[i])
             for j in range(len(incrementor_inputs[i])):
                 self.append(
-                    CONTROLLED_INCREMENTOR_4, [incrementor_inputs[i][j]] +
-                    incrementor_outputs[i][:] + [additional_ancillas[i][0]])
+                    CONTROLLED_INCREMENTOR_4, [incrementor_inputs[i][j],
+                                               *incrementor_outputs[i],
+                                               additional_ancillas[i][0]])
 
         # then tree of additions
         for a, b, _, d in addition_tree:

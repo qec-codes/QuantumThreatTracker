@@ -367,8 +367,8 @@ class Multiplier(QuantumCircuit):
 
         for i in range(bit_size_x):
             # controlled on bit number i of x, sum a to the output reg, but shifted
-            self.append(c_adder, [x_reg[i]] + y_reg[:] +
-                        output_reg[i:(bit_size_y + i + 1)] + [ancilla_reg[0]])
+            self.append(c_adder, [x_reg[i], *y_reg,
+                                  *output_reg[i:bit_size_y + i + 1], ancilla_reg[0]])
 
     def test(self) -> None:
         """Test multiplication operation of the circuit by running 20 random cases."""
@@ -630,8 +630,7 @@ class TableLookup(QuantumCircuit):
 
         controls = QuantumRegister(self.nb_controls)
         ancilla = QuantumRegister(self.ancilla_nbr)
-        products = [controls[0]
-                    ] + ancilla[:]  # makes it easier to write the computations
+        products = [controls[0], *ancilla[:]]
 
         output_reg = QuantumRegister(self.bit_size)
         self.add_register(controls, output_reg, ancilla)
