@@ -1,55 +1,54 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-#=========================================================================
-#Copyright (c) June 2024
+# =========================================================================
+# Copyright (c) June 2024
 
-#Permission is hereby granted, free of charge, to any person obtaining a copy
-#of this software and associated documentation files (the "Software"), to deal
-#in the Software without restriction, including without limitation the rights
-#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#copies of the Software, and to permit persons to whom the Software is
-#furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 
-#The above copyright notice and this permission notice shall be included in all
-#copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
-#=========================================================================
+# =========================================================================
 
-# This work has been supported by the French Agence Nationale de la Recherche 
+# This work has been supported by the French Agence Nationale de la Recherche
 # through the France 2030 program under grant agreement No. ANR-22-PETQ-0008 PQ-TLS.
 
-#=========================================================================
+# =========================================================================
 
 # Author: Clémence Chevignard, Pierre-Alain Fouque & André Schrottenloher
 # Date: June 2024
 # Version: 2
 
-#=========================================================================
+# =========================================================================
 """
-Contains some useful functions to deal with classical circuits implemented using
-Qiskit's QuantumCircuit: simulating the circuits, decomposing them into elementary
-classical gates and counting the gates.
+Contains some useful functions to deal with classical circuits.
+
+Implemented using Qiskit's QuantumCircuit: simulating the circuits,
+decomposing them into elementary classical gates and counting the gates.
 """
 
 from qiskit import QuantumCircuit
-from qiskit.circuit import Gate, CircuitInstruction
+from qiskit.circuit import Gate
 
 
 class GateCounts(dict):
-    """A dictionary for gate counts of a reversible circuit (x, cx, ccx and swap
-    gates).
-    """
+    """A dictionary for gate counts of a reversible circuit."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:  # noqa: ANN003
         super().__init__()
         self['x'] = 0
         self['cx'] = 0
@@ -59,33 +58,64 @@ class GateCounts(dict):
             if k in self:
                 self[k] = v
 
-    def __mul__(self, other):
-        #assert type(other) == int
+    def __mul__(self, other: int) -> "GateCounts":
+        """
+        Multiply all gate counts by an integer.
+
+        Returns
+        -------
+            GateCounts: A new GateCounts object with counts multiplied by the integer.
+        """
         result = GateCounts()
         for key in self:
             result[key] = self[key] * other
         return result
 
-    def __add__(self, other):
+    def __add__(self, other: "GateCounts") -> "GateCounts":
+        """
+        Add gate counts from another GateCounts object.
+
+        Returns
+        -------
+            GateCounts: A new GateCounts object with summed gate counts.
+        """
         result = GateCounts()
         for key in self:
             result[key] = self[key] + other[key]
         return result
 
-    def __le__(self, other):
+    def __le__(self, other: "GateCounts") -> bool:
+        """Compare gate count is LEQ another GateCounts object.
+
+        Returns
+        -------
+            bool: True if all gate counts are less than or equal, False otherwise.
+        """
         for key in self:
             if other[key] < self[key]:
                 return False
         return True
 
-    def __ge__(self, other):
+    def __ge__(self, other: "GateCounts") -> bool:
+        """Compare gate count is GEQ another GateCounts object.
+
+        Returns
+        -------
+            bool: True if all gate counts are greater than or equal, False otherwise.
+        """
         for key in self:
             if other[key] > self[key]:
                 return False
         return True
 
 
-def int_to_bits(i, width=4, rev=True):
+def int_to_bits(i: int, width: int = 4, rev: bool = True) -> list:
+    """Convert integer to list of bits.
+
+    Returns
+    -------
+        list: List of bits (0 or 1) representing the integer.
+    """
     if rev:
         return list(
             reversed([int(c) for c in '{:0{width}b}'.format(i, width=width)]))
@@ -93,7 +123,13 @@ def int_to_bits(i, width=4, rev=True):
         return list([int(c) for c in '{:0{width}b}'.format(i, width=width)])
 
 
-def bits_to_int(s, rev=True):
+def bits_to_int(s: list, rev: bool = True) -> int:
+    """Convert list of bits to integer.
+
+    Returns
+    -------
+        int: Integer value represented by the list of bits.
+    """
     if rev:
         return int(''.join(list(reversed([str(b) for b in s]))), 2)
     else:
@@ -101,51 +137,70 @@ def bits_to_int(s, rev=True):
 
 
 class DummyGate(Gate):
+    """A dummy gate that does nothing. Used for debugging."""
 
-    def __init__(self, num_qubits):
+    def __init__(self, num_qubits: int) -> None:
         super().__init__(name="dummy", num_qubits=num_qubits, params=[])
 
-    def apply(self, input_bits):
+    def apply(self, input_bits):  # noqa: ANN001, ANN201, D102
         raise NotImplementedError()
 
 
 class PrintGate(DummyGate):
-    """A gate that prints the bits of its register, during the simulation. 
-    Very useful for debugging. """
+    """A gate that prints the bits of its register, during the simulation.
 
-    def __init__(self, num_qubits, myname=""):
+    Very useful for debugging.
+    """
+
+    def __init__(self, num_qubits: int, myname: str = "") -> None:
         self.myname = myname
         super().__init__(num_qubits)
 
-    def apply(self, input_bits):
+    def apply(self, input_bits):  # noqa: ANN001, ANN201, D102
         print("====", self.myname)
         print(input_bits)
         return input_bits[:]
 
 
 class PrintIntGate(DummyGate):
-    """A gate that prints the integer value contained in its register, during 
-    the simulation. Very useful for debugging. """
+    """A gate that prints the int value contained in its register.
 
-    def __init__(self, num_qubits, myname=""):
+    Very useful for debugging.
+    """
+
+    def __init__(self, num_qubits: int, myname: str = ""):
         self.myname = myname
         super().__init__(num_qubits)
 
-    def apply(self, input_bits):
+    def apply(self, input_bits: list) -> list:  # noqa: D102
         print("====", self.myname)
         print(bits_to_int(input_bits))
         return input_bits[:]
 
 
-def simulate(qc, inp_bits):
-    """Simulates a (classical) QuantumCircuit object applied on some input bits."""
+def simulate(qc: QuantumCircuit, inp_bits: list) -> list:
+    """Simulate a (classical) quantum circuit on given input bits.
+
+    Args
+    ----
+        qc (QuantumCircuit): The circuit to simulate.
+        inp_bits (list): The input bits.
+
+    Returns
+    -------
+        list: The result of the simulation as a list of bits.
+
+    Raises
+    ------
+    ValueError
+        If the # of input bits does not match the # qubits in circuit.
+    """
     if len(qc.qubits) != len(inp_bits):
         raise ValueError("Expected %i input bits, got %i" %
                          (len(qc.qubits), len(inp_bits)))
     res = inp_bits[:]  # copy input
     # apply all gates of the circuit
     for instr in qc.data:
-        # type: CircuitInstruction
         op = instr.operation
         qubits = instr.qubits
         qubit_indices = [qc.find_bit(q).index for q in qubits]
@@ -178,13 +233,26 @@ def simulate(qc, inp_bits):
     return res
 
 
-def gate_counts(qc):
-    """Counts the gates of a (classical) QuantumCircuit."""
+def gate_counts(qc: QuantumCircuit) -> GateCounts:
+    """Count the gates of a (classical) QuantumCircuit.
+
+    Args
+    ----
+        qc (QuantumCircuit): The circuit to count.
+
+    Returns
+    -------
+        GateCounts: A dictionary with the counts of each gate.
+
+    Raises
+    ------
+    ValueError
+            If the circuit contains unsupported gates.
+    """
     res = GateCounts()
     for instr in qc.data:
-        # type: CircuitInstruction
         op = instr.operation
-        if op.name in ["dummy", "swap", "x", "cx", "ccx"]:
+        if op.name in {"dummy", "swap", "x", "cx", "ccx"}:
             if op.name not in res:
                 res[op.name] = 0
             res[op.name] += 1
@@ -203,10 +271,22 @@ def gate_counts(qc):
     return res
 
 
-def full_decompose(qc, do_not_decompose=[]):
-    """Decomposes a QuantumCircuit into elementary (classical) gates."""
+def full_decompose(qc: QuantumCircuit, do_not_decompose: list | None = None) -> QuantumCircuit:
+    """Decompose a QuantumCircuit into elementary (classical) gates.
 
-    def _do_not_decompose(name):
+    Returns
+    -------
+        QuantumCircuit: A new circuit with the decomposed gates.
+
+    Raises
+    ------
+    ValueError
+        If the circuit contains unsupported gates.
+    """
+    if do_not_decompose is None:
+        do_not_decompose = []
+
+    def _do_not_decompose(name: str) -> bool:
         for s in do_not_decompose:
             if name.startswith(s):
                 return True
@@ -215,13 +295,12 @@ def full_decompose(qc, do_not_decompose=[]):
     res = QuantumCircuit(len(qc.qubits))
 
     for instr in qc.data:
-        # type: CircuitInstruction
         op = instr.operation
         qubits = instr.qubits
         # index in qc of all the qubits of instr (in order)
         qubit_indices = [qc.find_bit(q).index for q in qubits]
 
-        if op.name in ["swap", "x", "cx", "ccx"]:
+        if op.name in {"swap", "x", "cx", "ccx"}:
             res.append(op, [res.qubits[i] for i in qubit_indices])
 
         elif _do_not_decompose(op.name):
@@ -240,7 +319,7 @@ def full_decompose(qc, do_not_decompose=[]):
                     new_qc.find_bit(q).index for q in new_qubits
                 ]
 
-                if new_op.name in ["swap", "x", "cx", "ccx"]:
+                if new_op.name in {"swap", "x", "cx", "ccx"}:
                     res.append(new_op, [
                         res.qubits[qubit_indices[i]] for i in new_qubit_indices
                     ])

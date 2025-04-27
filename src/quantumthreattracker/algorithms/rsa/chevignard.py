@@ -1,9 +1,7 @@
-"""Resource estimator for Chevignard et. al's controlled‐multi‐product RSA algorithm."""
+"""Resource estimator for controlled multi product RSA algorithm."""
 from dataclasses import dataclass
-from math import log
 from typing import Optional
 
-from qualtran.resource_counting import GateCounts
 from qualtran.surface_code import AlgorithmSummary
 
 from quantumthreattracker.algorithms.quantum_algorithm import (
@@ -12,7 +10,7 @@ from quantumthreattracker.algorithms.quantum_algorithm import (
     QuantumAlgorithm,
 )
 
-from .estimations import full_circuit_costs
+from .chevignard_utils.estimations import full_circuit_costs
 
 
 @dataclass
@@ -23,7 +21,7 @@ class ChevignardParams(AlgParams):
 
 
 class Chevignard(QuantumAlgorithm):
-    """Qualtran wrapper for Chevignard’s controlled‐multi‐product RSA algorithm."""
+    """Qualtran wrapper for Chevignard et. al's ctrl multi product RSA algorithm."""
 
     def __init__(
         self, crypt_params: CryptParams, alg_params: Optional[ChevignardParams] = None
@@ -33,16 +31,24 @@ class Chevignard(QuantumAlgorithm):
     def get_algorithm_summary(
         self, alg_params: Optional[AlgParams] = None
     ) -> AlgorithmSummary:
-        """Estimate the resource requirements for Chevignard’s controlled multi product.
-        Raises:
-        -------
+        """Estimate the resource requirements for controlled multi product.
+
+        Raises
+        ------
             NameError: Chevignard only supports protocol "RSA".
-        Args:
-        -------
+
+        Args
+        ----
             alg_params (AlgParams): Algorithm parameters. Not used in this case.
-        Returns:
+
+        Returns
         -------
             AlgorithmSummary: Resource requirements for the algorithm.
+
+        Raises
+        ------
+        NameError
+            If the protocol is not "RSA".
         """
         if self._crypt_params.protocol != "RSA":
             raise NameError(
@@ -50,7 +56,7 @@ class Chevignard(QuantumAlgorithm):
                 f'"{self._crypt_params.protocol}"'
             )
 
-        # 1) compute all RNS parameters for this key‐size
+        # 1) compute all RNS parameters for this key size
         n = self._crypt_params.key_size
         return full_circuit_costs(n)
 

@@ -1,59 +1,70 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-#=========================================================================
-#Copyright (c) June 2024
+# =========================================================================
+# Copyright (c) June 2024
 
-#Permission is hereby granted, free of charge, to any person obtaining a copy
-#of this software and associated documentation files (the "Software"), to deal
-#in the Software without restriction, including without limitation the rights
-#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#copies of the Software, and to permit persons to whom the Software is
-#furnished to do so, subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 
-#The above copyright notice and this permission notice shall be included in all
-#copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
-#=========================================================================
+# =========================================================================
 
-# This work has been supported by the French Agence Nationale de la Recherche 
+# This work has been supported by the French Agence Nationale de la Recherche
 # through the France 2030 program under grant agreement No. ANR-22-PETQ-0008 PQ-TLS.
 
-#=========================================================================
+# =========================================================================
 
 # Author: Clémence Chevignard, Pierre-Alain Fouque & André Schrottenloher
 # Date: June 2024
 # Version: 2
 
-#=========================================================================
+# =========================================================================
 """
 Implements basic arithmetic components as QuantumCircuits.
+
 Since our implementation is fully classical, we use only CNOT, Toffoli and X (NOT)
 gates.
 """
 
-from quantumthreattracker.algorithms.rsa.chevignard.util import *
-from math import log, ceil, floor
-from qiskit import QuantumCircuit, QuantumRegister
 import random
-from sympy import randprime
+from math import ceil, log
+from typing import Optional
+
+from qiskit import QuantumCircuit, QuantumRegister
+
+from quantumthreattracker.algorithms.rsa.chevignard_utils.util import (
+    bits_to_int,
+    full_decompose,
+    gate_counts,
+    int_to_bits,
+    simulate,
+)
 
 
 class HalfAdder(QuantumCircuit):
     """
-    Adder without incoming carry. Simplified version of the CDKM ripple-carry adder
+    Adder without incoming carry.
+
+    Simplified version of the CDKM ripple-carry adder
     which was initially taken from Qiskit, then modified to allow various new
     cases:
-    
-    - "controlled": control becomes the first qubit. Last 2 qubits are carry and ancilla.
+
+    - "controlled": control becomes the first qubit. Last 2 qubits are carry and ancilla
     - "comparator": we only compute the last carry bit, the rest is uncomputed.
         Then we will use the bit-complement trick to transform this into a comparator.
     - "comparator_adder": the addition is done, but only if it overflows. The
@@ -61,30 +72,35 @@ class HalfAdder(QuantumCircuit):
         a Euclidean division.
     - "modular": does not compute the carry bit. In that case the circuit has
         1 less qubit.
-    
+
     x y -> x  y+x
     """
 
-    def __init__(self,
-                 bit_size,
-                 controlled=False,
-                 special=None,
-                 modular=False):
-        """Creates the addition circuit.
-        
-        Args:
-        - bit-size: size of the numbers to add, in bits
-        - controlled: Boolean determining if the circuit is controlled
-        - special: flag that can be either "comparator_adder" or "comparator"
-        - modular: Boolean determining if the circuit is modular
-        
-        Some combinations of these inputs are possible, but not all:
-        - a circuit cannot be modular and comparator
-        - a circuit cannot be controlled and comparator_adder
-        
+    def __init__(self,  # noqa: PLR0915
+                 bit_size: int,
+                 controlled: bool = False,
+                 special: Optional[str] = None,
+                 modular: bool = False) -> None:
         """
+        Initialize the half-adder circuit.
 
-        if modular and special in ["comparator_adder", "comparator"]:
+        Args:
+            bit_size: Size of the numbers to add, in bits.
+            controlled: If True, make the circuit controlled.
+            special: Flag for special modes ("comparator_adder" or "comparator").
+            modular: If True, make the circuit modular (no carry-out).
+
+        Some combinations of these inputs are possible, but not all:
+            - A circuit cannot be modular and comparator.
+            - A circuit cannot be controlled and comparator_adder.
+
+        Raises
+        ------
+        ValueError
+            If incompatible parameter combinations are provided
+            (e.g., modular and comparator, or controlled and comparator_adder).
+        """
+        if modular and special in {"comparator_adder", "comparator"}:
             raise ValueError("Incompatible parameters")
         if controlled and special == "comparator_adder":
             raise ValueError("Incompatible parameters")
@@ -117,34 +133,34 @@ class HalfAdder(QuantumCircuit):
         self.add_register(ancilla)
 
         # gate for majority
-        _qc = QuantumCircuit(3, name="MAJ")
-        _qc.cx(0, 1)
-        _qc.cx(0, 2)
-        _qc.ccx(2, 1, 0)
-        maj_gate = _qc.to_gate()
+        qc_ = QuantumCircuit(3, name="MAJ")
+        qc_.cx(0, 1)
+        qc_.cx(0, 2)
+        qc_.ccx(2, 1, 0)
+        maj_gate = qc_.to_gate()
 
         if self.controlled or special == "comparator_adder":
-            _qc = QuantumCircuit(4, name="UMA")
-            _qc.ccx(2, 1, 0)
-            _qc.cx(0, 2)
+            qc_ = QuantumCircuit(4, name="UMA")
+            qc_.ccx(2, 1, 0)
+            qc_.cx(0, 2)
             # if control is 1: apply UMA gate
-            _qc.ccx(3, 2, 1)
+            qc_.ccx(3, 2, 1)
             # if control is 0: apply inverse of MAJ
-            _qc.ccx(3, 0, 1)
-            _qc.cx(0, 1)
+            qc_.ccx(3, 0, 1)
+            qc_.cx(0, 1)
         elif special == "comparator":
-            _qc = QuantumCircuit(3, name="UMA")
+            qc_ = QuantumCircuit(3, name="UMA")
             # always apply inverse of MAJ
-            _qc.ccx(2, 1, 0)
-            _qc.cx(0, 1)
-            _qc.cx(0, 2)
+            qc_.ccx(2, 1, 0)
+            qc_.cx(0, 1)
+            qc_.cx(0, 2)
         else:
-            _qc = QuantumCircuit(3, name="UMA")
+            qc_ = QuantumCircuit(3, name="UMA")
             # always apply the normal UMA gate
-            _qc.ccx(2, 1, 0)
-            _qc.cx(0, 2)
-            _qc.cx(2, 1)
-        uma_gate = _qc.to_gate()
+            qc_.ccx(2, 1, 0)
+            qc_.cx(0, 2)
+            qc_.cx(2, 1)
+        uma_gate = qc_.to_gate()
 
         self.append(maj_gate, [qr_x[0], qr_y[0], ancilla])
         for i in range(bit_size - 1):
@@ -174,7 +190,8 @@ class HalfAdder(QuantumCircuit):
         else:
             self.append(uma_gate, [qr_x[0], qr_y[0], ancilla])
 
-    def test(self):
+    def test(self) -> None:
+        """Test the half adder circuit by running 20 random cases."""
         for _ in range(20):
             x = random.randrange(1 << self.bit_size)
             y = random.randrange(1 << self.bit_size)
@@ -193,7 +210,7 @@ class HalfAdder(QuantumCircuit):
             if self.controlled and control[0] == 0:
                 expected_output = input_bits
             elif self.special == "comparator_adder":
-                # add x to y but only if the carry is 1 (and keep the carry in all cases)
+                # add x to y but only if the carry = 1 (and keep the carry in all cases)
                 if x + y >= (1 << self.bit_size):
                     expected_output = (
                         int_to_bits(x, width=self.bit_size) +
@@ -224,15 +241,16 @@ class HalfAdder(QuantumCircuit):
 
 class MCX(QuantumCircuit):
     """Implementation of a multi-controlled Toffoli gate, using clean ancillas.
+
     This is a standard implementation, not optimal in space. It was initially
     taken from:
     https://quantumcomputing.stackexchange.com/questions/35119/
         questions-on-multi-controlled-toffolis-and-their-implementation-in-qiskit
     """
 
-    def __init__(self, bit_size):
-        """Creates the MCX circuit.
-        
+    def __init__(self, bit_size: int) -> None:
+        """Create the MCX circuit.
+
         Args:
         - bit_size: number of input bits
         """
@@ -261,7 +279,8 @@ class MCX(QuantumCircuit):
                 self.ccx(qr_anc[i], qr_c[i + 2], qr_anc[i + 1])
             self.ccx(qr_c[0], qr_c[1], qr_anc[0])
 
-    def test(self):
+    def test(self) -> None:
+        """Test the MCX circuit by running 20 random cases."""
         for _ in range(20):
             controls = [random.randrange(2) for _ in range(self.bit_size)]
             input_bits = (controls + [random.randrange(2)] +
@@ -274,18 +293,16 @@ class MCX(QuantumCircuit):
 
 
 class ConstantMultiplier(QuantumCircuit):
-    """A quantum circuit that multiplies an input by a constant.
-    """
+    """A quantum circuit that multiplies an input by a constant."""
 
-    def __init__(self, c, c_bit_size, input_bit_size):
-        """Creates the circuit.
-        
+    def __init__(self, c: int, c_bit_size: int, input_bit_size: int):
+        """Create the circuit.
+
         Args:
         - c: the constant to multiply by
         - c_bit_size: the bit-size of c. This parameter is used to determine the
             size of the output register. (It could be bigger than strictly necessary)
         - input_bit_size: bit_size of the input.
-        
         """
         super().__init__(name="constant_mul")
         self.c = c
@@ -309,7 +326,8 @@ class ConstantMultiplier(QuantumCircuit):
                     input_reg[:] + output_reg[i:(i + input_bit_size + 1)] +
                     [adder_ancilla[0]])
 
-    def test(self):
+    def test(self) -> None:
+        """Test multiplication operation of the circuit by running 20 random cases."""
         for _ in range(20):
             x = random.randrange(1 << self.input_bit_size)
             input_bits = (int_to_bits(x, width=self.input_bit_size) + [0] *
@@ -326,9 +344,9 @@ class ConstantMultiplier(QuantumCircuit):
 class Multiplier(QuantumCircuit):
     """A quantum circuit that multiplies two numbers (not modularly)."""
 
-    def __init__(self, bit_size_x, bit_size_y):
-        """Creates the circuit.
-        
+    def __init__(self, bit_size_x: int, bit_size_y: int):
+        """Create the circuit.
+
         Args:
         - bit_size_x: bit size of the first input
         - bit_size_y: bit size of the second input
@@ -352,7 +370,8 @@ class Multiplier(QuantumCircuit):
             self.append(c_adder, [x_reg[i]] + y_reg[:] +
                         output_reg[i:(bit_size_y + i + 1)] + [ancilla_reg[0]])
 
-    def test(self):
+    def test(self) -> None:
+        """Test multiplication operation of the circuit by running 20 random cases."""
         for _ in range(20):
             x = random.randrange(1 << self.bit_size_x)
             y = random.randrange(1 << self.bit_size_y)
@@ -370,15 +389,22 @@ class Multiplier(QuantumCircuit):
 
 class ConstantComparator(QuantumCircuit):
     """A quantum circuit that compares its input with a constant.
+
     It writes 1 in the output if x >= c (or 0 if x < c).
     """
 
-    def __init__(self, c, bit_size):
-        """Creates the circuit.
-        
+    def __init__(self, c: int, bit_size: int):
+        """Create the circuit.
+
         Args:
+        ----
         - c: the constant to compare to
         - bit_size: bit size of the input
+
+        Raises
+        ------
+        ValueError
+            If the constant is too large for the given bit size.
         """
         super().__init__(name="const_comp")
         if ceil(log(c, 2)) > bit_size:
@@ -410,7 +436,8 @@ class ConstantComparator(QuantumCircuit):
             if bits_for_comparator[i]:
                 self.x(c_reg[i])
 
-    def test(self):
+    def test(self) -> None:
+        """Test comparison operation of the circuit by running 20 random cases."""
         for _ in range(20):
             x = random.randrange(1 << self.bit_size)
             input_bits = (int_to_bits(x, width=self.bit_size) + [0] +
@@ -423,10 +450,25 @@ class ConstantComparator(QuantumCircuit):
 
 
 class Incrementor(QuantumCircuit):
+    """
+    Quantum circuit that increments an n qubit register modulo 2**n.
 
-    def __init__(self, bit_size):
-        """Creates the circuit.
-        """
+    Uses a half adder network with a temporary register and one ancilla
+    to propagate carries and implement |x⟩→|(x+1) mod 2**n⟩.
+
+    Parameters
+    ----------
+    bit_size : int
+        Number of qubits in the input register.
+
+    Attributes
+    ----------
+    ancilla_nbr : int
+        Number of ancilla qubits (bit_size + 1).
+    """
+
+    def __init__(self, bit_size: int) -> None:
+        """Create the circuit."""
         super().__init__(name="incrementor")
         self.bit_size = bit_size
         self.ancilla_nbr = bit_size + 1
@@ -443,7 +485,14 @@ class Incrementor(QuantumCircuit):
         self.append(adder, tmp_reg[:] + input_reg[:] + ancilla_reg[:])
         self.x(tmp_reg[0])
 
-    def test(self):
+    def test(self) -> None:
+        """
+        Tests the increment operation of the circuit by running 10 random cases.
+
+        Raises
+        ------
+            AssertionError: If any simulated output does not match the expected result.
+        """
         for _ in range(10):
             x = random.randrange(1 << self.bit_size)
             input_bits = (int_to_bits(x, width=self.bit_size) +
@@ -457,21 +506,26 @@ class Incrementor(QuantumCircuit):
 
 class EuclideanDivider(QuantumCircuit):
     """Quantum circuit that performs a Euclidean division by a constant.
-    
+
     Given integer p and input of size bit_size, separates the input into
     quotient and remainder in the Euclidean division by p. This is done via a
     series of subtractions in place.
-    
-    The input register is first padded by 2 bits. The remainder will occupy 
+
+    The input register is first padded by 2 bits. The remainder will occupy
     the first ceil(log(p,2)) bits. The quotient occupies the rest of the bits.
     """
 
-    def __init__(self, p, bit_size):
-        """Creates the circuit.
-        
+    def __init__(self, p: int, bit_size: int):
+        """Create the circuit.
+
         Args:
         - p: the number to divide by
         - bit_size: the bit size of the input
+
+        Raises
+        ------
+        ValueError
+            If the bit size is too small to hold the quotient.
         """
         super().__init__(name="euclidean_divider_" + str(p) + "_" +
                          str(bit_size))
@@ -522,7 +576,8 @@ class EuclideanDivider(QuantumCircuit):
         # move middle "0" bit to end
         self.swap(p_bit_size, len(self.qubits) - 1)
 
-    def test(self):
+    def test(self) -> None:
+        """Test division operation by running 20 random cases."""
         for _ in range(20):
             x = random.randrange(1 << self.bit_size)
             input_bits = (int_to_bits(x, width=self.bit_size) + [0] * 2 +
@@ -537,46 +592,37 @@ class EuclideanDivider(QuantumCircuit):
                 int_to_bits(x // self.p,
                             width=self.bit_size - self.p_bit_size + 1) +
                 [0] * self.ancilla_nbr)
-            #print(output_bits)
-            #print(expected_output)
             assert output_bits == expected_output
         print(self.name, "test passed")
 
 
-#============================================
+# ============================================
 
 
 class TableLookup(QuantumCircuit):
     """Quantum circuit that performs a lookup of a table in superposition.
+
     I.e., given a classical table T, on input x, it writes T[x] in the output.
-    
-    The approach that we implement here is the one of:
-    'Encoding electronic spectra in quantum circuits with linear T complexity'
-    (Babbush, Gidney, Berry, Wiebe, McClean, Paler, Fowler, Neven, Physical Review X, 2018)
-    https://arxiv.org/pdf/1805.03662.pdf, 
     """
 
-    def __init__(self, d, bit_size):
-        """Creates the circuit.
-        
+    def __init__(self, d: dict, bit_size: int) -> None:
+        """Create the circuit.
+
         Args:
-        - d: a dictionary that contains the table. The keys must be 0-1 tuples which
-            indicate the corresponding input. The values must be integers. The number
-            of keys determines the size of the input register.
-        - bit_size: the bit size of the *output*
+        -----
+            d: Dictionary with input tuples as keys and integer values.
+            bit_size: Bit size of the output.
+
+        Raises
+        ------
+        ValueError
+            If the number of controls derived from the table is less than 2.
         """
         super().__init__(name="table_lookup" + str(hash(str(d))))
 
         self.nb_controls = int(log(len([v for v in d]), 2))
         if self.nb_controls < 2:
             raise ValueError("Unsupported")
-
-        # we need as many ancillas as controls. If x0, x1, ... x(n-1)  are the controls, then
-        # these ancillas will store the "products": u0 = (x0 + b0), u1 = (x0+b0)(x1 + b1), u2 = ...
-        # where b0, b1 ... are the (opposite of the) bits of the current index in the lookup.
-        # During the loop, the control bits are negated (in place) to match the current index.
-        # Then, the "products" are updated. The idea is that we only need to update a few
-        # of them at each loop, depending on the position at which the sequence of bi has changed.
 
         self.d = d
         self.ancilla_nbr = self.nb_controls - 1
@@ -590,12 +636,6 @@ class TableLookup(QuantumCircuit):
         output_reg = QuantumRegister(self.bit_size)
         self.add_register(controls, output_reg, ancilla)
 
-        # ======
-        # the following is an optimization of how we perform the CNOTs for data loading.
-        # Notice that if two bits in successive data entries have the same value, then we can CNOT a
-        # single time and not twice, and this will not depend on the last Toffoli "product",
-        # but the second to last one.
-
         elts = dict()
         for i in range(1 << self.nb_controls):
             ind = list(reversed(int_to_bits(i, width=self.nb_controls)))
@@ -603,8 +643,6 @@ class TableLookup(QuantumCircuit):
             v = int_to_bits(d[tuple(complement_ind)], width=bit_size)
             elts[i] = v
 
-        # We will use these dictionaries to indicate if we need to perform a CNOT for this
-        # i, and at which level.
         do_cnot = {}
         for k in range(1, self.nb_controls):
             do_cnot[k] = {
@@ -612,23 +650,27 @@ class TableLookup(QuantumCircuit):
                       for i in range(1 << self.nb_controls)}
                 for pos in range(self.bit_size)
             }
-            # do_cnot[k][pos][i] <=> must perform self.cx( products[-k], output_reg[pos] ) at index i
+
+        def _update_do_cnot_for_k(pos: int) -> None:
+            for k in range(2, self.nb_controls):
+                block_size = 2 ** (k - 1)
+                for i in range(1 << self.nb_controls):
+                    if i % block_size == 0 and all(
+                        elts[j][pos] for j in range(i, i + block_size)
+                    ):
+                        do_cnot[k][pos][i] = 1
+                        for j in range(i, i + block_size):
+                            for kk in range(1, k):
+                                # erase from lower-level dictionaries
+                                do_cnot[kk][pos][j] = 0
 
         for pos in range(self.bit_size):
             for i in range(1 << self.nb_controls):
                 if elts[i][pos] == 1:
                     do_cnot[1][pos][i] = 1
 
-            for k in range(2, self.nb_controls):
-                for i in range(1 << self.nb_controls):
-                    if i % (2**(k - 1)) == 0 and all(
-                        [elts[j][pos] for j in range(i, i + 2**(k - 1))]):
-                        do_cnot[k][pos][i] = 1
-                        for j in range(i, i + 2**(k - 1)):
-                            for kk in range(1, k):
-                                # erase from lower-level dictionaries
-                                do_cnot[kk][pos][j] = 0
-        #=================
+            _update_do_cnot_for_k(pos)
+        # ==========
 
         # initialize the ancillas
         self.ccx(controls[0], controls[1], ancilla[0])
@@ -652,12 +694,12 @@ class TableLookup(QuantumCircuit):
                         lowest_different_bit = k
 
                 # erase ancillas
-                # if j := lowest_different_bit then we erase from j+1 onwards (with current controls)
+                # if j := lowest_different_bit then we erase from j+1 onwards
                 # then we CNOT j-1 on j
                 # then we rewrite from j+1 onwards (with new controls)
 
                 # this would be the naive version
-                #for j in reversed(range(1, self.nb_controls)):
+                # for j in reversed(range(1, self.nb_controls)):
                 #    self.ccx( controls[j], products[j-1], products[j])
 
                 for j in reversed(
@@ -667,14 +709,9 @@ class TableLookup(QuantumCircuit):
                     self.cx(products[lowest_different_bit - 1],
                             products[lowest_different_bit])
 
-                # update the negation of controls, but no need to do that below lowest_different_bit
                 for j in range(lowest_different_bit, self.nb_controls):
                     if ind[j] != prev_ind[j]:
                         self.x(controls[j])
-
-                # rewrite ancillas
-                #for j in range(1, self.nb_controls):
-                #    self.ccx( controls[j], products[j-1], products[j])
 
                 for j in range(lowest_different_bit + 1, self.nb_controls):
                     self.ccx(controls[j], products[j - 1], products[j])
@@ -696,7 +733,8 @@ class TableLookup(QuantumCircuit):
         for j in range(self.nb_controls):
             self.x(controls[j])
 
-    def test(self):
+    def test(self) -> None:
+        """Test lookup operation by running 20 random cases."""
         for _ in range(20):
             c = [random.randrange(2) for _ in range(self.nb_controls)]
             y = d[tuple(c)]
@@ -708,60 +746,74 @@ class TableLookup(QuantumCircuit):
         print(self.name, "test passed")
 
 
-#================================================
+# ================================================
 
 
-def list_to_dict(l, p):
-    """(Used in ControlledModularProduct)."""
-    nb_controls = len(l)
+def list_to_dict(lst: list, p: int) -> dict:
+    """Convert list to dict.
+
+    (Used in ControlledModularProduct).
+
+    Returns
+    -------
+    d: dict
+        A dictionary where the keys are tuples of bits and the values are
+        the product of the corresponding elements in the list modulo p.
+    """
+    nb_controls = len(lst)
     d = dict()
     for i in range(1 << nb_controls):
         c = int_to_bits(i, width=nb_controls)
         prod = 1
         for j in range(nb_controls):
             if c[j]:
-                prod = (prod * l[j]) % p
+                prod = (prod * lst[j]) % p
         d[tuple(c)] = prod
     return d
 
 
 class ControlledModularProduct(QuantumCircuit):
-    """Performs a controlled modular product of integers (the input bits determine
-    if the precomputed integers are present or not).
-    
+    """Perform a controlled modular product of integers.
+
+    The input bits determine if the precomputed integers are present or not.
+
     It is optimized for a product of 21 numbers modulo a prime of 21 bits. We
     divide the product into 3 groups and use table lookups.
     """
 
-    def __init__(self, l, p, controlled=False):
-        """Creates the circuit.
-        
+    def __init__(self, lst: list, p: int, controlled: bool = False) -> None:  # noqa: PLR0915
+        """Create the circuit.
+
         Args:
-        - l: the list of numbers to be multiplied
-        - p: the prime
-        - controlled: if True, the circuit will be controlled on the first bit.
-        
+        -----
+            l: The list of numbers to be multiplied.
+            p: The prime.
+            controlled: If True, the circuit will be controlled on the first bit.
+
+        Raises
+        ------
+        ValueError
+            If the number of controls is greater than 15.
         """
         super().__init__(name="controlled_mod_product")
         self.p = p
-        self.l = l
+        self.l = lst
         log2p = ceil(log(p, 2))
         self.log2p = log2p
-        self.nb_controls = len(l)
+        self.nb_controls = len(lst)
         self.controlled = controlled
 
-        _tmp = self.nb_controls // 3  # group size for lookups
-        #assert self.nb_controls <= 21
+        tmp = self.nb_controls // 3  # group size for lookups
         if self.nb_controls <= 15:
             raise ValueError("Unsupported")
-        l1, l2, l3 = l[:_tmp], l[_tmp:(2 * _tmp)], l[(2 * _tmp):]
+        l1, l2, l3 = lst[:tmp], lst[tmp:(2 * tmp)], lst[(2 * tmp):]
         d1, d2 = list_to_dict(l1, p), list_to_dict(l2, p)
         d3 = list_to_dict(l3, p)
         control = QuantumRegister(1)
         controls = QuantumRegister(self.nb_controls)
-        controls1 = controls[:_tmp]
-        controls2 = controls[_tmp:(2*_tmp)]
-        controls3 = controls[(2*_tmp):]
+        controls1 = controls[:tmp]
+        controls2 = controls[tmp:(2 * tmp)]
+        controls3 = controls[(2 * tmp):]
 
         load1 = TableLookup(d1, log2p)
         load2 = TableLookup(d2, log2p)
@@ -797,7 +849,7 @@ class ControlledModularProduct(QuantumCircuit):
             self.add_register(control)
         self.add_register(controls, out_reg, c1_reg, c2_reg, c1c2_reg,
                           quotient_pad_1, rc3_reg, quotient_pad_2, ancillas)
-        #=============================
+        # =============================
         # step 1: load c1, c2, c3 with lookups
         self.append(load1,
                     controls1[:] + c1_reg[:] + rc3_reg[:load1.ancilla_nbr])
@@ -858,8 +910,9 @@ class ControlledModularProduct(QuantumCircuit):
         self.append(load2,
                     controls2[:] + c2_reg[:] + rc3_reg[-load2.ancilla_nbr:])
 
-    def test(self):
-        qc = self  #full_decompose(self)
+    def test(self) -> None:
+        """Test multiplication operation by running 20 random cases."""
+        qc = self  # full_decompose(self)
         for _ in range(20):
             c = [random.randrange(2) for _ in range(self.nb_controls)]
             prod = 1
@@ -887,9 +940,3 @@ if __name__ == "__main__":
     qc = full_decompose(qc, do_not_decompose=[])
     print(gate_counts(qc))
     print(qc.depth())
-
-    #qc = EuclideanDivider(17, 10)
-    #qc.test()
-
-    #qc = Incrementor(4)
-    #qc.test()

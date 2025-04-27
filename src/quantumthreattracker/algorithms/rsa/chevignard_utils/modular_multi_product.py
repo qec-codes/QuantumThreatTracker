@@ -34,30 +34,35 @@
 # Version: 2
 
 # =========================================================================
-"""
+"""Implements a modular multi-product circuit."""
 
-This file implements a modular multi-product circuit that we used to benchmark
-our algorithm.
-"""
-
-from .util import *
-from math import log, ceil, floor
-from qiskit import QuantumCircuit, QuantumRegister
-from qiskit.circuit import Gate, CircuitInstruction
-import numpy as np
+import functools
+import operator
 import random
-from sympy import isprime
-from sympy import randprime, primerange, mod_inverse, gcd
+from math import ceil, log
+
+from qiskit import QuantumCircuit, QuantumRegister
+from sympy import divisors, randprime
 from sympy.ntheory import discrete_log
-from sympy import divisors
-from sympy import factorint
-from quantumthreattracker.algorithms.rsa.chevignard.basic_arithmetic import *
+
+from quantumthreattracker.algorithms.rsa.chevignard_utils.basic_arithmetic import (
+    MCX,
+    ControlledModularProduct,
+    EuclideanDivider,
+    HalfAdder,
+)
+from quantumthreattracker.algorithms.rsa.chevignard_utils.util import (
+    full_decompose,
+    gate_counts,
+    int_to_bits,
+    simulate,
+)
 
 # =====================================
 # controlled 4-bit incrementor
 
 # there is an elegant general description for a controlled incrementor circuit:
-# on bits 0,1,2,3 where 0 is the control, apply multi-controlled on 0,1,2,3 with target 3,
+# on bits 0,1,2,3 where 0 is the ctrl, apply multi-controlled on 0,1,2,3 with target 3,
 # then on 0,1,2 with target 2, then on 0,1 with target 1, end. More generally we
 # can decompose the circuit using O(n) multi-controlled Toffolis. An ancilla is required
 # to decompose the MCTs into Toffolis.
@@ -78,21 +83,30 @@ _qc.cx(0, 1)
 CONTROLLED_INCREMENTOR_4 = _qc
 
 
-def test_controlled_incrementor():
+def test_controlled_incrementor() -> None:
+    """Test the controlled incrementor circuit. It should be able to add 0 or 1."""
     for i in range(16):
         for b in range(2):
-            input_bits = [b] + int_to_bits(i, width=4) + [0]
+            input_bits = [b, *int_to_bits(i, width=4), 0]
             if i + b >= 16:  # not supported by the circuit
                 continue
-            expected_output = [b] + int_to_bits(i + b, width=4) + [0]
+            expected_output = [b, *int_to_bits(i + b, width=4), 0]
             assert simulate(CONTROLLED_INCREMENTOR_4,
                             input_bits) == expected_output
 
 
-def addition_sequence(nb_inputs):
-    """
-    Determine the structure of a tree of additions when we start from a given
-    number of inputs.
+def addition_sequence(nb_inputs: int) -> list:
+    """Determine the structure of a tree of additions for a given number of inputs.
+
+    Args
+    ----
+        nb_inputs (int): The number of input registers.
+
+    Returns
+    -------
+        list: A list of tuples (a, b, c, d) where a and b
+            are the input registers to be added, c is the
+            output register, and d is the current level.
     """
     current_regs = [i for i in range(nb_inputs)]
     res = []
@@ -111,25 +125,28 @@ def addition_sequence(nb_inputs):
 
 
 class MultiBitSum(QuantumCircuit):
-    """Counts the number of ones in a set of input bits (Hamming weight). This is done by controlled
-    incrementors for groups of bits, followed by a tree of adders with increasing
-    sizes.
+    """Count the number of ones in the input bits.
 
-    Caution: this is only a half circuit. It does not put its ancillas back to 0 and
-    it may even modify the input bits.
+    This uses controlled incrementors and a tree of adders.
 
-    Since we hard-coded the group size of incrementors, the ancilla count increases 
-    linearly for this circuit.
+    This half-circuit does not uncompute ancillas or restore the input bits. The
+    ancilla usage scales linearly because the group size of incrementors is fixed.
     """
 
-    def ancilla_count(nb_controls):
-        """A good upper bound of the number of ancilla qubits."""
+    @staticmethod
+    def ancilla_count(nb_controls: int) -> int:
+        """Compute a good upper bound of the number of ancilla qubits.
+
+        Returns
+        -------
+            int: The number of ancilla qubits.
+        """
         return max(ceil(0.4 * nb_controls) - 6 + 4, 0)
 
-    def __init__(self, nb_controls, output_size=None):
+    def __init__(self, nb_controls: int, output_size: int = -1) -> None:
         super().__init__(name="multi_bit_sum")
         self.nb_controls = nb_controls
-        self.output_size = output_size if output_size is not None else ceil(
+        self.output_size = output_size if output_size != -1 else ceil(
             log(nb_controls, 2) + 1)
         input_size = nb_controls
 
@@ -154,7 +171,7 @@ class MultiBitSum(QuantumCircuit):
         # required is 1 + the maximal level in the tree that this register reaches
         number_of_ancillas = [1 for _ in range(nbr_groups)]
         tree_height = 0
-        for a, b, c, d in addition_tree:
+        for a, b, _, d in addition_tree:
             number_of_ancillas[a] = max(number_of_ancillas[a], d)
             number_of_ancillas[b] = max(number_of_ancillas[b], d)
             tree_height = max(tree_height, d)
@@ -163,23 +180,23 @@ class MultiBitSum(QuantumCircuit):
         additional_ancillas = [
             QuantumRegister(number_of_ancillas[i]) for i in range(nbr_groups)
         ]
-        l = sum([[incrementor_outputs[i], additional_ancillas[i]]
+        lst = functools.reduce(operator.iadd, [[incrementor_outputs[i], additional_ancillas[i]]
                  for i in range(nbr_groups)], [])
 
-        self.add_register(*incrementor_inputs, *l)
+        self.add_register(*incrementor_inputs, *lst)
         self.ancilla_nbr = len(self.qubits) - input_size - self.output_size
 
         # ===================
 
         for i in range(nbr_groups):
-            nb = len(incrementor_inputs[i])
+            _ = len(incrementor_inputs[i])
             for j in range(len(incrementor_inputs[i])):
                 self.append(
                     CONTROLLED_INCREMENTOR_4, [incrementor_inputs[i][j]] +
                     incrementor_outputs[i][:] + [additional_ancillas[i][0]])
 
         # then tree of additions
-        for a, b, c, d in addition_tree:
+        for a, b, _, d in addition_tree:
             # a: input register for addition
             # b: input register for addition
             # c: output register for addition = a
@@ -197,12 +214,13 @@ class MultiBitSum(QuantumCircuit):
                 [additional_ancillas[a][d - 1]] +
                 [additional_ancillas[b][d - 1]])
 
-    def test(self):
+    def test(self) -> None:
+        """Test the circuit. It should be able to add 0 or 1 to the input bits."""
         for _ in range(50):
             input_bits = (
                 [random.randrange(2) for i in range(self.nb_controls)] + [0] *
                 (len(self.qubits) - self.nb_controls))
-            expected_output = (
+            _ = (
                 input_bits[:self.nb_controls] +
                 int_to_bits(sum(input_bits), width=self.output_size))
             output_bits = simulate(self, input_bits)
@@ -212,28 +230,32 @@ class MultiBitSum(QuantumCircuit):
 
 
 class MultiIntegerSum(QuantumCircuit):
-    """Performs a multi-controlled sum of integers. It uses several layers of
-    multi-bit additions. """
+    """Performs a multi-controlled sum of integers.
 
-    def __init__(self, l, output_size=None, max_ancillas=False):
-        """
-        Parameters:
+    It uses several layers of multi-bit additions.
+    """
+
+    def __init__(self, lst: list, output_size: int = -1, max_ancillas: bool = False):
+        """Initialize mutli integer sum object.
+
+        Args
+        ----------
             l - list of integers for the multi-sum
             output_size - required size of the output register
             max_ancillas - if set to True, will allocate the maximal number
-                        of ancillas which would be required for such a case
+                        of ancillas which would be required for such a case.
         """
         super().__init__(name="multi_integer_sum")
-        self.l = l
+        self.l = lst
         levels = 0  # nbr of levels with multi-bit additions
-        nbr_inputs = len(l)
-        for i in l:
+        nbr_inputs = len(lst)
+        for i in lst:
             if i > 0:
                 levels = max(levels, ceil(log(i, 2)))
 
-        self.output_size = output_size if output_size is not None else ceil(
-            log(sum(l), 2))
-        assert self.output_size >= ceil(log(sum(l), 2))
+        self.output_size = output_size if output_size != -1 else ceil(
+            log(sum(lst), 2))
+        assert self.output_size >= ceil(log(sum(lst), 2))
 
         adder_ancillas = QuantumRegister(2)
         controls = QuantumRegister(nbr_inputs)
@@ -245,7 +267,7 @@ class MultiIntegerSum(QuantumCircuit):
         for i in range(levels):
             # list of inputs for the controls
             sub_circuits_inputs[i] = [
-                j for j in range(len(l)) if ((l[j] >> i) % 2 == 1)
+                j for j in range(len(lst)) if ((lst[j] >> i) % 2 == 1)
             ]
             # perform a multi-sum circuit, but only with this list of bits
             if sub_circuits_inputs[i] != []:
@@ -254,7 +276,7 @@ class MultiIntegerSum(QuantumCircuit):
 
         # check size of all sub_circuits: required nbr of ancillas
         nbr_ancilla = {}
-        for i in sub_circuits:
+        for i in list(sub_circuits):
             nbr_ancilla[i] = len(sub_circuits[i].qubits) - len(
                 sub_circuits_inputs[i])
 
@@ -265,17 +287,13 @@ class MultiIntegerSum(QuantumCircuit):
             return
 
         if max_ancillas:
-            if len(l) < 1000:
+            if len(lst) < 1000:
                 # in that case, no bound
                 ancilla_reg = QuantumRegister(
-                    max(self.output_size, 5) + MultiBitSum.ancilla_count(len(l)))
-                # raise ValueError("Unsupported: l should be large enough for the bound to be correct w.h.p")
-            # when l >= 1000, the probability that a multi-bit sum has more than 1.3 * l/2
-            # bits to sum is lower than exp(-0.3**2 / (2+0.3) * l/2 ) <= exp(−0.0195 * l ) <= exp(-19.6)
-            # which is enough to have this satisfied for all instances of multi-bit-sum in the circuit
+                    max(self.output_size, 5) + MultiBitSum.ancilla_count(len(lst)))
             ancilla_reg = QuantumRegister(
                 max(self.output_size, 5) +
-                MultiBitSum.ancilla_count(int(0.65 * len(l))))
+                MultiBitSum.ancilla_count(int(0.65 * len(lst))))
         else:
             ancilla_reg = QuantumRegister(
                 max([nbr_ancilla[i] for i in nbr_ancilla]))
@@ -284,7 +302,7 @@ class MultiIntegerSum(QuantumCircuit):
 
         adder = HalfAdder(bit_size=self.output_size)
 
-        for i in sub_circuits:
+        for i in list(sub_circuits):
             # apply the current level
             self.append(sub_circuits[i],
                         [controls[j] for j in sub_circuits_inputs[i]] +
@@ -301,21 +319,36 @@ class MultiIntegerSum(QuantumCircuit):
                         [controls[j] for j in sub_circuits_inputs[i]] +
                         ancilla_reg[:nbr_ancilla[i]])
 
-    def test(self):
+    def test(self) -> None:
+        """Test the circuit. It should be able to add 0 or 1 to the input bits."""
         in_len = len(self.l)
         out_len = self.output_size
         for _ in range(20):
-            input_bits = ([random.randrange(2) for i in range(in_len)] + 
+            input_bits = ([random.randrange(2) for i in range(in_len)] +
                           [0] * (len(self.qubits) - in_len))
             s = sum([self.l[i] * input_bits[i] for i in range(in_len)])
-            expected_output = (input_bits[:in_len] + int_to_bits(s, width=out_len) + 
+            expected_output = (input_bits[:in_len] + int_to_bits(s, width=out_len) +
                             [0] * (len(self.qubits) - in_len - out_len))
             output_bits = simulate(self, input_bits)
             assert expected_output == output_bits
 
 
-def find_generator(p):
-    """Finds a multiplicative generator of the group Z_p^*. """
+def find_generator(p: int) -> int:
+    """Find a multiplicative generator of the group Z_p^*.
+
+    Args
+    ----
+        p (int): The prime number.
+
+    Returns
+    -------
+        int: The generator of Z_p^*.
+
+    Raises
+    ------
+    Exception
+        If no generator is found.
+    """
     div = divisors(p - 1)[:-1]
     for i in range(3, p):
         good = True
@@ -329,37 +362,39 @@ def find_generator(p):
 
 
 class ControlledModularMultiProduct(QuantumCircuit):
-    """Circuit that performs a controlled multi-product modulo a small prime.
-    It is optimized for a prime p of 21 bits.
+    """Perform a controlled multi-product modulo a small prime.
 
+    It is optimized for a prime p of 21 bits.
     """
 
-    def __init__(self, l, p, verb=False, half=True):
-        """
+    def __init__(self, lst: list, p: int,  # noqa: PLR0915
+                 verb: bool = False, half: bool = True) -> None:
+        """Initialize the circuit.
 
         Args:
-        - l: list of integers for the product (modulo p)
-        - p: the prime
-        - half: if True, will not uncompute the sum of discrete logarithms (this
-        costs slightly more ancillas, but saves a factor ~2 in gate count).
+            l (list): The list of integers for the product (modulo p).
+            p (int): The prime number.
+            verb (bool): Whether to print debug info.
+            half (bool): If True, does not uncompute the sum of discrete
+                logarithms. This costs slightly more ancillas, but
+                saves about a factor of 2 in gate count.
         """
-
         super().__init__(name="controlled_modular_multi_product")
         self.p = p
-        self.l = l
+        self.l = lst
         self.g = find_generator(p)
 
         generator = self.g
-        nbr_inputs = len(l)
+        nbr_inputs = len(lst)
         log2p = ceil(log(p, 2))
         self.log2p = log2p
 
         dlogs = {}
         zero = []  # some of the integers can be 0 mod p. We must remove them
         # from the product, because they have no dlog.
-        for i in range(len(l)):
-            if l[i] % p != 0:
-                dlogs[i] = discrete_log(p, l[i], generator)
+        for i in range(len(lst)):
+            if lst[i] % p != 0:
+                dlogs[i] = discrete_log(p, lst[i], generator)
             else:
                 zero.append(i)
 
@@ -371,10 +406,10 @@ class ControlledModularMultiProduct(QuantumCircuit):
                                       dlogs_sum_size,
                                       max_ancillas=True)
 
-        _tmp = full_decompose(sum_circuit, do_not_decompose=[])
+        tmp = full_decompose(sum_circuit, do_not_decompose=[])
         if verb:
-            print("sum circuit gates", dict(_tmp.count_ops()))
-            print("sum circuit depth", _tmp.depth())
+            print("sum circuit gates", dict(tmp.count_ops()))
+            print("sum circuit depth", tmp.depth())
         # reduction of the sum of dlogs mod p-1 (because a^(p-1) = 1)
         euclidean_division = EuclideanDivider(p - 1, dlogs_sum_size)
 
@@ -383,10 +418,10 @@ class ControlledModularMultiProduct(QuantumCircuit):
             [pow(generator, 2**i, p) for i in range(log2p)],
             p,
             controlled=True)
-        _tmp = full_decompose(final_modular_product, do_not_decompose=[])
+        tmp = full_decompose(final_modular_product, do_not_decompose=[])
         if verb:
-            print("modular product gates", dict(_tmp.count_ops()))
-            print("modular product depth", _tmp.depth())
+            print("modular product gates", dict(tmp.count_ops()))
+            print("modular product depth", tmp.depth())
 
         ancillas_for_euclidean_division = euclidean_division.ancilla_nbr
         ancillas_for_sum = len(
@@ -472,7 +507,11 @@ class ControlledModularMultiProduct(QuantumCircuit):
             self.append(sum_circuit.inverse(), [controls[i] for i in dlogs] +
                         dlog_sum[:] + ancillas[:ancillas_for_sum])
 
-    def test(self):
+    def test(self) -> None:
+        """Test the circuit.
+
+        It should be able to compute the product of the input bits modulo p.
+        """
         nbr_inputs = len(self.l)
         log2p = self.log2p
 
@@ -486,7 +525,7 @@ class ControlledModularMultiProduct(QuantumCircuit):
                     expected_nbr = (expected_nbr * self.l[i]) % self.p
 
             output_bits = simulate(self, input_bits)
-            expected_output = (input_bits[:nbr_inputs] +
+            _ = (input_bits[:nbr_inputs] +
                                int_to_bits(expected_nbr, width=log2p) +
                                [0] * self.ancilla_nbr)
             assert (output_bits[:nbr_inputs] == input_bits[:nbr_inputs])
@@ -500,7 +539,7 @@ class ControlledModularMultiProduct(QuantumCircuit):
 
 if __name__ == "__main__":
 
-    def test_multibit_sum():
+    def test_multibit_sum() -> None:  # noqa: D103
         n = 1000
         qc = MultiBitSum(n, output_size=40)
         qc = full_decompose(qc, do_not_decompose=[])
@@ -510,15 +549,12 @@ if __name__ == "__main__":
         print(len(qc.qubits) - n - 40)
         print(0.4 * n - 6)
 
-    def test_multi_product():
-        """Computes various random instances of the circuit to average their
-        gate counts and depth.
-        """
-
+    def test_multi_product() -> None:
+        """Compute average gate counts and depth."""
         bit_size = 22
         p = randprime(2**(bit_size - 1), 2**bit_size)
-        l = [random.randrange(0, p) for _ in range(1146)]
-        qc = ControlledModularMultiProduct(l, p, half=True)
+        lst = [random.randrange(0, p) for _ in range(1146)]
+        qc = ControlledModularMultiProduct(lst, p, half=True)
         qc.test()
         qc = full_decompose(qc, do_not_decompose=[])
         d = gate_counts(qc)
