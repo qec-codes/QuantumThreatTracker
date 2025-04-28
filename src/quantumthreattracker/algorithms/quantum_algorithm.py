@@ -90,6 +90,17 @@ class QuantumAlgorithm(ABC):
         """
         return []
 
+    @staticmethod
+    def get_success_probability() -> float:
+        """Get the algorithmic success probability.
+
+        Returns
+        -------
+        float
+            Algorithmic success probability.
+        """
+        return 1.0
+
     def estimate_resources_qualtran(
         self, cost_model: PhysicalCostModel, alg_params: Optional[AlgParams] = None
     ) -> dict:
@@ -158,6 +169,6 @@ class QuantumAlgorithm(ABC):
             )
 
         if "errorBudget" not in estimator_params:
-            estimator_params["errorBudget"] = 0.9
+            estimator_params["errorBudget"] = 0.5
 
         return logical_counts.estimate(estimator_params)

@@ -197,24 +197,56 @@ class LifespanEstimator:
         with Path.open(file_path + "/" + file_name + ".json", "w") as fp:
             json.dump(report_output, fp, indent=4)
 
-    def plot_threats(self) -> Axes:
+    def plot_threats(self, protocol: str | None = None) -> Axes:
         """Plot the threats over time.
+
+        Parameters
+        ----------
+        protocol : str | None, optional
+            Cryptographic protocol, by default None. If specified, all threats for that
+            protocol (instead of only the soonest) will be plotted.
 
         Returns
         -------
         Axes
             A matplotlib Axes object containing the plot.
         """
-        report = self.get_report(detail_level=1, soonest_threat_only=True)
         labels = []
         timestamps = []
         runtimes = []
-        for protocol in report:
-            labels.append(protocol["protocol"])
-            timestamps.append(
-                datetime.fromtimestamp(protocol["threats"][0]["timestamp"])
-            )
-            runtimes.append(protocol["threats"][0]["runtime"] / 3.6e12)
+
+        if protocol is not None:
+            report = self.get_report(detail_level=1)
+            report = [entry for entry in report if entry["protocol"] == protocol]
+            threats = report[0]["threats"]
+
+            # Remove threats that are dominated by other threats
+            for threat in threats:
+                for alt_threat in threats:
+                    if (
+                        threat["timestamp"] >= alt_threat["timestamp"]
+                        and threat["runtime"] >= alt_threat["runtime"]
+                    ):
+                        threats.remove(threat)
+                        break
+
+            for entry in threats:
+                timestamps.append(datetime.fromtimestamp(entry["timestamp"]))
+                runtimes.append(entry["runtime"] / 3.6e12)
+
+            ax = plt.subplot(111)
+            ax.plot(timestamps, runtimes, "o--")
+            ax.set_yscale("log")
+            ax.set_xlabel("Timestamp")
+            ax.set_ylabel("Algorithm runtime (hours)")
+            ax.set_title("Threats against " + protocol)
+            return ax
+
+        report = self.get_report(detail_level=1, soonest_threat_only=True)
+        for entry in report:
+            labels.append(entry["protocol"])
+            timestamps.append(datetime.fromtimestamp(entry["threats"][0]["timestamp"]))
+            runtimes.append(entry["threats"][0]["runtime"] / 3.6e12)
 
         ax = plt.subplot(111)
         ax.scatter(timestamps, runtimes)
