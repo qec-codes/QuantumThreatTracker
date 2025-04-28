@@ -16,9 +16,7 @@ dependencies = [
     "qiskit>=1.3.0",
     "qsharp-widgets>=1.11.1",
     "qsharp>=1.11.1",
-    "ruff>=0.8.3",
     "qualtran>=0.5.0",
-    "pytest>=8.3.4",
     "sphinx>=8.2.3",
 ]
 
@@ -55,3 +53,9 @@ convention = "numpy"
 
 [tool.ruff.lint.flake8-annotations]
 mypy-init-return = true
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "ruff>=0.11.7",
+]
