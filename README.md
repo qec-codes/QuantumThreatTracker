@@ -12,7 +12,7 @@ Packages in this repository are managed using [uv](https://docs.astral.sh/uv/). 
 
 ## Usage
 
-Examples of how to use all core functionalities of the QTT are located inside of the [notebooks](https://github.com/qec-codes/QuantumThreatTracker/tree/main/notebooks) folder.
+Examples of how to use the QTT are located inside of the [Notebooks](https://github.com/qec-codes/QuantumThreatTracker/tree/main/notebooks) folder. We recommend starting with the [QTT Demo](https://github.com/qec-codes/QuantumThreatTracker/blob/main/notebooks/qtt_demo.ipynb) notebook, which showcases how to use the QTT to estimate when cryptographic protocols of interest will be broken.
 
 ## Architecture Diagram
 
