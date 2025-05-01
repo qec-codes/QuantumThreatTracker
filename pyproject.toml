@@ -20,6 +20,12 @@ dependencies = [
     "sphinx>=8.2.3",
 ]
 
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "ruff>=0.11.7",
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -53,9 +59,3 @@ convention = "numpy"
 
 [tool.ruff.lint.flake8-annotations]
 mypy-init-return = true
-
-[dependency-groups]
-dev = [
-    "pytest>=8.3.5",
-    "ruff>=0.11.7",
-]
