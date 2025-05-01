@@ -1,10 +1,10 @@
 # Quantum Threat Tracker
 
-## Introduction
+A tool for quantifying the threat quantum computers pose to public-key cryptosystems. 
 
-The security of widely used public-key cryptographic protocols such the Rivest-Shamir-Adleman (RSA) and Diffie-Hellman (DH) protocols hinges on the assumption of computational hardness for primitive mathematical problems such as factoring integers and solving discrete logarithms. It is well known that Shor's algorithm will be able to solve these classically hard problems efficiently on a quantum computer, eventually rendering protocols such as RSA and DH insecure.
+## Preliminary
 
-The purpose of the Quantum Threat Tracker (QTT) is to create estimates as to when quantum computers will be powerful enough to break the aforementioned public-key cryptographic protocols.
+The security of widely used public-key cryptographic protocols such the Rivest-Shamir-Adleman (RSA) and Diffie-Hellman (DH) protocols hinges on the assumption of computational hardness for primitive mathematical problems such as factoring integers and solving discrete logarithms. It is well known that Shor's algorithm will be able to solve these classically hard problems efficiently on a quantum computer, eventually rendering protocols such as RSA and DH insecure. The purpose of the Quantum Threat Tracker (QTT) is to create estimates as to when quantum computers will be powerful enough to break the aforementioned public-key cryptographic protocols.
 
 ## Installation
 
@@ -12,8 +12,12 @@ Packages in this repository are managed using [uv](https://docs.astral.sh/uv/). 
 
 ## Usage
 
-Examples of how to use the QTT are located inside of the [Notebooks](https://github.com/qec-codes/QuantumThreatTracker/tree/main/notebooks) folder. We recommend starting with the [QTT Demo](https://github.com/qec-codes/QuantumThreatTracker/blob/main/notebooks/qtt_demo.ipynb) notebook, which showcases how to use the QTT to estimate when cryptographic protocols of interest will be broken.
+Examples of how to use the QTT are located inside of the [notebooks](https://github.com/qec-codes/QuantumThreatTracker/tree/main/notebooks) folder.
 
-## Architecture Diagram
+## Contributing
 
-![Quantum Threat Tracker](./assets/qtt-architecture.png)
+The QTT is a proof of concept and is not currently open to contribution.
+
+## Acknowledgements
+
+Cambridge Consultants and the University of Edinburgh thank Ofgem for funding the development of the QTT.
