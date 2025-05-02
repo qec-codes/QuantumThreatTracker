@@ -24,7 +24,7 @@ class DLogSafePrimeShorParams(AlgParams):
     In discrete logarithm problems, we have two main group types:
     - Schnorr group: order r with nd = nr = 2z (where z is bits of classical security)
     - Safe-prime group: order n-1 where n is the modulus bit length
-      With short exponent: nd = 2z
+    with short exponent: nd = 2z
 
     Note: This implementation focuses only on short exponents in safe-prime groups.
     """
