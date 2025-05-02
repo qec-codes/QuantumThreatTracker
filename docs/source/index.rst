@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Quantum Threat Tracker documentation
-==================================
+====================================
 
 Welcome to my docs! Here’s how to install!
 
