@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lifespan Estimator &mdash; quantumthreattracker  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -45,7 +45,25 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms Package</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Lifespan Estimator</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lifespan Estimator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap"><code class="docutils literal notranslate"><span class="pre">HardwareRoadmap</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap.add"><code class="docutils literal notranslate"><span class="pre">HardwareRoadmap.add()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap.as_list"><code class="docutils literal notranslate"><span class="pre">HardwareRoadmap.as_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap.from_file"><code class="docutils literal notranslate"><span class="pre">HardwareRoadmap.from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap.remove"><code class="docutils literal notranslate"><span class="pre">HardwareRoadmap.remove()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap.save_roadmap"><code class="docutils literal notranslate"><span class="pre">HardwareRoadmap.save_roadmap()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.LifespanEstimator"><code class="docutils literal notranslate"><span class="pre">LifespanEstimator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.LifespanEstimator.estimate_threats"><code class="docutils literal notranslate"><span class="pre">LifespanEstimator.estimate_threats()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.LifespanEstimator.generate_report"><code class="docutils literal notranslate"><span class="pre">LifespanEstimator.generate_report()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.LifespanEstimator.get_report"><code class="docutils literal notranslate"><span class="pre">LifespanEstimator.get_report()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.LifespanEstimator.plot_threats"><code class="docutils literal notranslate"><span class="pre">LifespanEstimator.plot_threats()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.LifespanEstimator.save_report"><code class="docutils literal notranslate"><span class="pre">LifespanEstimator.save_report()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="optimizer.html">Optimizer Package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="spec_req_estimator.html">Specification Requirement Estimator</a></li>
 </ul>
@@ -74,8 +92,198 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="lifespan-estimator">
-<h1>Lifespan Estimator<a class="headerlink" href="#lifespan-estimator" title="Link to this heading"></a></h1>
+  <section id="module-quantumthreattracker.lifespan_estimator">
+<span id="lifespan-estimator"></span><h1>Lifespan Estimator<a class="headerlink" href="#module-quantumthreattracker.lifespan_estimator" title="Link to this heading"></a></h1>
+<p>Lifespan Estimator module.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.HardwareRoadmap">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HardwareRoadmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hardware_roadmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/hardware_roadmap.html#HardwareRoadmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for representing quantum computing hardware roadmaps.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.HardwareRoadmap.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EstimatorParams</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/hardware_roadmap.html#HardwareRoadmap.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap.add" title="Link to this definition"></a></dt>
+<dd><p>Add a quantum computer to the hardware roadmap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timestamp</strong> (<em>int</em>) – Unix timestamp.</p></li>
+<li><p><strong>estimator_params</strong> (<em>EstimatorParams</em><em> | </em><em>dict</em><em> | </em><em>list</em>) – Parameters characterising the quantum computer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If the estimator parameters are not given as an EstimatorParams instance or
+    a dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.HardwareRoadmap.as_list">
+<span class="sig-name descname"><span class="pre">as_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/hardware_roadmap.html#HardwareRoadmap.as_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap.as_list" title="Link to this definition"></a></dt>
+<dd><p>Get the hardware roadmap as a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Hardware roadmap.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.HardwareRoadmap.from_file">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/hardware_roadmap.html#HardwareRoadmap.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap.from_file" title="Link to this definition"></a></dt>
+<dd><p>Import a hardware roadmap from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – File path.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Hardware roadmap.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Self</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.HardwareRoadmap.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qc_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/hardware_roadmap.html#HardwareRoadmap.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap.remove" title="Link to this definition"></a></dt>
+<dd><p>Remove an entry from the hardware roadmap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timestamp</strong> (<em>int</em>) – Unix timestamp.</p></li>
+<li><p><strong>qc_index</strong> (<em>int</em><em>, </em><em>optional</em>) – Index for removing a specific quantum computer for a given timestamp. If
+unspecified, all entries with the specified timestamp will be removed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.HardwareRoadmap.save_roadmap">
+<span class="sig-name descname"><span class="pre">save_roadmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/hardware_roadmap.html#HardwareRoadmap.save_roadmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap.save_roadmap" title="Link to this definition"></a></dt>
+<dd><p>Save the hardware roadmap as a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – File name.</p></li>
+<li><p><strong>file_path</strong> (<em>str</em><em>, </em><em>optional</em>) – File path. If unspecified, the file will be saved to the current working
+directory.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – If the hardware roadmap has not yet been generated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.LifespanEstimator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LifespanEstimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hardware_roadmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap" title="quantumthreattracker.lifespan_estimator.hardware_roadmap.HardwareRoadmap"><span class="pre">HardwareRoadmap</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/lifespan_estimator.html#LifespanEstimator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.LifespanEstimator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for estimating the remaining lifespan of cryptographic protocols.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.LifespanEstimator.estimate_threats">
+<span class="sig-name descname"><span class="pre">estimate_threats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/lifespan_estimator.html#LifespanEstimator.estimate_threats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.LifespanEstimator.estimate_threats" title="Link to this definition"></a></dt>
+<dd><p>Estimate the possible threats against a given cryptographic protocol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>protocol</strong> (<em>str</em>) – Cryptographic protocol.</p></li>
+<li><p><strong>key_size</strong> (<em>int</em>) – Cryptographic key size.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Threats against the given protocol.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.LifespanEstimator.generate_report">
+<span class="sig-name descname"><span class="pre">generate_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/lifespan_estimator.html#LifespanEstimator.generate_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.LifespanEstimator.generate_report" title="Link to this definition"></a></dt>
+<dd><p>Predict the threats against several cryptographic protocols.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>protocols</strong> (<em>list</em><em>[</em><em>dict</em><em>]</em>) – List of cryptographic protocols.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.LifespanEstimator.get_report">
+<span class="sig-name descname"><span class="pre">get_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detail_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">soonest_threat_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/lifespan_estimator.html#LifespanEstimator.get_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.LifespanEstimator.get_report" title="Link to this definition"></a></dt>
+<dd><p>Get the threat report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>detail_level</strong> (<em>int</em><em>, </em><em>optional</em>) – Level of detail in the output, by default 3.</p></li>
+<li><p><strong>soonest_threat_only</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to only include the soonest threat for each protocol, by default
+False. If True, all threats other than that with the soonest timestamp will
+be removed from the report.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Threat report.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>AttributeError</strong> – If the report has not yet been generated.</p></li>
+<li><p><strong>SyntaxError</strong> – If the detail level is out of bounds.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.LifespanEstimator.plot_threats">
+<span class="sig-name descname"><span class="pre">plot_threats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Axes</span></span></span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/lifespan_estimator.html#LifespanEstimator.plot_threats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.LifespanEstimator.plot_threats" title="Link to this definition"></a></dt>
+<dd><p>Plot the threats over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>protocol</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Cryptographic protocol, by default None. If specified, all threats for that
+protocol (instead of only the soonest) will be plotted.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A matplotlib Axes object containing the plot.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.LifespanEstimator.save_report">
+<span class="sig-name descname"><span class="pre">save_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/lifespan_estimator.html#LifespanEstimator.save_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.LifespanEstimator.save_report" title="Link to this definition"></a></dt>
+<dd><p>Save the hardware roadmap as a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – File name.</p></li>
+<li><p><strong>file_path</strong> (<em>str</em><em>, </em><em>optional</em>) – File path. If unspecified, the file will be saved to the current working
+directory.</p></li>
+<li><p><strong>detail_level</strong> (<em>int</em><em>, </em><em>optional</em>) – Level of detail in the output, by default 3.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

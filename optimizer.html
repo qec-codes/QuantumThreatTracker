@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Optimizer Package &mdash; quantumthreattracker  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -46,7 +46,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms Package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lifespan_estimator.html">Lifespan Estimator</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Optimizer Package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Optimizer Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quantumthreattracker.optimizer.AlgorithmOptimizer"><code class="docutils literal notranslate"><span class="pre">AlgorithmOptimizer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.optimizer.AlgorithmOptimizer.find_min_estimate"><code class="docutils literal notranslate"><span class="pre">AlgorithmOptimizer.find_min_estimate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="spec_req_estimator.html">Specification Requirement Estimator</a></li>
 </ul>
 
@@ -74,8 +80,44 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="optimizer-package">
-<h1>Optimizer Package<a class="headerlink" href="#optimizer-package" title="Link to this heading"></a></h1>
+  <section id="module-quantumthreattracker.optimizer">
+<span id="optimizer-package"></span><h1>Optimizer Package<a class="headerlink" href="#module-quantumthreattracker.optimizer" title="Link to this heading"></a></h1>
+<p>Algorithm parameter optimizer module.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.optimizer.AlgorithmOptimizer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AlgorithmOptimizer</span></span><a class="reference internal" href="_modules/quantumthreattracker/optimizer/algorithm_optimizer.html#AlgorithmOptimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.optimizer.AlgorithmOptimizer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for optimizing quantum algorithm parameters based on resource estimates.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.optimizer.AlgorithmOptimizer.find_min_estimate">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_min_estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="algorithms/algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm" title="quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm"><span class="pre">QuantumAlgorithm</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EstimatorParams</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimize_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'physicalQubits'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="algorithms/algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><span class="pre">AlgParams</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="algorithms/algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><span class="pre">AlgParams</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">EstimatorResult</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/quantumthreattracker/optimizer/algorithm_optimizer.html#AlgorithmOptimizer.find_min_estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.optimizer.AlgorithmOptimizer.find_min_estimate" title="Link to this definition"></a></dt>
+<dd><p>Optimize algorithm parameters to minimize a specific resource metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>algorithm</strong> (<a class="reference internal" href="algorithms/algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm" title="quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm"><em>QuantumAlgorithm</em></a>) – The quantum algorithm instance to optimize.</p></li>
+<li><p><strong>estimator_params</strong> (<em>EstimatorParams</em>) – Parameters for the resource estimator.</p></li>
+<li><p><strong>minimize_metric</strong> (<em>str</em><em>, </em><em>optional</em>) – Resource metric to minimize (default: ‘physicalQubits’). Options include:
+‘physicalQubits’, ‘runtime’, ‘toffoliCount’, etc.</p></li>
+<li><p><strong>search_space</strong> (<em>list</em><em>[</em><a class="reference internal" href="algorithms/algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><em>AlgParams</em></a><em>] </em><em>| </em><em>None</em><em>, </em><em>optional</em>) – List of algorithm parameters to search over. If None or empty, will attempt
+to generate from algorithm.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple containing (optimal_parameters, optimal_resource_estimate).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[<a class="reference internal" href="algorithms/algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams">AlgParams</a>, EstimatorResult]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If no search space is provided and the algorithm doesn’t have a defined
+    search space.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

@@ -1,0 +1,189 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quantumthreattracker.optimizer.algorithm_optimizer &mdash; quantumthreattracker  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            quantumthreattracker
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../algorithms/index.html">Algorithms Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../lifespan_estimator.html">Lifespan Estimator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optimizer.html">Optimizer Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spec_req_estimator.html">Specification Requirement Estimator</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">quantumthreattracker</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">quantumthreattracker.optimizer.algorithm_optimizer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for quantumthreattracker.optimizer.algorithm_optimizer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module for optimizing quantum algorithm parameters based on resource estimates.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">qsharp.estimator</span> <span class="kn">import</span> <span class="n">EstimatorParams</span><span class="p">,</span> <span class="n">EstimatorResult</span>
+
+<span class="kn">from</span> <span class="nn">quantumthreattracker.algorithms</span> <span class="kn">import</span> <span class="n">AlgParams</span><span class="p">,</span> <span class="n">QuantumAlgorithm</span>
+
+
+<div class="viewcode-block" id="AlgorithmOptimizer">
+<a class="viewcode-back" href="../../../optimizer.html#quantumthreattracker.optimizer.AlgorithmOptimizer">[docs]</a>
+<span class="k">class</span> <span class="nc">AlgorithmOptimizer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for optimizing quantum algorithm parameters based on resource estimates.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AlgorithmOptimizer.find_min_estimate">
+<a class="viewcode-back" href="../../../optimizer.html#quantumthreattracker.optimizer.AlgorithmOptimizer.find_min_estimate">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">find_min_estimate</span><span class="p">(</span>
+        <span class="n">algorithm</span><span class="p">:</span> <span class="n">QuantumAlgorithm</span><span class="p">,</span>
+        <span class="n">estimator_params</span><span class="p">:</span> <span class="n">EstimatorParams</span><span class="p">,</span>
+        <span class="n">minimize_metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;physicalQubits&quot;</span><span class="p">,</span>
+        <span class="n">search_space</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AlgParams</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">AlgParams</span><span class="p">,</span> <span class="n">EstimatorResult</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Optimize algorithm parameters to minimize a specific resource metric.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        algorithm : QuantumAlgorithm</span>
+<span class="sd">            The quantum algorithm instance to optimize.</span>
+<span class="sd">        estimator_params : EstimatorParams</span>
+<span class="sd">            Parameters for the resource estimator.</span>
+<span class="sd">        minimize_metric : str, optional</span>
+<span class="sd">            Resource metric to minimize (default: &#39;physicalQubits&#39;). Options include:</span>
+<span class="sd">            &#39;physicalQubits&#39;, &#39;runtime&#39;, &#39;toffoliCount&#39;, etc.</span>
+<span class="sd">        search_space : list[AlgParams] | None, optional</span>
+<span class="sd">            List of algorithm parameters to search over. If None or empty, will attempt</span>
+<span class="sd">            to generate from algorithm.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple[AlgParams, EstimatorResult]</span>
+<span class="sd">            Tuple containing (optimal_parameters, optimal_resource_estimate).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If no search space is provided and the algorithm doesn&#39;t have a defined</span>
+<span class="sd">            search space.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If search_space is None or empty, try to generate it from the algorithm</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">search_space</span><span class="p">:</span>
+            <span class="n">search_space</span> <span class="o">=</span> <span class="n">algorithm</span><span class="o">.</span><span class="n">generate_search_space</span><span class="p">()</span>
+
+            <span class="c1"># If search_space is still empty, raise an error</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">search_space</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;No search space provided and the algorithm doesn&#39;t have a defined search space&quot;</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Initialize variables to track minimum estimate</span>
+        <span class="n">min_estimate_params</span> <span class="o">=</span> <span class="n">search_space</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">min_estimate</span> <span class="o">=</span> <span class="n">algorithm</span><span class="o">.</span><span class="n">estimate_resources_azure</span><span class="p">(</span>
+            <span class="n">estimator_params</span><span class="p">,</span> <span class="n">search_space</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="c1"># Iterate through the rest of the search space</span>
+        <span class="k">for</span> <span class="n">alg_params</span> <span class="ow">in</span> <span class="n">search_space</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="c1"># Configure algorithm with current parameters</span>
+            <span class="n">current_estimate</span> <span class="o">=</span> <span class="n">algorithm</span><span class="o">.</span><span class="n">estimate_resources_azure</span><span class="p">(</span>
+                <span class="n">estimator_params</span><span class="p">,</span> <span class="n">alg_params</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Extract current metric value</span>
+            <span class="n">current_metric_value</span> <span class="o">=</span> <span class="n">current_estimate</span><span class="p">[</span><span class="s2">&quot;physicalCounts&quot;</span><span class="p">][</span><span class="n">minimize_metric</span><span class="p">]</span>
+            <span class="n">min_metric_value</span> <span class="o">=</span> <span class="n">min_estimate</span><span class="p">[</span><span class="s2">&quot;physicalCounts&quot;</span><span class="p">][</span><span class="n">minimize_metric</span><span class="p">]</span>
+
+            <span class="c1"># Skip if metric is not available</span>
+            <span class="k">if</span> <span class="n">current_metric_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Update minimum if current is better</span>
+            <span class="k">if</span> <span class="n">current_metric_value</span> <span class="o">&lt;</span> <span class="n">min_metric_value</span><span class="p">:</span>
+                <span class="n">min_estimate</span> <span class="o">=</span> <span class="n">current_estimate</span>
+                <span class="n">min_estimate_params</span> <span class="o">=</span> <span class="n">alg_params</span>
+
+        <span class="k">return</span> <span class="n">min_estimate_params</span><span class="p">,</span> <span class="n">min_estimate</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

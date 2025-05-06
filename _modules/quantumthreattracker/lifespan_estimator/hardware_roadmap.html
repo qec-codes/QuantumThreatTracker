@@ -1,0 +1,278 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quantumthreattracker.lifespan_estimator.hardware_roadmap &mdash; quantumthreattracker  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            quantumthreattracker
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../algorithms/index.html">Algorithms Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../lifespan_estimator.html">Lifespan Estimator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optimizer.html">Optimizer Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spec_req_estimator.html">Specification Requirement Estimator</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">quantumthreattracker</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">quantumthreattracker.lifespan_estimator.hardware_roadmap</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for quantumthreattracker.lifespan_estimator.hardware_roadmap</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Class for hardware roadmaps.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Self</span>
+
+<span class="kn">from</span> <span class="nn">qsharp.estimator</span> <span class="kn">import</span> <span class="n">EstimatorParams</span>
+
+
+<div class="viewcode-block" id="HardwareRoadmap">
+<a class="viewcode-back" href="../../../lifespan_estimator.html#quantumthreattracker.lifespan_estimator.HardwareRoadmap">[docs]</a>
+<span class="k">class</span> <span class="nc">HardwareRoadmap</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for representing quantum computing hardware roadmaps.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hardware_roadmap</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">hardware_roadmap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span> <span class="o">=</span> <span class="n">hardware_roadmap</span>
+
+<div class="viewcode-block" id="HardwareRoadmap.as_list">
+<a class="viewcode-back" href="../../../lifespan_estimator.html#quantumthreattracker.lifespan_estimator.HardwareRoadmap.as_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">as_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the hardware roadmap as a list.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            Hardware roadmap.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span></div>
+
+
+<div class="viewcode-block" id="HardwareRoadmap.from_file">
+<a class="viewcode-back" href="../../../lifespan_estimator.html#quantumthreattracker.lifespan_estimator.HardwareRoadmap.from_file">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Import a hardware roadmap from a file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_path : str</span>
+<span class="sd">            File path.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Self</span>
+<span class="sd">            Hardware roadmap.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="HardwareRoadmap.add">
+<a class="viewcode-back" href="../../../lifespan_estimator.html#quantumthreattracker.lifespan_estimator.HardwareRoadmap.add">[docs]</a>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">timestamp</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">estimator_params</span><span class="p">:</span> <span class="n">EstimatorParams</span> <span class="o">|</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a quantum computer to the hardware roadmap.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        timestamp : int</span>
+<span class="sd">            Unix timestamp.</span>
+<span class="sd">        estimator_params : EstimatorParams | dict | list</span>
+<span class="sd">            Parameters characterising the quantum computer.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the estimator parameters are not given as an EstimatorParams instance or</span>
+<span class="sd">            a dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">estimator_params</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">estimator_params_list</span> <span class="o">=</span> <span class="n">estimator_params</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">estimator_params_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">estimator_params</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">estimator_params_entry</span> <span class="ow">in</span> <span class="n">estimator_params_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">estimator_params_entry</span><span class="p">,</span> <span class="n">EstimatorParams</span><span class="p">):</span>
+                <span class="n">estimator_params_dict</span> <span class="o">=</span> <span class="n">estimator_params_entry</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">estimator_params_entry</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">estimator_params_dict</span> <span class="o">=</span> <span class="n">estimator_params_entry</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">estimator_params_entry</span><span class="p">)</span><span class="si">}</span><span class="s2"> is the wrong type for estimator parameters. &quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;It must be given as either an EstimatorParams instance or a dictionary.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">new_milestone</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+                <span class="s2">&quot;hardwareList&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;estimatorParams&quot;</span><span class="p">:</span> <span class="n">estimator_params_dict</span><span class="p">}],</span>
+            <span class="p">}</span>
+
+            <span class="c1"># This slightly messy chunk of code is for adding the new quantum computer</span>
+            <span class="c1"># to the existing hardware roadmap as a new entry in the list, or combining</span>
+            <span class="c1"># it with an existing entry if another entry with the same timestamp already</span>
+            <span class="c1"># exists.</span>
+            <span class="n">inserted</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">timestamp</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">new_milestone</span><span class="p">)</span>
+                    <span class="n">inserted</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">timestamp</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s2">&quot;hardwareList&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">new_milestone</span><span class="p">[</span><span class="s2">&quot;hardwareList&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">inserted</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">inserted</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_milestone</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HardwareRoadmap.remove">
+<a class="viewcode-back" href="../../../lifespan_estimator.html#quantumthreattracker.lifespan_estimator.HardwareRoadmap.remove">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">qc_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove an entry from the hardware roadmap.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        timestamp : int</span>
+<span class="sd">            Unix timestamp.</span>
+<span class="sd">        qc_index : int, optional</span>
+<span class="sd">            Index for removing a specific quantum computer for a given timestamp. If</span>
+<span class="sd">            unspecified, all entries with the specified timestamp will be removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">milestone_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="p">[</span><span class="n">milestone_index</span><span class="p">][</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">timestamp</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">qc_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">milestone_index</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="p">[</span><span class="n">milestone_index</span><span class="p">][</span><span class="s2">&quot;hardwareList&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
+                        <span class="n">qc_index</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="p">[</span><span class="n">milestone_index</span><span class="p">][</span><span class="s2">&quot;hardwareList&quot;</span><span class="p">])</span>
+                        <span class="o">==</span> <span class="mi">0</span>
+                    <span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">milestone_index</span><span class="p">)</span>
+                <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="HardwareRoadmap.save_roadmap">
+<a class="viewcode-back" href="../../../lifespan_estimator.html#quantumthreattracker.lifespan_estimator.HardwareRoadmap.save_roadmap">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_roadmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the hardware roadmap as a JSON file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_name : str</span>
+<span class="sd">            File name.</span>
+<span class="sd">        file_path : str, optional</span>
+<span class="sd">            File path. If unspecified, the file will be saved to the current working</span>
+<span class="sd">            directory.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AttributeError</span>
+<span class="sd">            If the hardware roadmap has not yet been generated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">file_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">())</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">Path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file_name</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hardware_roadmap</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;The hardware roadmap has not been generated and thus cannot be saved.&quot;</span>
+            <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Specification Requirement Estimator &mdash; quantumthreattracker  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -46,7 +46,14 @@
 <li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms Package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lifespan_estimator.html">Lifespan Estimator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimizer.html">Optimizer Package</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Specification Requirement Estimator</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Specification Requirement Estimator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quantumthreattracker.spec_req_estimator.spec_req_estimator.SpecReqEstimator"><code class="docutils literal notranslate"><span class="pre">SpecReqEstimator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.spec_req_estimator.spec_req_estimator.SpecReqEstimator.estimate_specs"><code class="docutils literal notranslate"><span class="pre">SpecReqEstimator.estimate_specs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#quantumthreattracker.spec_req_estimator.spec_req_estimator.update_estimator_params"><code class="docutils literal notranslate"><span class="pre">update_estimator_params()</span></code></a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -73,8 +80,63 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="specification-requirement-estimator">
-<h1>Specification Requirement Estimator<a class="headerlink" href="#specification-requirement-estimator" title="Link to this heading"></a></h1>
+  <section id="module-quantumthreattracker.spec_req_estimator.spec_req_estimator">
+<span id="specification-requirement-estimator"></span><h1>Specification Requirement Estimator<a class="headerlink" href="#module-quantumthreattracker.spec_req_estimator.spec_req_estimator" title="Link to this heading"></a></h1>
+<p>Class for estimmating quantum computer specification requirements.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.spec_req_estimator.spec_req_estimator.SpecReqEstimator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SpecReqEstimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crypt_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="algorithms/algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><span class="pre">CryptParams</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quantumthreattracker/spec_req_estimator/spec_req_estimator.html#SpecReqEstimator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.spec_req_estimator.spec_req_estimator.SpecReqEstimator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for estimmating quantum computer specification requirements.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.spec_req_estimator.spec_req_estimator.SpecReqEstimator.estimate_specs">
+<span class="sig-name descname"><span class="pre">estimate_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">EstimatorParams</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantum_algorithm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="algorithms/algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm" title="quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm"><span class="pre">QuantumAlgorithm</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/quantumthreattracker/spec_req_estimator/spec_req_estimator.html#SpecReqEstimator.estimate_specs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.spec_req_estimator.spec_req_estimator.SpecReqEstimator.estimate_specs" title="Link to this definition"></a></dt>
+<dd><p>Estimate the gate error rate needed for a given number of qubits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>estimator_params</strong> (<em>EstimatorParams</em><em> | </em><em>dict</em>) – Parameters for Azure’s quantum resource estimator. The ‘max_physical_qubits’
+parameter should be defined.</p></li>
+<li><p><strong>quantum_algorithm</strong> (<a class="reference internal" href="algorithms/algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm" title="quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm"><em>QuantumAlgorithm</em></a><em>, </em><em>optional</em>) – Quantum algorithm to use for the analysis, by default None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Required gate error rate.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – If the estimator parameters are of the wrong type.</p></li>
+<li><p><strong>RuntimeError</strong> – If the function fails to find a sufficiently low gate error rate.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="quantumthreattracker.spec_req_estimator.spec_req_estimator.update_estimator_params">
+<span class="sig-name descname"><span class="pre">update_estimator_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_error_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/quantumthreattracker/spec_req_estimator/spec_req_estimator.html#update_estimator_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.spec_req_estimator.spec_req_estimator.update_estimator_params" title="Link to this definition"></a></dt>
+<dd><p>Update the estimator parameters with a new gate error rate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>estimator_params</strong> (<em>dict</em>) – Estimator parameters.</p></li>
+<li><p><strong>gate_error_rate</strong> (<em>float</em>) – New gate error rate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Estimator parameters with updated gate error rate.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

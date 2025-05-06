@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Discrete Log (DLog) &mdash; quantumthreattracker  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
@@ -49,7 +49,17 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Cryptographic Attacks</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="rsa.html">Rivest-Shamir-Adleman (RSA)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ecc.html">Elliptic Curve Cryptography (ECC)</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Discrete Log (DLog)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Discrete Log (DLog)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeEH"><code class="docutils literal notranslate"><span class="pre">DLogSafePrimeEH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams"><code class="docutils literal notranslate"><span class="pre">DLogSafePrimeEHParams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeShor"><code class="docutils literal notranslate"><span class="pre">DLogSafePrimeShor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams"><code class="docutils literal notranslate"><span class="pre">DLogSafePrimeShorParams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrEH"><code class="docutils literal notranslate"><span class="pre">DLogSchnorrEH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams"><code class="docutils literal notranslate"><span class="pre">DLogSchnorrEHParams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrShor"><code class="docutils literal notranslate"><span class="pre">DLogSchnorrShor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams"><code class="docutils literal notranslate"><span class="pre">DLogSchnorrShorParams</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lister.html">Algorithms Lister Module</a></li>
@@ -86,8 +96,312 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="discrete-log-dlog">
-<h1>Discrete Log (DLog)<a class="headerlink" href="#discrete-log-dlog" title="Link to this heading"></a></h1>
+  <section id="module-quantumthreattracker.algorithms.dlog">
+<span id="discrete-log-dlog"></span><h1>Discrete Log (DLog)<a class="headerlink" href="#module-quantumthreattracker.algorithms.dlog" title="Link to this heading"></a></h1>
+<p>Dlog algorithms for Quantum Threat Tracker.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSafePrimeEH">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DLogSafePrimeEH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crypt_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><span class="pre">CryptParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams" title="quantumthreattracker.algorithms.dlog.dlog_safe_prime_eh.DLogSafePrimeEHParams"><span class="pre">DLogSafePrimeEHParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_safe_prime_eh.html#DLogSafePrimeEH"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeEH" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm" title="quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumAlgorithm</span></code></a></p>
+<p>Class for the implementation of Ekerå-Håstad algorithm.</p>
+<p>for dlog problems in safe prime groups.</p>
+<p>Method based on Ekerå-Håstad’s improvements to Shor’s algorithm.</p>
+<p>Initialize the quantum algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>crypt_params</strong> (<a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><em>CryptParams</em></a>) – Cryptographic parameters.</p></li>
+<li><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams" title="quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams"><em>DLogSafePrimeEHParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithmic parameters for discrete logarithm problems.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSafePrimeEH.generate_search_space">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_search_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams" title="quantumthreattracker.algorithms.dlog.dlog_safe_prime_eh.DLogSafePrimeEHParams"><span class="pre">DLogSafePrimeEHParams</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_safe_prime_eh.html#DLogSafePrimeEH.generate_search_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeEH.generate_search_space" title="Link to this definition"></a></dt>
+<dd><p>Generate a search space for algorithm parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of parameters for different window size combinations.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams" title="quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams">DLogSafePrimeEHParams</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSafePrimeEH.get_algorithm_summary">
+<span class="sig-name descname"><span class="pre">get_algorithm_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><span class="pre">AlgParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AlgorithmSummary</span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_safe_prime_eh.html#DLogSafePrimeEH.get_algorithm_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeEH.get_algorithm_summary" title="Link to this definition"></a></dt>
+<dd><p>Compute logical resource estimates for the circuit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><em>AlgParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithm parameters</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Logical resource estimates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AlgorithmSummary</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>NameError</strong> – If the protocol is not “DH-SP”.</p></li>
+<li><p><strong>TypeError</strong> – If alg_params is not of type DLogSafePrimeEHParams.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DLogSafePrimeEHParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_size_exp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size_mul</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_safe_prime_eh.html#DLogSafePrimeEHParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlgParams</span></code></a></p>
+<p>Parameters for discrete logarithm implementation using Ekerå-Håstad algorithm.</p>
+<p>In discrete logarithm problems with safe-prime groups, the order is n-1
+where n is the modulus bit length. With short exponent: nd = 2z.</p>
+<p>Note: This implementation focuses only on short exponents in safe-prime groups
+using the Ekerå-Håstad approach.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams.window_size_exp">
+<span class="sig-name descname"><span class="pre">window_size_exp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams.window_size_exp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams.window_size_mul">
+<span class="sig-name descname"><span class="pre">window_size_mul</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeEHParams.window_size_mul" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSafePrimeShor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DLogSafePrimeShor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crypt_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><span class="pre">CryptParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams" title="quantumthreattracker.algorithms.dlog.dlog_safe_prime_shor.DLogSafePrimeShorParams"><span class="pre">DLogSafePrimeShorParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_safe_prime_shor.html#DLogSafePrimeShor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeShor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm" title="quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumAlgorithm</span></code></a></p>
+<p>Class for the implementation of Shor’s algorithm for dlog problems.</p>
+<p>Method from <a class="reference external" href="https://github.com/Strilanc/efficient-quantum-factoring-2019/">https://github.com/Strilanc/efficient-quantum-factoring-2019/</a>.</p>
+<p>Initialize the quantum algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>crypt_params</strong> (<a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><em>CryptParams</em></a>) – Cryptographic parameters.</p></li>
+<li><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams" title="quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams"><em>DLogSafePrimeShorParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithmic parameters for discrete logarithm problems.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSafePrimeShor.generate_search_space">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_search_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams" title="quantumthreattracker.algorithms.dlog.dlog_safe_prime_shor.DLogSafePrimeShorParams"><span class="pre">DLogSafePrimeShorParams</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_safe_prime_shor.html#DLogSafePrimeShor.generate_search_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeShor.generate_search_space" title="Link to this definition"></a></dt>
+<dd><p>Generate a search space for algorithm parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of parameters for different window size combinations.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams" title="quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams">DLogSafePrimeShorParams</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSafePrimeShor.get_algorithm_summary">
+<span class="sig-name descname"><span class="pre">get_algorithm_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><span class="pre">AlgParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AlgorithmSummary</span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_safe_prime_shor.html#DLogSafePrimeShor.get_algorithm_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeShor.get_algorithm_summary" title="Link to this definition"></a></dt>
+<dd><p>Compute logical resource estimates for the circuit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><em>AlgParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithm parameters</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Logical resource estimates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AlgorithmSummary</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>NameError</strong> – If the protocol is not “DH-SC”.</p></li>
+<li><p><strong>TypeError</strong> – If alg_params is not of type DLogSafePrimeShorParams.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DLogSafePrimeShorParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_size_exp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size_mul</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_safe_prime_shor.html#DLogSafePrimeShorParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlgParams</span></code></a></p>
+<p>Parameters for discrete logarithm implementation using Shor’s algorithm.</p>
+<p>In discrete logarithm problems, we have two main group types:
+- Schnorr group: order r with nd = nr = 2z (where z is bits of classical security)
+- Safe-prime group: order n-1 where n is the modulus bit length
+with short exponent: nd = 2z</p>
+<p>Note: This implementation focuses only on short exponents in safe-prime groups.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams.window_size_exp">
+<span class="sig-name descname"><span class="pre">window_size_exp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams.window_size_exp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams.window_size_mul">
+<span class="sig-name descname"><span class="pre">window_size_mul</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSafePrimeShorParams.window_size_mul" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSchnorrEH">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DLogSchnorrEH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crypt_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><span class="pre">CryptParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams" title="quantumthreattracker.algorithms.dlog.dlog_schnorr_eh.DLogSchnorrEHParams"><span class="pre">DLogSchnorrEHParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_schnorr_eh.html#DLogSchnorrEH"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrEH" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm" title="quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumAlgorithm</span></code></a></p>
+<p>Class for the implementation of Ekerå-Håstad algorithm.</p>
+<p>for dlog problems in Schnorr groups.</p>
+<p>Method based on Ekerå-Håstad’s improvements to Shor’s algorithm.</p>
+<p>Initialize the quantum algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>crypt_params</strong> (<a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><em>CryptParams</em></a>) – Cryptographic parameters.</p></li>
+<li><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams" title="quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams"><em>DLogSchnorrEHParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithmic parameters for discrete logarithm problems.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSchnorrEH.generate_search_space">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_search_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams" title="quantumthreattracker.algorithms.dlog.dlog_schnorr_eh.DLogSchnorrEHParams"><span class="pre">DLogSchnorrEHParams</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_schnorr_eh.html#DLogSchnorrEH.generate_search_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrEH.generate_search_space" title="Link to this definition"></a></dt>
+<dd><p>Generate a search space for algorithm parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of parameters for different window size combinations.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams" title="quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams">DLogSchnorrEHParams</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSchnorrEH.get_algorithm_summary">
+<span class="sig-name descname"><span class="pre">get_algorithm_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><span class="pre">AlgParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AlgorithmSummary</span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_schnorr_eh.html#DLogSchnorrEH.get_algorithm_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrEH.get_algorithm_summary" title="Link to this definition"></a></dt>
+<dd><p>Compute logical resource estimates for the circuit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><em>AlgParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithm parameters</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Logical resource estimates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AlgorithmSummary</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>NameError</strong> – If the protocol is not “DH-SCH”.</p></li>
+<li><p><strong>TypeError</strong> – If alg_params is not of type DLogSchnorrEHParams.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DLogSchnorrEHParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_size_exp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size_mul</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_schnorr_eh.html#DLogSchnorrEHParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlgParams</span></code></a></p>
+<p>Parameters for discrete logarithm implementation using Ekerå-Håstad algorithm.</p>
+<p>In discrete logarithm problems with Schnorr groups, the order r with nd = nr = 2z
+(where z is bits of classical security).</p>
+<p>Note: This implementation focuses on Schnorr groups using the Ekerå-Håstad approach.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams.window_size_exp">
+<span class="sig-name descname"><span class="pre">window_size_exp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams.window_size_exp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams.window_size_mul">
+<span class="sig-name descname"><span class="pre">window_size_mul</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrEHParams.window_size_mul" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSchnorrShor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DLogSchnorrShor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crypt_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><span class="pre">CryptParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams" title="quantumthreattracker.algorithms.dlog.dlog_schnorr_shor.DLogSchnorrShorParams"><span class="pre">DLogSchnorrShorParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_schnorr_shor.html#DLogSchnorrShor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrShor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm" title="quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumAlgorithm</span></code></a></p>
+<p>Class for the implementation of Shor’s algorithm for dlog problems.</p>
+<p>Method from <a class="reference external" href="https://github.com/Strilanc/efficient-quantum-factoring-2019/">https://github.com/Strilanc/efficient-quantum-factoring-2019/</a>.</p>
+<p>Initialize the quantum algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>crypt_params</strong> (<a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><em>CryptParams</em></a>) – Cryptographic parameters.</p></li>
+<li><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams" title="quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams"><em>DLogSchnorrShorParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithmic parameters for discrete logarithm problems.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSchnorrShor.generate_search_space">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_search_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams" title="quantumthreattracker.algorithms.dlog.dlog_schnorr_shor.DLogSchnorrShorParams"><span class="pre">DLogSchnorrShorParams</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_schnorr_shor.html#DLogSchnorrShor.generate_search_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrShor.generate_search_space" title="Link to this definition"></a></dt>
+<dd><p>Generate a search space for algorithm parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of parameters for different group types with short exponents.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams" title="quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams">DLogSchnorrShorParams</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSchnorrShor.get_algorithm_summary">
+<span class="sig-name descname"><span class="pre">get_algorithm_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><span class="pre">AlgParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AlgorithmSummary</span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_schnorr_shor.html#DLogSchnorrShor.get_algorithm_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrShor.get_algorithm_summary" title="Link to this definition"></a></dt>
+<dd><p>Compute logical resource estimates for the circuit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><em>AlgParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithm parameters</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Logical resource estimates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AlgorithmSummary</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>NameError</strong> – If the protocol is not “DH-SCH”.</p></li>
+<li><p><strong>TypeError</strong> – If alg_params is not of type DLogSchnorrShorParams.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DLogSchnorrShorParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_size_exp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size_mul</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/dlog/dlog_schnorr_shor.html#DLogSchnorrShorParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlgParams</span></code></a></p>
+<p>Parameters for discrete logarithm implementation using Shor’s algorithm.</p>
+<p>In discrete logarithm problems, we have two main group types:
+- Schnorr group: order r with nd = nr = 2z (where z is bits of classical security)
+- Safe-prime group: order n-1 where n is the modulus bit length
+with short exponent: nd = 2z</p>
+<p>Note: This implementation focuses only on short exponents.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams.window_size_exp">
+<span class="sig-name descname"><span class="pre">window_size_exp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams.window_size_exp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams.window_size_mul">
+<span class="sig-name descname"><span class="pre">window_size_mul</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#quantumthreattracker.algorithms.dlog.DLogSchnorrShorParams.window_size_mul" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

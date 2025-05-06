@@ -1,0 +1,217 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quantumthreattracker.algorithms.rsa.baseline_shor &mdash; quantumthreattracker  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            quantumthreattracker
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../algorithms/index.html">Algorithms Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../lifespan_estimator.html">Lifespan Estimator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../optimizer.html">Optimizer Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../spec_req_estimator.html">Specification Requirement Estimator</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">quantumthreattracker</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">quantumthreattracker.algorithms.rsa.baseline_shor</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for quantumthreattracker.algorithms.rsa.baseline_shor</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Class for the baseline implementation of Shor&#39;s algorithm.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">qualtran</span> <span class="kn">import</span> <span class="n">QUInt</span>
+<span class="kn">from</span> <span class="nn">qualtran.bloqs.mod_arithmetic</span> <span class="kn">import</span> <span class="n">CModMulK</span>
+<span class="kn">from</span> <span class="nn">qualtran.surface_code</span> <span class="kn">import</span> <span class="n">AlgorithmSummary</span>
+
+<span class="kn">from</span> <span class="nn">quantumthreattracker.algorithms.quantum_algorithm</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AlgParams</span><span class="p">,</span>
+    <span class="n">CryptParams</span><span class="p">,</span>
+    <span class="n">QuantumAlgorithm</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="BaselineShorParams">
+<a class="viewcode-back" href="../../../../algorithms/crypto_attacks/rsa.html#quantumthreattracker.algorithms.rsa.BaselineShorParams">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">BaselineShorParams</span><span class="p">(</span><span class="n">AlgParams</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dataclass describing the parameters for baseline Shor&#39;s algorithm.</span>
+
+<span class="sd">    Note: The basic implementation doesn&#39;t have configurable parameters,</span>
+<span class="sd">    but this class is provided for consistency with the interface.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="BaselineShor">
+<a class="viewcode-back" href="../../../../algorithms/crypto_attacks/rsa.html#quantumthreattracker.algorithms.rsa.BaselineShor">[docs]</a>
+<span class="k">class</span> <span class="nc">BaselineShor</span><span class="p">(</span><span class="n">QuantumAlgorithm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for the baseline implementation of Shor&#39;s algorithm.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">crypt_params</span><span class="p">:</span> <span class="n">CryptParams</span><span class="p">,</span> <span class="n">alg_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaselineShorParams</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the quantum algorithm.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        crypt_params : CryptParams</span>
+<span class="sd">            Cryptographic parameters.</span>
+<span class="sd">        alg_params : Optional[BaselineShorParams], optional</span>
+<span class="sd">            Algorithmic parameters. For BaselineShor, these have no effect but are</span>
+<span class="sd">            included for consistency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">crypt_params</span><span class="p">,</span> <span class="n">alg_params</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaselineShor.get_algorithm_summary">
+<a class="viewcode-back" href="../../../../algorithms/crypto_attacks/rsa.html#quantumthreattracker.algorithms.rsa.BaselineShor.get_algorithm_summary">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_algorithm_summary</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alg_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AlgParams</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AlgorithmSummary</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute logical resource estimates for the circuit.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        alg_params : Optional[AlgParams], optional</span>
+<span class="sd">            Algorithm parameters (not used by BaselineShor)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        AlgorithmSummary</span>
+<span class="sd">            Logical resource estimates.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NameError</span>
+<span class="sd">            If the protocol is not &quot;RSA&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Parameters check is unnecessary for Baseline Shor as it doesn&#39;t use parameters</span>
+        <span class="c1"># But we&#39;ll include it for consistency with the interface</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crypt_params</span><span class="o">.</span><span class="n">protocol</span> <span class="o">!=</span> <span class="s2">&quot;RSA&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span>
+                <span class="s1">&#39;The protocol for this class must be &quot;RSA&quot;. &#39;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_crypt_params</span><span class="o">.</span><span class="n">protocol</span><span class="si">}</span><span class="s1">&quot; was given.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="n">key_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crypt_params</span><span class="o">.</span><span class="n">key_size</span>
+        <span class="n">modulus</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">key_size</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">multiplicand</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">key_size</span> <span class="o">-</span> <span class="mi">2</span>
+
+        <span class="n">mod_mul</span> <span class="o">=</span> <span class="n">CModMulK</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">QUInt</span><span class="p">(</span><span class="n">key_size</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="n">multiplicand</span><span class="p">,</span> <span class="n">mod</span><span class="o">=</span><span class="n">modulus</span><span class="p">)</span>
+        <span class="n">alg_sum_controlled_mod_mul</span> <span class="o">=</span> <span class="n">AlgorithmSummary</span><span class="o">.</span><span class="n">from_bloq</span><span class="p">(</span><span class="n">mod_mul</span><span class="p">)</span>
+
+        <span class="n">reps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1.5</span> <span class="o">*</span> <span class="n">key_size</span><span class="p">)</span>
+        <span class="n">alg_sum_mod_exp</span> <span class="o">=</span> <span class="n">AlgorithmSummary</span><span class="p">(</span>
+            <span class="n">n_algo_qubits</span><span class="o">=</span><span class="n">alg_sum_controlled_mod_mul</span><span class="o">.</span><span class="n">n_algo_qubits</span><span class="p">,</span>
+            <span class="n">n_logical_gates</span><span class="o">=</span><span class="n">alg_sum_controlled_mod_mul</span><span class="o">.</span><span class="n">n_logical_gates</span> <span class="o">*</span> <span class="n">reps</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">alg_sum_mod_exp</span></div>
+
+
+<div class="viewcode-block" id="BaselineShor.generate_search_space">
+<a class="viewcode-back" href="../../../../algorithms/crypto_attacks/rsa.html#quantumthreattracker.algorithms.rsa.BaselineShor.generate_search_space">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">generate_search_space</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaselineShorParams</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a search space for algorithm parameters.</span>
+
+<span class="sd">        Since BaselineShor doesn&#39;t have configurable parameters, this returns</span>
+<span class="sd">        a list with a single set of default parameters.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[BaselineShorParams]</span>
+<span class="sd">            Single-element list containing default parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">BaselineShorParams</span><span class="p">()]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,330 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quantumthreattracker.algorithms.ecc.litinski_ecc &mdash; quantumthreattracker  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            quantumthreattracker
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../algorithms/index.html">Algorithms Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../lifespan_estimator.html">Lifespan Estimator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../optimizer.html">Optimizer Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../spec_req_estimator.html">Specification Requirement Estimator</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">quantumthreattracker</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">quantumthreattracker.algorithms.ecc.litinski_ecc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for quantumthreattracker.algorithms.ecc.litinski_ecc</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Litinski&#39;s implementation of Elliptic Curve Cryptography (ECC).</span>
+
+<span class="sd">Circuit construction from [Lit23], Fig. 4:</span>
+<span class="sd">[How to compute a 256-bit elliptic curve private key with only 50 million Toffoli gates]</span>
+<span class="sd">(https://arxiv.org/abs/2306.08585)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">attrs</span> <span class="kn">import</span> <span class="n">frozen</span>
+<span class="kn">from</span> <span class="nn">qualtran</span> <span class="kn">import</span> <span class="n">Bloq</span><span class="p">,</span> <span class="n">QBit</span><span class="p">,</span> <span class="n">QUInt</span><span class="p">,</span> <span class="n">Register</span><span class="p">,</span> <span class="n">Signature</span>
+<span class="kn">from</span> <span class="nn">qualtran.bloqs.arithmetic._shims</span> <span class="kn">import</span> <span class="n">CHalf</span>  <span class="c1"># noqa: PLC2701</span>
+<span class="kn">from</span> <span class="nn">qualtran.bloqs.basic_gates</span> <span class="kn">import</span> <span class="n">CNOT</span><span class="p">,</span> <span class="n">TGate</span><span class="p">,</span> <span class="n">Toffoli</span>
+<span class="kn">from</span> <span class="nn">qualtran.bloqs.factoring.ecc</span> <span class="kn">import</span> <span class="n">ECAdd</span>
+<span class="kn">from</span> <span class="nn">qualtran.resource_counting</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BloqCountDictT</span><span class="p">,</span>
+    <span class="n">GateCounts</span><span class="p">,</span>
+    <span class="n">SympySymbolAllocator</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">qualtran.resource_counting.generalizers</span> <span class="kn">import</span> <span class="n">_ignore_wrapper</span>  <span class="c1"># noqa: PLC2701</span>
+<span class="kn">from</span> <span class="nn">qualtran.surface_code</span> <span class="kn">import</span> <span class="n">AlgorithmSummary</span>
+
+<span class="kn">from</span> <span class="nn">quantumthreattracker.algorithms.quantum_algorithm</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AlgParams</span><span class="p">,</span>
+    <span class="n">CryptParams</span><span class="p">,</span>
+    <span class="n">QuantumAlgorithm</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="nd">@frozen</span>
+<span class="k">class</span> <span class="nc">CHalfCustom</span><span class="p">(</span><span class="n">Bloq</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A custom implementation of the CHalf bloq that overrides call graph.&quot;&quot;&quot;</span>
+
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">signature</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Signature&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Bloq signature.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Signature</span><span class="p">([</span><span class="n">Register</span><span class="p">(</span><span class="s2">&quot;ctrl&quot;</span><span class="p">,</span> <span class="n">QBit</span><span class="p">()),</span> <span class="n">Register</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">QUInt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))])</span>
+
+    <span class="k">def</span> <span class="nf">build_call_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ssa</span><span class="p">:</span> <span class="n">SympySymbolAllocator</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BloqCountDictT</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call graph construction.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        BloqCountDictT</span>
+<span class="sd">            Custom Bloq counts.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">Toffoli</span><span class="p">():</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">CNOT</span><span class="p">():</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">generalize_c_half_decomp</span><span class="p">(</span><span class="n">b</span><span class="p">:</span> <span class="n">Bloq</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Bloq</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Override the default CHalf Bloq of qualtran.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Optional[Bloq]</span>
+<span class="sd">        A custom CHalf Bloq if the input is an instance of CHalf, otherwise the result</span>
+<span class="sd">        of _ignore_wrapper.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">CHalf</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CHalfCustom</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_ignore_wrapper</span><span class="p">(</span><span class="n">generalize_c_half_decomp</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LitinskiECCParams">
+<a class="viewcode-back" href="../../../../algorithms/crypto_attacks/ecc.html#quantumthreattracker.algorithms.ecc.LitinskiECCParams">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">LitinskiECCParams</span><span class="p">(</span><span class="n">AlgParams</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parameters for the Litinski ECC algorithm.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_size: int</span>
+<span class="sd">        Window size for point addition in the ECC implementation.</span>
+<span class="sd">    classical_bits: int</span>
+<span class="sd">        Number of classical bits to be bruteforced.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">window_size</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">classical_bits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">48</span></div>
+
+
+
+<div class="viewcode-block" id="LitinskiECC">
+<a class="viewcode-back" href="../../../../algorithms/crypto_attacks/ecc.html#quantumthreattracker.algorithms.ecc.LitinskiECC">[docs]</a>
+<span class="k">class</span> <span class="nc">LitinskiECC</span><span class="p">(</span><span class="n">QuantumAlgorithm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of Litinski&#39;s algorithm for elliptic curve cryptography.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">crypt_params</span><span class="p">:</span> <span class="n">CryptParams</span><span class="p">,</span> <span class="n">alg_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LitinskiECCParams</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the Litinski ECC algorithm.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        crypt_params: CryptParams</span>
+<span class="sd">            Cryptographic parameters, including key size.</span>
+<span class="sd">        alg_params: Optional[LitinskiECCParams], optional</span>
+<span class="sd">            Algorithm parameters, by default None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">crypt_params</span><span class="p">,</span> <span class="n">alg_params</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LitinskiECC.get_algorithm_summary">
+<a class="viewcode-back" href="../../../../algorithms/crypto_attacks/ecc.html#quantumthreattracker.algorithms.ecc.LitinskiECC.get_algorithm_summary">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_algorithm_summary</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">alg_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AlgParams</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AlgorithmSummary</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute logical resource estimates for Litinski&#39;s ECC algorithm.</span>
+
+<span class="sd">        Uses windowed approach with lookup, point addition, and unlookup operations.</span>
+<span class="sd">        The algorithm uses (key_size-48)/window_size Lookup Additions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        alg_params : Optional[AlgParams], optional</span>
+<span class="sd">            Algorithm parameters to use for the summary. If None, uses the parameters</span>
+<span class="sd">            stored in the instance (self._alg_params).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            AlgorithmSummary with logical resource estimates</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NameError</span>
+<span class="sd">            If protocol is not &quot;ECDH&quot;.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If no algorithm parameters are provided.</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If alg_params is not LitinskiECCParams.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crypt_params</span><span class="o">.</span><span class="n">protocol</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;ECDH&quot;</span><span class="p">}:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Protocol must be &quot;ECDH&quot;, got &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_crypt_params</span><span class="o">.</span><span class="n">protocol</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Use provided alg_params or instance alg_params</span>
+        <span class="n">effective_alg_params</span> <span class="o">=</span> <span class="n">alg_params</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alg_params</span>
+
+        <span class="k">if</span> <span class="n">effective_alg_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Algorithm parameters must be provided either at initialization or to this method.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Type checking</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">effective_alg_params</span><span class="p">,</span> <span class="n">LitinskiECCParams</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Expected LitinskiECCParams, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">effective_alg_params</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">key_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crypt_params</span><span class="o">.</span><span class="n">key_size</span>
+        <span class="n">window_size</span> <span class="o">=</span> <span class="n">effective_alg_params</span><span class="o">.</span><span class="n">window_size</span>
+        <span class="n">classical_bits</span> <span class="o">=</span> <span class="n">effective_alg_params</span><span class="o">.</span><span class="n">classical_bits</span>
+        <span class="n">mod</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">key_size</span> <span class="o">-</span> <span class="mi">3</span>
+        <span class="c1"># Litinski assumes that 48 bits of the key can be bruteforced classically</span>
+        <span class="n">num_reps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">key_size</span> <span class="o">-</span> <span class="n">classical_bits</span><span class="p">)</span> <span class="o">/</span> <span class="n">window_size</span><span class="p">)</span>
+
+        <span class="c1"># Calculate costs of individual operations</span>
+        <span class="n">ecc_circ</span> <span class="o">=</span> <span class="n">ECAdd</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">key_size</span><span class="p">,</span> <span class="n">mod</span><span class="o">=</span><span class="n">mod</span><span class="p">)</span>
+        <span class="c1"># TODO: Change this to use the algorithm summary method once qualtran has a</span>
+        <span class="c1"># decompositon for CHalf. This is a round about way of getting the cost of CHalf</span>
+        <span class="n">ecc_circ_bloq_counts</span> <span class="o">=</span> <span class="n">ecc_circ</span><span class="o">.</span><span class="n">call_graph</span><span class="p">(</span>
+            <span class="n">max_depth</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">generalizer</span><span class="o">=</span><span class="n">generalize_c_half_decomp</span>
+        <span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">ecc_add_cost</span> <span class="o">=</span> <span class="n">GateCounts</span><span class="p">(</span>
+            <span class="n">toffoli</span><span class="o">=</span><span class="n">ecc_circ_bloq_counts</span><span class="p">[</span><span class="n">Toffoli</span><span class="p">()],</span>
+            <span class="n">clifford</span><span class="o">=</span><span class="n">ecc_circ_bloq_counts</span><span class="p">[</span><span class="n">CNOT</span><span class="p">()],</span>
+            <span class="n">t</span><span class="o">=</span><span class="n">ecc_circ_bloq_counts</span><span class="p">[</span><span class="n">TGate</span><span class="p">()],</span>
+        <span class="p">)</span>
+        <span class="n">windowing_cost</span> <span class="o">=</span> <span class="n">GateCounts</span><span class="p">(</span>
+            <span class="n">toffoli</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">window_size</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="n">window_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="p">)</span>
+
+        <span class="c1"># From [Lit23]: Only window_size bits needed in memory at once</span>
+        <span class="n">logical_qubit_count</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">key_size</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">window_size</span> <span class="o">+</span> <span class="mi">5</span>
+        <span class="c1"># Total cost across all repetitions</span>
+        <span class="n">total_gate_count</span> <span class="o">=</span> <span class="n">num_reps</span> <span class="o">*</span> <span class="p">(</span><span class="n">ecc_add_cost</span> <span class="o">+</span> <span class="n">windowing_cost</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">AlgorithmSummary</span><span class="p">(</span>
+            <span class="n">n_algo_qubits</span><span class="o">=</span><span class="n">logical_qubit_count</span><span class="p">,</span> <span class="n">n_logical_gates</span><span class="o">=</span><span class="n">total_gate_count</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LitinskiECC.generate_search_space">
+<a class="viewcode-back" href="../../../../algorithms/crypto_attacks/ecc.html#quantumthreattracker.algorithms.ecc.LitinskiECC.generate_search_space">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_search_space</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">LitinskiECCParams</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a search space for algorithm parameters.</span>
+
+<span class="sd">        Creates a range of window sizes to search over. For smaller key sizes (≤256),</span>
+<span class="sd">        it explores smaller window sizes. For larger key sizes, it explores larger</span>
+<span class="sd">        window sizes which are more computationally efficient.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[LitinskiECCParams]</span>
+<span class="sd">            List of LitinskiECCParams with different window sizes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crypt_params</span><span class="o">.</span><span class="n">key_size</span>
+        <span class="n">search_space</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Default classical bits to bruteforce</span>
+        <span class="n">classical_bits</span> <span class="o">=</span> <span class="mi">48</span>
+
+        <span class="c1"># Choose window sizes based on key size</span>
+        <span class="k">if</span> <span class="n">key_size</span> <span class="o">&lt;=</span> <span class="mi">256</span><span class="p">:</span>
+            <span class="c1"># For smaller key sizes, smaller window sizes may be optimal</span>
+            <span class="n">window_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">28</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># For larger key sizes, larger window sizes are generally better</span>
+            <span class="n">window_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">40</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">window_size</span> <span class="ow">in</span> <span class="n">window_sizes</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">LitinskiECCParams</span><span class="p">(</span>
+                <span class="n">window_size</span><span class="o">=</span><span class="n">window_size</span><span class="p">,</span>
+                <span class="n">classical_bits</span><span class="o">=</span><span class="n">classical_bits</span>
+            <span class="p">)</span>
+            <span class="n">search_space</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">search_space</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

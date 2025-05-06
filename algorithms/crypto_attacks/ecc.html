@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Elliptic Curve Cryptography (ECC) &mdash; quantumthreattracker  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
@@ -48,7 +48,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../algorithms.html">Quantum Algorithm Module</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Cryptographic Attacks</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="rsa.html">Rivest-Shamir-Adleman (RSA)</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Elliptic Curve Cryptography (ECC)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Elliptic Curve Cryptography (ECC)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.ecc.ECCBasic"><code class="docutils literal notranslate"><span class="pre">ECCBasic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.ecc.ECCBasicParams"><code class="docutils literal notranslate"><span class="pre">ECCBasicParams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.ecc.LitinskiECC"><code class="docutils literal notranslate"><span class="pre">LitinskiECC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.ecc.LitinskiECCParams"><code class="docutils literal notranslate"><span class="pre">LitinskiECCParams</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="dlog.html">Discrete Log (DLog)</a></li>
 </ul>
 </li>
@@ -86,8 +92,153 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="elliptic-curve-cryptography-ecc">
-<h1>Elliptic Curve Cryptography (ECC)<a class="headerlink" href="#elliptic-curve-cryptography-ecc" title="Link to this heading"></a></h1>
+  <section id="module-quantumthreattracker.algorithms.ecc">
+<span id="elliptic-curve-cryptography-ecc"></span><h1>Elliptic Curve Cryptography (ECC)<a class="headerlink" href="#module-quantumthreattracker.algorithms.ecc" title="Link to this heading"></a></h1>
+<p>ECC algorithms for Quantum Threat Tracker.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.ecc.ECCBasic">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ECCBasic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crypt_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><span class="pre">CryptParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#quantumthreattracker.algorithms.ecc.ECCBasicParams" title="quantumthreattracker.algorithms.ecc.ecc_basic.ECCBasicParams"><span class="pre">ECCBasicParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/ecc/ecc_basic.html#ECCBasic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.ecc.ECCBasic" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm" title="quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumAlgorithm</span></code></a></p>
+<p>Class for a basic implementation of ECC.</p>
+<p>Initialize the quantum algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>crypt_params</strong> (<a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><em>CryptParams</em></a>) – Cryptographic parameters.</p></li>
+<li><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#quantumthreattracker.algorithms.ecc.ECCBasicParams" title="quantumthreattracker.algorithms.ecc.ECCBasicParams"><em>ECCBasicParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithmic parameters. For ECCBasic, these have no effect but are
+included for consistency.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.ecc.ECCBasic.generate_search_space">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_search_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quantumthreattracker.algorithms.ecc.ECCBasicParams" title="quantumthreattracker.algorithms.ecc.ecc_basic.ECCBasicParams"><span class="pre">ECCBasicParams</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/ecc/ecc_basic.html#ECCBasic.generate_search_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.ecc.ECCBasic.generate_search_space" title="Link to this definition"></a></dt>
+<dd><p>Generate a search space for algorithm parameters.</p>
+<p>Since ECCBasic doesn’t have configurable parameters, this returns
+a list with a single set of default parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Single-element list containing default parameters.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#quantumthreattracker.algorithms.ecc.ECCBasicParams" title="quantumthreattracker.algorithms.ecc.ECCBasicParams">ECCBasicParams</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.ecc.ECCBasic.get_algorithm_summary">
+<span class="sig-name descname"><span class="pre">get_algorithm_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><span class="pre">AlgParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AlgorithmSummary</span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/ecc/ecc_basic.html#ECCBasic.get_algorithm_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.ecc.ECCBasic.get_algorithm_summary" title="Link to this definition"></a></dt>
+<dd><p>Compute logical resource estimates for the circuit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><em>AlgParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithm parameters (not used by ECCBasic)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Logical resource estimates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AlgorithmSummary</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NameError</strong> – If the protocol is not “ECDH”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.ecc.ECCBasicParams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ECCBasicParams</span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/ecc/ecc_basic.html#ECCBasicParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.ecc.ECCBasicParams" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlgParams</span></code></a></p>
+<p>Parameters for the basic implementation of ECC.</p>
+<p>This implementation doesn’t have configurable parameters,
+but this class is provided for consistency with the interface.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.ecc.LitinskiECC">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LitinskiECC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crypt_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><span class="pre">CryptParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#quantumthreattracker.algorithms.ecc.LitinskiECCParams" title="quantumthreattracker.algorithms.ecc.litinski_ecc.LitinskiECCParams"><span class="pre">LitinskiECCParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/ecc/litinski_ecc.html#LitinskiECC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.ecc.LitinskiECC" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm" title="quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumAlgorithm</span></code></a></p>
+<p>Implementation of Litinski’s algorithm for elliptic curve cryptography.</p>
+<p>Initialize the Litinski ECC algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>crypt_params</strong> (<a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><em>CryptParams</em></a>) – Cryptographic parameters, including key size.</p></li>
+<li><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#quantumthreattracker.algorithms.ecc.LitinskiECCParams" title="quantumthreattracker.algorithms.ecc.LitinskiECCParams"><em>LitinskiECCParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithm parameters, by default None</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.ecc.LitinskiECC.generate_search_space">
+<span class="sig-name descname"><span class="pre">generate_search_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quantumthreattracker.algorithms.ecc.LitinskiECCParams" title="quantumthreattracker.algorithms.ecc.litinski_ecc.LitinskiECCParams"><span class="pre">LitinskiECCParams</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/ecc/litinski_ecc.html#LitinskiECC.generate_search_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.ecc.LitinskiECC.generate_search_space" title="Link to this definition"></a></dt>
+<dd><p>Generate a search space for algorithm parameters.</p>
+<p>Creates a range of window sizes to search over. For smaller key sizes (≤256),
+it explores smaller window sizes. For larger key sizes, it explores larger
+window sizes which are more computationally efficient.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of LitinskiECCParams with different window sizes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#quantumthreattracker.algorithms.ecc.LitinskiECCParams" title="quantumthreattracker.algorithms.ecc.LitinskiECCParams">LitinskiECCParams</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.ecc.LitinskiECC.get_algorithm_summary">
+<span class="sig-name descname"><span class="pre">get_algorithm_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><span class="pre">AlgParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AlgorithmSummary</span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/ecc/litinski_ecc.html#LitinskiECC.get_algorithm_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.ecc.LitinskiECC.get_algorithm_summary" title="Link to this definition"></a></dt>
+<dd><p>Compute logical resource estimates for Litinski’s ECC algorithm.</p>
+<p>Uses windowed approach with lookup, point addition, and unlookup operations.
+The algorithm uses (key_size-48)/window_size Lookup Additions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><em>AlgParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithm parameters to use for the summary. If None, uses the parameters
+stored in the instance (self._alg_params).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>AlgorithmSummary with logical resource estimates</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>NameError</strong> – If protocol is not “ECDH”.</p></li>
+<li><p><strong>ValueError</strong> – If no algorithm parameters are provided.</p></li>
+<li><p><strong>TypeError</strong> – If alg_params is not LitinskiECCParams.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.ecc.LitinskiECCParams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LitinskiECCParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classical_bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">48</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/ecc/litinski_ecc.html#LitinskiECCParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.ecc.LitinskiECCParams" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlgParams</span></code></a></p>
+<p>Parameters for the Litinski ECC algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>window_size</strong> (<em>int</em>) – Window size for point addition in the ECC implementation.</p></li>
+<li><p><strong>classical_bits</strong> (<em>int</em>) – Number of classical bits to be bruteforced.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.ecc.LitinskiECCParams.classical_bits">
+<span class="sig-name descname"><span class="pre">classical_bits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">48</span></em><a class="headerlink" href="#quantumthreattracker.algorithms.ecc.LitinskiECCParams.classical_bits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.ecc.LitinskiECCParams.window_size">
+<span class="sig-name descname"><span class="pre">window_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#quantumthreattracker.algorithms.ecc.LitinskiECCParams.window_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 
