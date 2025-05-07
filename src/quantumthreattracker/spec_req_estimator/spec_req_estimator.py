@@ -1,4 +1,4 @@
-"""Class for estimmating quantum computer specification requirements."""
+"""Class for estimating quantum computer specification requirements."""
 
 from qsharp.estimator import EstimatorError, EstimatorParams
 
