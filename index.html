@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Algorithms Package" href="algorithms/index.html" /> 
+    <link rel="next" title="Background Concepts" href="background.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,9 +41,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background Concepts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Sub Modules</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lifespan_estimator.html">Lifespan Estimator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimizer.html">Optimizer Package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="spec_req_estimator.html">Specification Requirement Estimator</a></li>
@@ -75,11 +78,56 @@
              
   <section id="quantum-threat-tracker-documentation">
 <h1>Quantum Threat Tracker documentation<a class="headerlink" href="#quantum-threat-tracker-documentation" title="Link to this heading"></a></h1>
-<p>Welcome to my docs! Here’s how to install!</p>
+<p>Welcome to the Quantum Threat Tracker (QTT)!</p>
+<p>The Quantum Threat Tracker (QTT) is a Python package designed to provide a
+comprehensive overview of quantum threats to cryptographic systems. It helps
+researchers, developers, and practitioners understand the potential impact of
+quantum computing on current cryptographic standards by estimating the quantum
+resources required to break various cryptographic primitives.</p>
+<section id="the-quantum-threat-tracker-qtt">
+<h2>The Quantum Threat Tracker (QTT)<a class="headerlink" href="#the-quantum-threat-tracker-qtt" title="Link to this heading"></a></h2>
+<p>The QTT addresses these challenges by providing a modular framework to:</p>
+<ol class="arabic simple">
+<li><p>Estimate the quantum resources required for cryptanalysis.</p></li>
+<li><p>Provide actionable insights into the vulnerabilities of cryptographic systems.</p></li>
+</ol>
+<p>It achieves this by first determining the quantum resources needed to run a
+cryptographically relevant algorithm. Then, by considering quantum computing
+hardware roadmaps, it helps estimate when such resources might become available.
+Finally, it allows for an assessment of the maximum potential of given quantum
+hardware to compromise cryptographic systems, supporting informed decision-making.</p>
+<p>For a deeper understanding of the quantum threat landscape and the principles
+behind quantum resource estimation, please see our <a class="reference internal" href="background.html"><span class="doc">Background Concepts</span></a> information.</p>
+</section>
+<section id="overview-of-qtt-features">
+<h2>Overview of QTT Features<a class="headerlink" href="#overview-of-qtt-features" title="Link to this heading"></a></h2>
+<p>The QTT is offers three core functionalities:</p>
+<ul class="simple">
+<li><p><strong>Quantum Resource Estimation (QRE):</strong> The QTT quantifies the quantum
+resources (e.g., qubit count, runtime) needed to execute
+cryptographic-breaking algorithms like Shor’s for specific protocols and
+key sizes.</p></li>
+<li><p><strong>Threat Report Generation:</strong> The QTT generates comprehensive threat
+reports predicting when cryptographic systems might become vulnerable. These
+reports are based on hardware roadmaps and algorithmic advancements.</p></li>
+<li><p><strong>Specification Requirement Estimation:</strong> The QTT allows users to input
+a maximum number of available qubits and determine the hardware
+specifications required to break a given cryptographic protocol.</p></li>
+</ul>
+<p>These features collectively provide a versatile tool for assessing quantum threats.</p>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms Package</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background Concepts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="background.html#understanding-the-quantum-threat">Understanding the Quantum Threat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#quantum-resource-estimation-qre">Quantum Resource Estimation (QRE)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Sub Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="algorithms/algorithms.html">Quantum Algorithm Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="algorithms/crypto_attacks/index.html">Cryptographic Attacks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="algorithms/lister.html">Algorithms Lister Module</a></li>
@@ -102,12 +150,13 @@
 </ul>
 </div>
 </section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="algorithms/index.html" class="btn btn-neutral float-right" title="Algorithms Package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="background.html" class="btn btn-neutral float-right" title="Background Concepts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

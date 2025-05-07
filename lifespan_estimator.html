@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background Concepts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Sub Modules</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms/index.html">Algorithms Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Lifespan Estimator</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap"><code class="docutils literal notranslate"><span class="pre">HardwareRoadmap</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap.add"><code class="docutils literal notranslate"><span class="pre">HardwareRoadmap.add()</span></code></a></li>
@@ -92,9 +95,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-quantumthreattracker.lifespan_estimator">
-<span id="lifespan-estimator"></span><h1>Lifespan Estimator<a class="headerlink" href="#module-quantumthreattracker.lifespan_estimator" title="Link to this heading"></a></h1>
-<p>Lifespan Estimator module.</p>
+  <section id="lifespan-estimator">
+<h1>Lifespan Estimator<a class="headerlink" href="#lifespan-estimator" title="Link to this heading"></a></h1>
+<p>The Lifespan Estimator module is a core component of the Quantum Threat Tracker (QTT).
+It generates a primary output of the QTT, which is a threat timeline.
+Given a roadmap for particular quantum computing hardware modalities and the
+specifications of cryptographic protocols of interest, this module outputs
+an estimate of when the cryptographic protocols are predicted to be broken,
+along with the expected resource requirements over time.</p>
+<p id="module-quantumthreattracker.lifespan_estimator">Lifespan Estimator module.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="quantumthreattracker.lifespan_estimator.HardwareRoadmap">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HardwareRoadmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hardware_roadmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quantumthreattracker/lifespan_estimator/hardware_roadmap.html#HardwareRoadmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.lifespan_estimator.HardwareRoadmap" title="Link to this definition"></a></dt>
