@@ -1,4 +1,5 @@
 # Quantum Threat Tracker
+![GitHub License](https://img.shields.io/github/license/qec-codes/QuantumThreatTracker)
 
 A tool for quantifying the threat quantum computers pose to public-key cryptosystems. 
 
