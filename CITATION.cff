@@ -1,0 +1,17 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Quantum Threat Tracker
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - name: University of Edinburgh
+  - name: Cambridge Consultants
+repository-code: 'https://github.com/qec-codes/QuantumThreatTracker'
+abstract: >-
+  A tool for quantifying the threat quantum computers pose
+  to public-key cryptosystems. 
+license: MIT
