@@ -80,21 +80,29 @@ class LifespanEstimator:
             "threats": threats,
         }
 
-    def generate_report(self, protocols: list[dict]) -> None:
+    def generate_report(
+        self, protocols: list[dict], print_progress: bool = False
+    ) -> None:
         """Predict the threats against several cryptographic protocols.
 
         Parameters
         ----------
         protocols : list[dict]
             List of cryptographic protocols.
+        print_progress : bool, optional
+            Whether to print the progress of the report generation, by default False.
         """
-        threat_report = [
-            self.estimate_threats(
-                protocol_and_key_size["algorithm"],
-                protocol_and_key_size["keySize"],
+        threat_report = []
+        for protocol_and_key_size in protocols:
+            algorithm = protocol_and_key_size["algorithm"]
+            key_size = protocol_and_key_size["keySize"]
+            if print_progress:
+                print(f"Estimating threats for {algorithm}-{key_size}")
+            threat = self.estimate_threats(
+                algorithm,
+                key_size,
             )
-            for protocol_and_key_size in protocols
-        ]
+            threat_report.append(threat)
 
         self._threat_report = threat_report
 
@@ -163,6 +171,8 @@ class LifespanEstimator:
         if soonest_threat_only:
             simplified_report_output = []
             for protocol in report_output:
+                if not protocol["threats"]:
+                    continue
                 lowest_timestamp = protocol["threats"][0]["timestamp"]
                 soonest_threat = protocol["threats"][0]
                 for threat in protocol["threats"]:
