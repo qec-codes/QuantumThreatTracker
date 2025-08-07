@@ -171,6 +171,8 @@ class LifespanEstimator:
         if soonest_threat_only:
             simplified_report_output = []
             for protocol in report_output:
+                if not protocol["threats"]:
+                    continue
                 lowest_timestamp = protocol["threats"][0]["timestamp"]
                 soonest_threat = protocol["threats"][0]
                 for threat in protocol["threats"]:
