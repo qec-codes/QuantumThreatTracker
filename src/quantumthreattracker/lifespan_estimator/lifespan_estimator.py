@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 from qsharp.estimator import EstimatorError
@@ -225,6 +226,11 @@ class LifespanEstimator:
         timestamps = []
         runtimes = []
 
+        ax = plt.subplot(111)
+        ax.set_yscale("log")
+        ax.set_xlabel("Timestamp")
+        ax.set_ylabel("Algorithm runtime (hours)")
+
         if protocol is not None:
             report = self.get_report(detail_level=1)
             report = [entry for entry in report if entry["protocol"] == protocol]
@@ -250,12 +256,9 @@ class LifespanEstimator:
                 timestamps.append(datetime.fromtimestamp(entry["timestamp"]))
                 runtimes.append(entry["runtime"] / 3.6e12)
 
-            ax = plt.subplot(111)
             ax.plot(timestamps, runtimes, "o--")
-            ax.set_yscale("log")
-            ax.set_xlabel("Timestamp")
-            ax.set_ylabel("Algorithm runtime (hours)")
             ax.set_title("Threats against " + protocol)
+            ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
             return ax
 
         report = self.get_report(detail_level=1, soonest_threat_only=True)
@@ -264,13 +267,10 @@ class LifespanEstimator:
             timestamps.append(datetime.fromtimestamp(entry["threats"][0]["timestamp"]))
             runtimes.append(entry["threats"][0]["runtime"] / 3.6e12)
 
-        ax = plt.subplot(111)
         ax.scatter(timestamps, runtimes)
         for i, txt in enumerate(labels):
             ax.annotate(txt, (timestamps[i], runtimes[i]))
-        ax.set_yscale("log")
-        ax.set_xlabel("Timestamp")
-        ax.set_ylabel("Algorithm runtime (hours)")
         ax.set_title("Estimates of when cryptographic protocols will be broken")
         ax.spines[["right", "top"]].set_visible(False)
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
         return ax
