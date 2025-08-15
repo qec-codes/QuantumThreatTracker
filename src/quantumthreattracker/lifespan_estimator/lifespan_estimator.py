@@ -231,14 +231,20 @@ class LifespanEstimator:
             threats = report[0]["threats"]
 
             # Remove threats that are dominated by other threats
-            for threat in threats:
-                for alt_threat in threats:
-                    if (
+            dominated_indices = set()
+            for i, threat in enumerate(threats):
+                for j, alt_threat in enumerate(threats):
+                    if i != j and (
                         threat["timestamp"] >= alt_threat["timestamp"]
                         and threat["runtime"] >= alt_threat["runtime"]
                     ):
-                        threats.remove(threat)
+                        dominated_indices.add(i)
                         break
+            threats = [
+                threat
+                for idx, threat in enumerate(threats)
+                if idx not in dominated_indices
+            ]
 
             for entry in threats:
                 timestamps.append(datetime.fromtimestamp(entry["timestamp"]))
