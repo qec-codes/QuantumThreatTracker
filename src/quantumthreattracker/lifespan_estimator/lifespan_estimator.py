@@ -230,6 +230,8 @@ class LifespanEstimator:
         ax.set_yscale("log")
         ax.set_xlabel("Timestamp")
         ax.set_ylabel("Algorithm runtime (hours)")
+        ax.xaxis.set_major_locator(mdates.YearLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
 
         if protocol is not None:
             report = self.get_report(detail_level=1)
@@ -263,7 +265,6 @@ class LifespanEstimator:
 
             ax.plot(timestamps, runtimes, "o--")
             ax.set_title("Threats against " + protocol)
-            ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
             return ax
 
         report = self.get_report(detail_level=1, soonest_threat_only=True)
@@ -277,5 +278,4 @@ class LifespanEstimator:
             ax.annotate(txt, (timestamps[i], runtimes[i]))
         ax.set_title("Estimates of when cryptographic protocols will be broken")
         ax.spines[["right", "top"]].set_visible(False)
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
         return ax
