@@ -236,21 +236,26 @@ class LifespanEstimator:
             report = [entry for entry in report if entry["protocol"] == protocol]
             threats = report[0]["threats"]
 
-            # Remove threats that are dominated by other threats
-            dominated_indices = set()
-            for i, threat in enumerate(threats):
-                for j, alt_threat in enumerate(threats):
-                    if i != j and (
-                        threat["timestamp"] >= alt_threat["timestamp"]
-                        and threat["runtime"] >= alt_threat["runtime"]
+            # Pareto frontier: keep only threats not dominated by another
+            # (sooner & shorter runtime)
+            filtered_threats = []
+            for i, t1 in enumerate(threats):
+                dominated = False
+                for j, t2 in enumerate(threats):
+                    if j == i:
+                        continue
+                    if (
+                        t2["timestamp"] <= t1["timestamp"]
+                        and t2["runtime"] <= t1["runtime"]
+                    ) and (
+                        t2["timestamp"] < t1["timestamp"]
+                        or t2["runtime"] < t1["runtime"]
                     ):
-                        dominated_indices.add(i)
+                        dominated = True
                         break
-            threats = [
-                threat
-                for idx, threat in enumerate(threats)
-                if idx not in dominated_indices
-            ]
+                if not dominated:
+                    filtered_threats.append(t1)
+            threats = filtered_threats
 
             for entry in threats:
                 timestamps.append(datetime.fromtimestamp(entry["timestamp"]))
