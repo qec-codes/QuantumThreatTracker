@@ -9,6 +9,7 @@ from .quantum_algorithm import (
     CryptParams,
     QuantumAlgorithm,
 )
+from .rsa.gidney_basic import GidneyBasic
 from .rsa.gidney_ekera import GidneyEkera
 
 
@@ -38,9 +39,12 @@ class AlgorithmLister:
             If the protocol is not recognized.
         """
         if crypt_params.protocol == "RSA":
-            algorithms = [GidneyEkera(crypt_params)]
+            algorithms = [GidneyBasic(crypt_params), GidneyEkera(crypt_params)]
         elif crypt_params.protocol == "DH-SP":
-            algorithms = [DLogSafePrimeEH(crypt_params), DLogSafePrimeShor(crypt_params)]
+            algorithms = [
+                DLogSafePrimeEH(crypt_params),
+                DLogSafePrimeShor(crypt_params),
+            ]
         elif crypt_params.protocol == "DH-SCH":
             algorithms = [DLogSchnorrEH(crypt_params), DLogSchnorrShor(crypt_params)]
         elif crypt_params.protocol == "ECDH":
