@@ -55,6 +55,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.rsa.BaselineShorParams"><code class="docutils literal notranslate"><span class="pre">BaselineShorParams</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.rsa.Chevignard"><code class="docutils literal notranslate"><span class="pre">Chevignard</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.rsa.ChevignardParams"><code class="docutils literal notranslate"><span class="pre">ChevignardParams</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.rsa.GidneyBasic"><code class="docutils literal notranslate"><span class="pre">GidneyBasic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.rsa.GidneyBasicParams"><code class="docutils literal notranslate"><span class="pre">GidneyBasicParams</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.rsa.GidneyEkera"><code class="docutils literal notranslate"><span class="pre">GidneyEkera</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.rsa.GidneyEkeraBasic"><code class="docutils literal notranslate"><span class="pre">GidneyEkeraBasic</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quantumthreattracker.algorithms.rsa.GidneyEkeraBasicParams"><code class="docutils literal notranslate"><span class="pre">GidneyEkeraBasicParams</span></code></a></li>
@@ -222,6 +224,69 @@ but this class is provided for consistency with the interface.</p>
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ChevignardParams</span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/rsa/chevignard.html#ChevignardParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.rsa.ChevignardParams" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlgParams</span></code></a></p>
 <p>(No tunable parameters for Chevignard; placeholder.).</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.rsa.GidneyBasic">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GidneyBasic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crypt_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><span class="pre">CryptParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#quantumthreattracker.algorithms.rsa.GidneyBasicParams" title="quantumthreattracker.algorithms.rsa.gidney_basic.GidneyBasicParams"><span class="pre">GidneyBasicParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/rsa/gidney_basic.html#GidneyBasic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.rsa.GidneyBasic" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm" title="quantumthreattracker.algorithms.quantum_algorithm.QuantumAlgorithm"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumAlgorithm</span></code></a></p>
+<p>Class for a basic implementation of Gidney.</p>
+<p>Initialize the quantum algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>crypt_params</strong> (<a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.CryptParams" title="quantumthreattracker.algorithms.quantum_algorithm.CryptParams"><em>CryptParams</em></a>) – Cryptographic parameters.</p></li>
+<li><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#quantumthreattracker.algorithms.rsa.GidneyEkeraBasicParams" title="quantumthreattracker.algorithms.rsa.GidneyEkeraBasicParams"><em>GidneyEkeraBasicParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithmic parameters. For the basic implementation, these have no effect
+but are included for API consistency.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.rsa.GidneyBasic.generate_search_space">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_search_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quantumthreattracker.algorithms.rsa.GidneyBasicParams" title="quantumthreattracker.algorithms.rsa.gidney_basic.GidneyBasicParams"><span class="pre">GidneyBasicParams</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/rsa/gidney_basic.html#GidneyBasic.generate_search_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.rsa.GidneyBasic.generate_search_space" title="Link to this definition"></a></dt>
+<dd><p>Generate a search space for algorithm parameters.</p>
+<p>Since GidneyBasic doesn’t have configurable parameters, this returns
+a list with a single set of default parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Single-element list containing default parameters.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#quantumthreattracker.algorithms.rsa.GidneyBasicParams" title="quantumthreattracker.algorithms.rsa.GidneyBasicParams">GidneyBasicParams</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.rsa.GidneyBasic.get_algorithm_summary">
+<span class="sig-name descname"><span class="pre">get_algorithm_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alg_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><span class="pre">AlgParams</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AlgorithmSummary</span></span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/rsa/gidney_basic.html#GidneyBasic.get_algorithm_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.rsa.GidneyBasic.get_algorithm_summary" title="Link to this definition"></a></dt>
+<dd><p>Compute logical resource estimates for the circuit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alg_params</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><em>AlgParams</em></a><em>]</em><em>, </em><em>optional</em>) – Algorithm parameters (not used in this basic implementation)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Logical resource estimates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AlgorithmSummary</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>NameError</strong> – If the protocol is not “RSA”.</p></li>
+<li><p><strong>ValueError</strong> – If the key_size is not supported.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quantumthreattracker.algorithms.rsa.GidneyBasicParams">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GidneyBasicParams</span></span><a class="reference internal" href="../../_modules/quantumthreattracker/algorithms/rsa/gidney_basic.html#GidneyBasicParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quantumthreattracker.algorithms.rsa.GidneyBasicParams" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../algorithms.html#quantumthreattracker.algorithms.quantum_algorithm.AlgParams" title="quantumthreattracker.algorithms.quantum_algorithm.AlgParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlgParams</span></code></a></p>
+<p>(No tunable parameters for this basic implementation; placeholder.).</p>
 </dd></dl>
 
 <dl class="py class">

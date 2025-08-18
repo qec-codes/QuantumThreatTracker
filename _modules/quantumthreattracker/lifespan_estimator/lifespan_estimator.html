@@ -82,6 +82,7 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
+<span class="kn">import</span> <span class="nn">matplotlib.dates</span> <span class="k">as</span> <span class="nn">mdates</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib.axes</span> <span class="kn">import</span> <span class="n">Axes</span>
 <span class="kn">from</span> <span class="nn">qsharp.estimator</span> <span class="kn">import</span> <span class="n">EstimatorError</span>
@@ -318,30 +319,44 @@
         <span class="n">timestamps</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">runtimes</span> <span class="o">=</span> <span class="p">[]</span>
 
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Timestamp&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Algorithm runtime (hours)&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">mdates</span><span class="o">.</span><span class="n">YearLocator</span><span class="p">())</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">mdates</span><span class="o">.</span><span class="n">DateFormatter</span><span class="p">(</span><span class="s2">&quot;%Y&quot;</span><span class="p">))</span>
+
         <span class="k">if</span> <span class="n">protocol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">report</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_report</span><span class="p">(</span><span class="n">detail_level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">report</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">report</span> <span class="k">if</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;protocol&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">protocol</span><span class="p">]</span>
             <span class="n">threats</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;threats&quot;</span><span class="p">]</span>
 
-            <span class="c1"># Remove threats that are dominated by other threats</span>
-            <span class="k">for</span> <span class="n">threat</span> <span class="ow">in</span> <span class="n">threats</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">alt_threat</span> <span class="ow">in</span> <span class="n">threats</span><span class="p">:</span>
+            <span class="c1"># Pareto frontier: keep only threats not dominated by another</span>
+            <span class="c1"># (sooner &amp; shorter runtime)</span>
+            <span class="n">filtered_threats</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">threats</span><span class="p">):</span>
+                <span class="n">dominated</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">t2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">threats</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
+                        <span class="k">continue</span>
                     <span class="k">if</span> <span class="p">(</span>
-                        <span class="n">threat</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">alt_threat</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span>
-                        <span class="ow">and</span> <span class="n">threat</span><span class="p">[</span><span class="s2">&quot;runtime&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">alt_threat</span><span class="p">[</span><span class="s2">&quot;runtime&quot;</span><span class="p">]</span>
+                        <span class="n">t2</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">t1</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span>
+                        <span class="ow">and</span> <span class="n">t2</span><span class="p">[</span><span class="s2">&quot;runtime&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">t1</span><span class="p">[</span><span class="s2">&quot;runtime&quot;</span><span class="p">]</span>
+                    <span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+                        <span class="n">t2</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">t1</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span>
+                        <span class="ow">or</span> <span class="n">t2</span><span class="p">[</span><span class="s2">&quot;runtime&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">t1</span><span class="p">[</span><span class="s2">&quot;runtime&quot;</span><span class="p">]</span>
                     <span class="p">):</span>
-                        <span class="n">threats</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">threat</span><span class="p">)</span>
+                        <span class="n">dominated</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">break</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">dominated</span><span class="p">:</span>
+                    <span class="n">filtered_threats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span>
+            <span class="n">threats</span> <span class="o">=</span> <span class="n">filtered_threats</span>
 
             <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">threats</span><span class="p">:</span>
                 <span class="n">timestamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]))</span>
                 <span class="n">runtimes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;runtime&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">3.6e12</span><span class="p">)</span>
 
-            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="n">runtimes</span><span class="p">,</span> <span class="s2">&quot;o--&quot;</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Timestamp&quot;</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Algorithm runtime (hours)&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Threats against &quot;</span> <span class="o">+</span> <span class="n">protocol</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ax</span>
 
@@ -351,13 +366,9 @@
             <span class="n">timestamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;threats&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]))</span>
             <span class="n">runtimes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;threats&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;runtime&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">3.6e12</span><span class="p">)</span>
 
-        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="n">runtimes</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">txt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="p">(</span><span class="n">timestamps</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">runtimes</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Timestamp&quot;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Algorithm runtime (hours)&quot;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Estimates of when cryptographic protocols will be broken&quot;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[[</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;top&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
