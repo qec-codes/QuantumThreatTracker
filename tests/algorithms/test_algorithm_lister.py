@@ -8,7 +8,7 @@ from quantumthreattracker.algorithms import AlgorithmLister, CryptParams
 @pytest.mark.parametrize(
     "crypt_params, expected_algorithms",
     [
-        (CryptParams("RSA", 1024), ["GidneyEkera"]),
+        (CryptParams("RSA", 1024), ["GidneyBasic", "GidneyEkera"]),
         (CryptParams("DH-SP", 1024), ["DLogSafePrimeEH", "DLogSafePrimeShor"]),
         (CryptParams("DH-SCH", 1024), ["DLogSchnorrEH", "DLogSchnorrShor"]),
         (CryptParams("ECDH", 256), ["LitinskiECC"]),

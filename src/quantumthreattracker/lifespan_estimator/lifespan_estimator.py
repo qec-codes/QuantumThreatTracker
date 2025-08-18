@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 from qsharp.estimator import EstimatorError
@@ -225,30 +226,44 @@ class LifespanEstimator:
         timestamps = []
         runtimes = []
 
+        ax = plt.subplot(111)
+        ax.set_yscale("log")
+        ax.set_xlabel("Timestamp")
+        ax.set_ylabel("Algorithm runtime (hours)")
+        ax.xaxis.set_major_locator(mdates.YearLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
+
         if protocol is not None:
             report = self.get_report(detail_level=1)
             report = [entry for entry in report if entry["protocol"] == protocol]
             threats = report[0]["threats"]
 
-            # Remove threats that are dominated by other threats
-            for threat in threats:
-                for alt_threat in threats:
+            # Pareto frontier: keep only threats not dominated by another
+            # (sooner & shorter runtime)
+            filtered_threats = []
+            for i, t1 in enumerate(threats):
+                dominated = False
+                for j, t2 in enumerate(threats):
+                    if j == i:
+                        continue
                     if (
-                        threat["timestamp"] >= alt_threat["timestamp"]
-                        and threat["runtime"] >= alt_threat["runtime"]
+                        t2["timestamp"] <= t1["timestamp"]
+                        and t2["runtime"] <= t1["runtime"]
+                    ) and (
+                        t2["timestamp"] < t1["timestamp"]
+                        or t2["runtime"] < t1["runtime"]
                     ):
-                        threats.remove(threat)
+                        dominated = True
                         break
+                if not dominated:
+                    filtered_threats.append(t1)
+            threats = filtered_threats
 
             for entry in threats:
                 timestamps.append(datetime.fromtimestamp(entry["timestamp"]))
                 runtimes.append(entry["runtime"] / 3.6e12)
 
-            ax = plt.subplot(111)
             ax.plot(timestamps, runtimes, "o--")
-            ax.set_yscale("log")
-            ax.set_xlabel("Timestamp")
-            ax.set_ylabel("Algorithm runtime (hours)")
             ax.set_title("Threats against " + protocol)
             return ax
 
@@ -258,13 +273,9 @@ class LifespanEstimator:
             timestamps.append(datetime.fromtimestamp(entry["threats"][0]["timestamp"]))
             runtimes.append(entry["threats"][0]["runtime"] / 3.6e12)
 
-        ax = plt.subplot(111)
         ax.scatter(timestamps, runtimes)
         for i, txt in enumerate(labels):
             ax.annotate(txt, (timestamps[i], runtimes[i]))
-        ax.set_yscale("log")
-        ax.set_xlabel("Timestamp")
-        ax.set_ylabel("Algorithm runtime (hours)")
         ax.set_title("Estimates of when cryptographic protocols will be broken")
         ax.spines[["right", "top"]].set_visible(False)
         return ax
