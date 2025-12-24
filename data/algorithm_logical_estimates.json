@@ -1,0 +1,191 @@
+[
+  {
+    "protocol": "RSA",
+    "key_size": 1024,
+    "algorithm": "GidneyBasic",
+    "logical_qubits": 742,
+    "t_states": 4400000000
+  },
+  {
+    "protocol": "RSA",
+    "key_size": 1024,
+    "algorithm": "GidneyEkera",
+    "logical_qubits": 3072,
+    "t_states": 1609350352
+  },
+  {
+    "protocol": "RSA",
+    "key_size": 2048,
+    "algorithm": "GidneyBasic",
+    "logical_qubits": 1399,
+    "t_states": 26000000000
+  },
+  {
+    "protocol": "RSA",
+    "key_size": 2048,
+    "algorithm": "GidneyEkera",
+    "logical_qubits": 6144,
+    "t_states": 10733223936
+  },
+  {
+    "protocol": "RSA",
+    "key_size": 4096,
+    "algorithm": "GidneyBasic",
+    "logical_qubits": 2692,
+    "t_states": 160000000000
+  },
+  {
+    "protocol": "RSA",
+    "key_size": 4096,
+    "algorithm": "GidneyEkera",
+    "logical_qubits": 12288,
+    "t_states": 97330199216
+  },
+  {
+    "protocol": "RSA",
+    "key_size": 8192,
+    "algorithm": "GidneyBasic",
+    "logical_qubits": 5261,
+    "t_states": 1080000000000
+  },
+  {
+    "protocol": "RSA",
+    "key_size": 8192,
+    "algorithm": "GidneyEkera",
+    "logical_qubits": 24576,
+    "t_states": 667483895520
+  },
+  {
+    "protocol": "DH-SP",
+    "key_size": 1024,
+    "algorithm": "DLogSafePrimeEH",
+    "logical_qubits": 3072,
+    "t_states": 603455488
+  },
+  {
+    "protocol": "DH-SP",
+    "key_size": 1024,
+    "algorithm": "DLogSafePrimeShor",
+    "logical_qubits": 3072,
+    "t_states": 8749809664
+  },
+  {
+    "protocol": "DH-SP",
+    "key_size": 2048,
+    "algorithm": "DLogSafePrimeEH",
+    "logical_qubits": 6144,
+    "t_states": 7571243008
+  },
+  {
+    "protocol": "DH-SP",
+    "key_size": 2048,
+    "algorithm": "DLogSafePrimeShor",
+    "logical_qubits": 6144,
+    "t_states": 69357993984
+  },
+  {
+    "protocol": "DH-SP",
+    "key_size": 4096,
+    "algorithm": "DLogSafePrimeEH",
+    "logical_qubits": 12288,
+    "t_states": 11473125376
+  },
+  {
+    "protocol": "DH-SP",
+    "key_size": 4096,
+    "algorithm": "DLogSafePrimeShor",
+    "logical_qubits": 12288,
+    "t_states": 415843123200
+  },
+  {
+    "protocol": "DH-SP",
+    "key_size": 8192,
+    "algorithm": "DLogSafePrimeEH",
+    "logical_qubits": 24576,
+    "t_states": 94899814992
+  },
+  {
+    "protocol": "DH-SP",
+    "key_size": 8192,
+    "algorithm": "DLogSafePrimeShor",
+    "logical_qubits": 24576,
+    "t_states": 1168667246592
+  },
+  {
+    "protocol": "DH-SCH",
+    "key_size": 1024,
+    "algorithm": "DLogSchnorrEH",
+    "logical_qubits": 3072,
+    "t_states": 603455488
+  },
+  {
+    "protocol": "DH-SCH",
+    "key_size": 1024,
+    "algorithm": "DLogSchnorrShor",
+    "logical_qubits": 3072,
+    "t_states": 414875648
+  },
+  {
+    "protocol": "DH-SCH",
+    "key_size": 2048,
+    "algorithm": "DLogSchnorrEH",
+    "logical_qubits": 6144,
+    "t_states": 7571243008
+  },
+  {
+    "protocol": "DH-SCH",
+    "key_size": 2048,
+    "algorithm": "DLogSchnorrShor",
+    "logical_qubits": 6144,
+    "t_states": 7710228480
+  },
+  {
+    "protocol": "DH-SCH",
+    "key_size": 4096,
+    "algorithm": "DLogSchnorrEH",
+    "logical_qubits": 12288,
+    "t_states": 11473125376
+  },
+  {
+    "protocol": "DH-SCH",
+    "key_size": 4096,
+    "algorithm": "DLogSchnorrShor",
+    "logical_qubits": 12288,
+    "t_states": 11402437840
+  },
+  {
+    "protocol": "DH-SCH",
+    "key_size": 8192,
+    "algorithm": "DLogSchnorrEH",
+    "logical_qubits": 24576,
+    "t_states": 94899814992
+  },
+  {
+    "protocol": "DH-SCH",
+    "key_size": 8192,
+    "algorithm": "DLogSchnorrShor",
+    "logical_qubits": 24576,
+    "t_states": 87641948160
+  },
+  {
+    "protocol": "ECDH",
+    "key_size": 256,
+    "algorithm": "LitinskiECC",
+    "logical_qubits": 2581,
+    "t_states": 7316005112
+  },
+  {
+    "protocol": "ECDH",
+    "key_size": 384,
+    "algorithm": "LitinskiECC",
+    "logical_qubits": 3893,
+    "t_states": 10575113976
+  },
+  {
+    "protocol": "ECDH",
+    "key_size": 512,
+    "algorithm": "LitinskiECC",
+    "logical_qubits": 5157,
+    "t_states": 37507555652
+  }
+]

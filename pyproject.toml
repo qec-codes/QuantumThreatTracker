@@ -51,6 +51,8 @@ ignore = ["PLR0912","PLR0913", "PLR0914", "B901", "B904", "B905", "B909", "PLR20
 # Ignore unused imports in these files
 "__init__.py" = ["E402"]
 "**/{tests,docs,tools}/*" = ["E402"]
+"src/quantumthreattracker/algorithms/rsa/chevignard_utils/*" = ["RUF052"]
+
 
 [tool.ruff.lint.pycodestyle]
 max-line-length = 120
