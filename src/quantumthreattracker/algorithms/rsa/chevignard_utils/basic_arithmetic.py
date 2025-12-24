@@ -836,9 +836,8 @@ class ControlledModularProduct(QuantumCircuit):
         out_reg = QuantumRegister(log2p)
 
         ancillas = QuantumRegister(
-            max([
-                _c.ancilla_nbr for _c in [load1, load2, load3, mult1, divider]
-            ]))
+            max(_c.ancilla_nbr for _c in (load1, load2, load3, mult1, divider))
+        )
 
         self.ancilla_nbr = (len(ancillas) + len(c1_reg) + len(c2_reg) +
                             len(c1c2_reg) + len(rc3_reg) +
